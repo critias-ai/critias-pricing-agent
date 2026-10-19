@@ -1,0 +1,258 @@
+Local Ticket ID,Issue Type,Summary,Priority,Blocked By,Description,Labels
+PH-EPIC,Epic,Bounded general-purpose Luna agent workflow,Highest,,"Reduce unfinished analyses and unnecessary inference with scoped role agents, adaptive responses and reuse of workspace-generated code. Acceptance: five focused scenarios/nine messages, independently verified outcomes.","pricing-harness,agent-workflow"
+PH-01,Story,Bound execution and expose real progress,Highest,None — can start immediately,"# PH-01 — Bound execution and expose real progress
+
+**Issue type:** Story
+
+**Priority:** Highest
+
+**Blocked by:** None — can start immediately
+
+**Status:** ready-for-agent
+
+## What to build
+
+Every request has one enforced execution budget and useful phase/timing feedback, including when the provider or a tool stalls. Preserve existing request idempotency, busy-state, cancellation and source-integrity behavior.
+
+## Acceptance criteria
+
+- [ ] Apply the quick/analysis/report limits in the brief across the entire request; role handoffs and successful intermediate calls never reset them.
+- [ ] Count model attempts, tool calls and provider retry time separately. Configure nested SDK/provider retries so the single cumulative retry cannot be bypassed.
+- [ ] Enforce an abortable whole-request deadline and a bounded cancellation grace; terminal settlement must not wait indefinitely for a model/tool. Supervise stage work so uncooperative work can be stopped and cannot publish afterward.
+- [ ] Emit meaningful planning/analysis/verification/visualization/finalization progress, elapsed time and remaining budget. Do not expose hidden reasoning or credentials.
+- [ ] Stop three identical normalized operation/result pairs without new evidence and record the reason. Ignore new evidence, distinct scoped operations and transport retries for this detector.
+- [ ] Record actual configured provider/model/reasoning, bundle and role-prompt hashes, budget class, timing and counters. Existing legacy run records remain readable.
+- [ ] Fake-clock tests pin deadline, cumulative retries, idempotent cancellation, exactly-once settlement, no late publication, meaningful progress and no premature settlement on a retrying agent_end.
+
+## Delivery checklist
+
+- [ ] Add failing tests for the stated behavior and confirm they fail for the intended reason.
+- [ ] Implement the smallest complete slice, including any affected API/UI persistence.
+- [ ] Run the ticket’s focused checks and typecheck; record the result.
+- [ ] Review the diff and evidence, then mark the ticket done locally. Do not commit or push.
+
+Parent: PH-EPIC (local planning reference).","pricing-harness,agent-workflow,ready-for-agent"
+PH-02,Story,Reuse workspace analysis code and verified scope,High,PH-01,"# PH-02 — Reuse workspace analysis code and verified scope
+
+**Issue type:** Story
+
+**Priority:** High
+
+**Blocked by:** PH-01
+
+**Status:** ready-for-agent
+
+## What to build
+
+A follow-up discovers code created by earlier analyses in this workspace and reuses or adapts it while preserving the requested financial basis and ranking. First-use work remains general purpose.
+
+## Acceptance criteria
+
+- [ ] Maintain an atomic compact analysis index with code/result paths and hashes, source hashes, calculation version, scope/basis, coverage, holds and verification references.
+- [ ] Do not seed domain-specific SQL, pricing helpers or scripts from historical evaluator workspaces. A fresh workspace has an empty index and the analyst authors its own calculation code.
+- [ ] Permit reuse of compatible verified results only after dependency checks. Adapted code, changed periods/definitions or changed sources require fresh execution and verification.
+- [ ] Unverified candidate code can be discovered but must be inspected/executed/checked before any result is approved; it is never represented as a verified cached answer.
+- [ ] Keep analysis state separate from confirmed company facts. Preserve fixed top-ten cohorts until a user explicitly requests re-ranking; save the ranking window.
+- [ ] Reject missing, changed, escaping or conflicting code/result paths; invalidate stale results without deleting original source data or silently reusing another workspace.
+- [ ] Tests cover an empty index, compatible reuse, source/code/basis drift, explicit quarter re-ranking, no-activity cells, restart persistence and index-write concurrency.
+
+## Delivery checklist
+
+- [ ] Add failing tests for the stated behavior and confirm they fail for the intended reason.
+- [ ] Implement the smallest complete slice, including any affected API/UI persistence.
+- [ ] Run the ticket’s focused checks and typecheck; record the result.
+- [ ] Review the diff and evidence, then mark the ticket done locally. Do not commit or push.
+
+Parent: PH-EPIC (local planning reference).","pricing-harness,agent-workflow,ready-for-agent"
+PH-03,Story,Route questions with a lightweight coordinator,High,"PH-01, PH-02","# PH-03 — Route questions with a lightweight coordinator
+
+**Issue type:** Story
+
+**Priority:** High
+
+**Blocked by:** PH-01, PH-02
+
+**Status:** ready-for-agent
+
+## What to build
+
+The user can ask brief questions naturally. A coordinator selects the necessary work and response depth without forcing a report or asking for definitions that are already established.
+
+## Acceptance criteria
+
+- [ ] Produce a validated short WorkOrder carrying the original question, population/period, confirmed basis, ranking rule, output depth, required stages, relevant evidence references, budget class and blocking input.
+- [ ] Support quick verified-result answers, targeted clarification, ordinary analysis and explicit detailed-report routes. Prompt length alone does not decide complexity.
+- [ ] A compatible cached lookup invokes no analyst/visualizer/full audit; any new calculated claim takes the analysis/verification path.
+- [ ] Ask only a material blocking clarification and preserve confirmed source-specific definitions. An analyst/verifier clarification goes through this same user-visible route.
+- [ ] Quick follow-ups default to 50–120 words, no compulsory headings/report; clarification asks one blocking question. Necessary qualifications can exceed guidance and the exception is recorded.
+- [ ] Role prompts are at most 150 words each and shared added workflow guidance at most 200 words, excluding data schemas/inventories and existing reference documents.
+- [ ] Tests cover recovery follow-up, inherited Q3 scope, explicit re-ranking, a missing definition, invalid plan output, an unavailable cache entry and absence of an unnecessary visualization stage.
+
+## Delivery checklist
+
+- [ ] Add failing tests for the stated behavior and confirm they fail for the intended reason.
+- [ ] Implement the smallest complete slice, including any affected API/UI persistence.
+- [ ] Run the ticket’s focused checks and typecheck; record the result.
+- [ ] Review the diff and evidence, then mark the ticket done locally. Do not commit or push.
+
+Parent: PH-EPIC (local planning reference).","pricing-harness,agent-workflow,ready-for-agent"
+PH-04,Story,Deliver independently verified analysis through separate role contexts,Highest,PH-03,"# PH-04 — Deliver independently verified analysis through separate role contexts
+
+**Issue type:** Story
+
+**Priority:** Highest
+
+**Blocked by:** PH-03
+
+**Status:** ready-for-agent
+
+## What to build
+
+An ordinary analysis completes through coordinator, analyst and verifier roles while remaining one visible conversation. Numerical results become a reusable verified checkpoint before optional report production.
+
+## Acceptance criteria
+
+- [ ] Create separate SDK role sessions, all using the explicit configured model/reasoning; disable model substitution. Forward scoped artifacts and definitions, not entire predecessor tool histories.
+- [ ] The analyst prepares an AnalysisPacket containing generated code, executed results, material claims, basis/scope, coverage/holds and source/artifact hashes. Source files and controller metadata remain immutable.
+- [ ] The verifier independently executes source-based checks of material claims, including requested population, arithmetic, numeric cost presence, join/event cardinality, signed observations and units/currency. Rerunning the analyst script alone is insufficient.
+- [ ] Record approved/held claims and executed evidence in a VerificationRecord. Never claim all finance measures reconcile from a revenue-only bridge.
+- [ ] Publish controller-validated immutable numerical checkpoint files and a concise user-visible checked summary before optional presentation. An agent-written status string alone cannot authorize verification or artifact publication.
+- [ ] The same logical chat/request ID survives role changes, reloads and next turns. Hidden role chatter/tool histories must not become the user conversation or erase earlier user/assistant messages.
+- [ ] Reserve verification/finalization time; failed verification withholds only affected claims. Tests cover null cost despite a dated match, mixed currency, repeated documented event keys, analyst/verifier disagreement, artifact mutation and continuity across role transitions.
+
+## Delivery checklist
+
+- [ ] Add failing tests for the stated behavior and confirm they fail for the intended reason.
+- [ ] Implement the smallest complete slice, including any affected API/UI persistence.
+- [ ] Run the ticket’s focused checks and typecheck; record the result.
+- [ ] Review the diff and evidence, then mark the ticket done locally. Do not commit or push.
+
+Parent: PH-EPIC (local planning reference).","pricing-harness,agent-workflow,ready-for-agent"
+PH-05,Story,Add optional visualization with bounded verification and repairs,High,PH-04,"# PH-05 — Add optional visualization with bounded verification and repairs
+
+**Issue type:** Story
+
+**Priority:** High
+
+**Blocked by:** PH-04
+
+**Status:** ready-for-agent
+
+## What to build
+
+Substantial analyses receive useful charts derived from the verified numerical packet. Narrow answers stay short, and plotting problems cannot trap the entire request in report refinement.
+
+## Acceptance criteria
+
+- [ ] Invoke visualization only when the work order requires it; the visualizer receives verified results and may not silently change eligibility, costing, ranking or numerical assumptions.
+- [ ] Select graphs for distinct questions, preserve units and missing/partial cells, and keep exact figures/coverage accessible. No compulsory chart count or fixed chat section template.
+- [ ] Inspect actual desktop and 390-pixel chart captures. Avoid reading every full-page section repeatedly; use per-chart captures for labels, legends and clipping.
+- [ ] Run rendering/preview through controller-counted wrappers around the existing generic helpers; only ledger-backed output is eligible for visual approval. Use at most two report renders/two previews and one global semantic correction round, including visual self-repair and verifier-requested repair. Route a defect only to its owning role.
+- [ ] Reuse the numerical verifier checkpoint; the verifier checks new chart/final-response claims and captured renders without repeating the entire numerical analysis.
+- [ ] After exhausted visual repairs, return approved numbers/table and disclose the specific visual limitation; drafts do not count as published graphs or successful inspection.
+- [ ] Tests pin visualization skipping, wrong population/percent scaling, undefined heatmap cells, preview failure, narrow clipping, scoped correction routing, exhausted repairs and reuse of approved numerical hashes.
+
+## Delivery checklist
+
+- [ ] Add failing tests for the stated behavior and confirm they fail for the intended reason.
+- [ ] Implement the smallest complete slice, including any affected API/UI persistence.
+- [ ] Run the ticket’s focused checks and typecheck; record the result.
+- [ ] Review the diff and evidence, then mark the ticket done locally. Do not commit or push.
+
+Parent: PH-EPIC (local planning reference).","pricing-harness,agent-workflow,ready-for-agent"
+PH-06,Story,Preserve verified partial answers on interruption or late-stage failure,Highest,"PH-04, PH-05","# PH-06 — Preserve verified partial answers on interruption or late-stage failure
+
+**Issue type:** Story
+
+**Priority:** Highest
+
+**Blocked by:** PH-04, PH-05
+
+**Status:** ready-for-agent
+
+## What to build
+
+If optional work fails or a request exhausts its budget, the user receives the applicable verified result and a clear account of what remains incomplete, instead of an empty hang.
+
+## Acceptance criteria
+
+- [ ] Retain existing run lifecycle states and add an optional outcome for complete, verified partial, needs input or no verified answer. Legitimate source-related holds differ from budget truncation.
+- [ ] Only publish previously verified, hash-stable claims that answer the current scope. Never substitute a stale checkpoint or relabel an unfinished draft as verified.
+- [ ] Deadline/cancellation fallback is deterministic and does not require another model request. A late worker result cannot overwrite the terminal response or a frozen checkpoint.
+- [ ] Stop every active role/tool, release busy state once, retain diagnostic files, and permit the next user request. Restart marks interrupted work without automatically retrying paid calls.
+- [ ] Keep registered CSV/script evidence available if optional HTML fails; clearly separate returned answer quality from successful file generation.
+- [ ] No automatic whole-pipeline restart. Any explicit continuation gets a new recorded budget and revalidates source/basis/artifact compatibility.
+- [ ] Integration/browser tests cover provider stall, blocked abort, source mutation, verifier unavailable, interruption after numeric approval, restart, client reconnection and a successful next question.
+
+## Delivery checklist
+
+- [ ] Add failing tests for the stated behavior and confirm they fail for the intended reason.
+- [ ] Implement the smallest complete slice, including any affected API/UI persistence.
+- [ ] Run the ticket’s focused checks and typecheck; record the result.
+- [ ] Review the diff and evidence, then mark the ticket done locally. Do not commit or push.
+
+Parent: PH-EPIC (local planning reference).","pricing-harness,agent-workflow,ready-for-agent"
+PH-07,Story,Create a bounded five-scenario regression runner,High,"PH-01, PH-03, PH-06","# PH-07 — Create a bounded five-scenario regression runner
+
+**Issue type:** Story
+
+**Priority:** High
+
+**Blocked by:** PH-01, PH-03, PH-06
+
+**Status:** ready-for-agent
+
+## What to build
+
+The implementation can be assessed quickly using exactly the selected five scenarios/nine messages, with complete evidence and historical references, without launching the full evaluation suite.
+
+## Acceptance criteria
+
+- [ ] Use focused-evaluation.json exactly. F01–F03 share one fresh conversation/workspace; F04 and F05 each use a fresh workspace. Copy only raw pack CSVs/company notes/dictionary as file inputs.
+- [ ] Seed only the declared confirmed fixture context for warm scenarios. Keep test plans, controls, baseline scripts/responses and reviews outside product-agent file inputs; do not seed old generated queries.
+- [ ] All roles use OpenRouter openai/gpt-6-luna/high, sequentially. Record actual role configurations and updated bundle fingerprint; do not test a lower effort or stronger model in this pass.
+- [ ] Attempt planned messages once within runtime budgets. Record dependencies that are genuinely blocked; do not supply expected answers to fabricate a continuation. Continue independent scenarios after a failure.
+- [ ] Use a 60-minute live-batch stop and stop before a new turn if cumulative SDK-estimated cost reaches USD5; missing SDK usage/cost fields stop further paid turns; a reported valid zero is still only an SDK estimate. These are evaluator limits, not a provider-invoice guarantee.
+- [ ] Save raw responses, stage/tool/provider events, time to first verified answer, total time, attempts/corrections, words, reused code/hashes, registered artifacts and actual chart renders. Preserve historical records unchanged.
+- [ ] Runner tests prove the nine-message manifest, session grouping, file-input exclusion, configuration consistency, deadline/cost stops, secret redaction and no automatic timeout recovery/full-suite fallback.
+
+## Delivery checklist
+
+- [ ] Add failing tests for the stated behavior and confirm they fail for the intended reason.
+- [ ] Implement the smallest complete slice, including any affected API/UI persistence.
+- [ ] Run the ticket’s focused checks and typecheck; record the result.
+- [ ] Review the diff and evidence, then mark the ticket done locally. Do not commit or push.
+
+Parent: PH-EPIC (local planning reference).","pricing-harness,agent-workflow,ready-for-agent"
+PH-08,Story,Run focused evaluation and report whether the workflow improved,Highest,"PH-01, PH-02, PH-03, PH-04, PH-05, PH-06, PH-07","# PH-08 — Run focused evaluation and report whether the workflow improved
+
+**Issue type:** Story
+
+**Priority:** Highest
+
+**Blocked by:** PH-01, PH-02, PH-03, PH-04, PH-05, PH-06, PH-07
+
+**Status:** ready-for-agent
+
+## What to build
+
+Produce an honest before/after report for the five selected scenarios, including numerical correctness, continuity, response depth, useful graphs, delivery and inference cost.
+
+## Acceptance criteria
+
+- [ ] Run affected deterministic tests and typecheck, then build the changed application once before the live run. Do not execute the full live/acceptance/scale suites or unrelated broad tests.
+- [ ] Run the nine planned messages using the manifest, fixed model/effort and sequential execution. Retain complete/partial/held/failed/blocked outcomes separately.
+- [ ] Independently recompute reported figures from raw data and inspect final desktop/narrow charts. Evaluator controls never enter product-agent inputs.
+- [ ] Compare to the specified original and recovery records separately. Historical latency had concurrency/provider confounds; report descriptive changes without claiming causal isolation.
+- [ ] Check numerical controls in evaluator-controls.json, question-specific graph choices, source integrity, ranking inheritance and short recovery-answer behavior.
+- [ ] If a focused test finds an implementation defect, make a scoped fix and rerun at most two additional submitted messages, labeled supplemental and within the same remaining 60-minute/USD5 batch allowance; if it is exhausted, defer the rerun; no unbounded tuning or broader suite.
+- [ ] Publish a report with stage timing, complete-answer rate, verified partials, tool/model/preview counts, numerical/visual defects, estimated cost per correct completed answer and remaining uncertainty. Update the guide; no commit, push or deployment.
+
+## Delivery checklist
+
+- [ ] Add failing tests for the stated behavior and confirm they fail for the intended reason.
+- [ ] Implement the smallest complete slice, including any affected API/UI persistence.
+- [ ] Run the ticket’s focused checks and typecheck; record the result.
+- [ ] Review the diff and evidence, then mark the ticket done locally. Do not commit or push.
+
+Parent: PH-EPIC (local planning reference).","pricing-harness,agent-workflow,ready-for-agent"

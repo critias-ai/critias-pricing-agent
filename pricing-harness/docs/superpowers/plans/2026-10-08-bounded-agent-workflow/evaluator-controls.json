@@ -1,0 +1,125 @@
+{
+  "evaluatorOnly": true,
+  "neverProvideToProductAgents": true,
+  "baselineEvidenceRoot": ".cache/sample-data-live-2026-10-07/",
+  "tolerances": {
+    "displayMoneyGBP": 0.01,
+    "displayMarginPercentagePoints": 0.005,
+    "unroundedFourDecimalCOGSGBP": 0.0001
+  },
+  "checks": {
+    "F01": {
+      "fiveQuarterRevenueGBP": 931065.1,
+      "completePopulationFirstFourMarginsPct": [
+        36.0892,
+        48.8245,
+        44.072,
+        38.2833
+      ],
+      "q3FullRevenueGBP": 154877.51,
+      "q3UncostedLines": 53,
+      "q3UncostedRevenueGBP": 163.33,
+      "q3UncostedSKU": "84596L",
+      "q3SupportedRevenueGBP": 154714.18,
+      "q3SupportedCOGSGBP": 91266.5272,
+      "q3SupportedGPGbp": 63447.6528,
+      "fullQ3Margin": "held; null cost is not zero"
+    },
+    "F02": {
+      "fullWindowRank": [
+        "85123A",
+        "79321",
+        "84347",
+        "22178",
+        "21733",
+        "21731",
+        "71477",
+        "22969",
+        "84978",
+        "72741"
+      ],
+      "topTenRevenueGBP": 428616.75,
+      "topTenGPGbp": 195293.2786,
+      "sku85123AMarginQ1Q2Q3Pct": [
+        37.487176,
+        4.5290177,
+        35.2682424
+      ],
+      "q2PaidPositiveGPGbp": 9488.0248,
+      "q2NegativeQuantityGPGbp": -1641.644,
+      "q2ZeroPriceCOGSGBP": 6900.9248,
+      "q2TotalGPGbp": 945.456,
+      "zeroPriceQuantityEA": 4001,
+      "q3RecoveryPP": 30.7392247,
+      "noActivityCell": "22969 Q3 2010 margin/YoY undefined, not zero"
+    },
+    "F03": {
+      "q3Rank": [
+        "85123A",
+        "79321",
+        "21731",
+        "22178",
+        "23108",
+        "22969",
+        "23084",
+        "21733",
+        "84978",
+        "84755"
+      ],
+      "q3TopTenRevenueGBP": 71226.75,
+      "q3TopTenGPGbp": 30974.919,
+      "selectedInvoices": 1301,
+      "serviceComparableDeduplicatedGBP": 47062.3535,
+      "serviceSeparateEUR": 1.084,
+      "rawMixedFieldSum": 47067.2375,
+      "exactDuplicateExtraGBP": 3.8,
+      "businessKey": [
+        "cost_event_id",
+        "cost_type"
+      ],
+      "q3ReportedProvisionalRebateMovementGBP": -892.03,
+      "allocation": "hold unsupported SKU allocation; do not use all company/invoice expense as product expense"
+    },
+    "F04": {
+      "primaryMetric": "clarify struggling meaning before target/peer assertions; use scripted second message",
+      "retainSourceRepeats": true,
+      "quarterMarginsUseF02Controls": true,
+      "q3YoYRevenueChangeGBP": -13141.92,
+      "q3PaidPositiveUnits2010And2011": [
+        13130,
+        7562
+      ],
+      "cause": "descriptive accounting evidence; no established physical-return or credit/rebill cause"
+    },
+    "F05": {
+      "mustDistinguish": [
+        "list basket value",
+        "modeled current contractual invoice baseline",
+        "historical signed invoice revenue",
+        "before-rebate/service contribution",
+        "full net-pocket result"
+      ],
+      "independentlyReproducedDraftControlNotMandatoryMethod": {
+        "validListPairs": 9040,
+        "currentListValueGBP": 9340300.77,
+        "proposedListValueGBP": 9537780.63,
+        "uniformFourPctListValueGBP": 9713912.8008,
+        "listChangePct": 2.1142773114
+      },
+      "lockedJanuaryOrders": 40,
+      "lockedQuantityEA": 2161,
+      "lockedFaceGBP": 3735.96,
+      "januaryExecutedAgreements": 0,
+      "unsignedJanuaryProposalRecords": 36,
+      "guards": [
+        "no invented Jan1 repricing right/notice/renewal evidence",
+        "no duplicate quote/order exposure",
+        "numeric cost presence, not currency/unit match alone",
+        "do not mix service currencies or count documented duplicate events",
+        "label fixed signed-basket/negative-line assumptions",
+        "hold unsupported pocket allocation; reconcile only measures actually checked"
+      ],
+      "alternativeMethods": "Recompute any defensible alternative on its stated population; do not force draft scenario numbers or score a held business-basis result as a timeout."
+    }
+  }
+}

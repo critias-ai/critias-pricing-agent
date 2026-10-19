@@ -1,0 +1,74 @@
+# Local credentials. Commit only empty/example configuration.
+.env
+.env.*
+!.env.example
+!.env.*.example
+.npmrc
+.pypirc
+.netrc
+*.pem
+*.key
+*.p12
+*.pfx
+.aws/
+.credentials/
+
+# Dependencies, build output, and generated caches.
+node_modules/
+dist/
+build/
+.venv/
+venv/
+.cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+*.tsbuildinfo
+coverage/
+.coverage
+.coverage.*
+htmlcov/
+playwright-report/
+test-results/
+*.tgz
+*.log
+*.partial
+
+# Business workspaces, conversation history, and generated analysis.
+# Synthetic CSV/XLSX fixtures under tests/ are intentionally versioned.
+workspace/
+workspaces/
+/sample_data_1/
+.pricing/
+/files/
+/analyses/
+/outputs/
+*.duckdb
+*.duckdb.wal
+*.sqlite
+*.sqlite3
+
+# Local scratch work, agent state and security-audit output.
+# Scratch folders can hold copied business data; audit runs live outside the repository.
+.scratch/
+.claude/
+security-audit*/
+.security-audit/
+
+# Detailed working notes; the tracked PROJECT_GUIDE.md is the public summary.
+PROJECT_GUIDE.local.md
+
+# Local OS, editor, and agent state.
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+.superpowers/
+*.swp
+*.swo
+*~

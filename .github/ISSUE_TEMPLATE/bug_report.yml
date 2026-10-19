@@ -1,0 +1,48 @@
+name: Bug report
+description: The app failed, or an answer was wrong, missing or unclear.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Never paste real business data. Use synthetic or redacted figures, and remove keys from any log.
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [macOS, Windows, Other]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Critias version or commit
+      placeholder: e.g. 0.5.0 or a1b2c3d
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model ID and reasoning level
+      placeholder: e.g. deepseek/deepseek-v4.1-flash, high
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: What you did
+      description: The question you asked, and a description or redacted sample of the files you attached.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      description: The reply, the error message or a screenshot.
+    validations:
+      required: true

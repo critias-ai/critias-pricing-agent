@@ -1,0 +1,25 @@
+{
+  "id": "rt-intake-correct",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-l3.md",
+  "turns": [
+    {
+      "text": "Which products lose us money?"
+    },
+    {
+      "text": "That's wrong: K07 is a clearance line, not a loss maker. Note it."
+    }
+  ],
+  "csvChecks": [],
+  "expectReads": {
+    "must": [
+      "pricing-intake/SKILL.md"
+    ]
+  },
+  "expectContext": {
+    "must": [
+      "K07[^\\n]*clearance|clearance[^\\n]*K07"
+    ],
+    "keep": true
+  }
+}

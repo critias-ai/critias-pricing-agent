@@ -1,0 +1,19 @@
+{
+  "id": "rt-scan",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-l3.md",
+  "turns": [
+    {
+      "text": "Anything odd in this data I should know about?"
+    }
+  ],
+  "csvChecks": [],
+  "expectReads": {
+    "must": [
+      "pricing-scan/SKILL.md"
+    ],
+    "mustNot": [
+      "pricing-design/SKILL.md"
+    ]
+  }
+}

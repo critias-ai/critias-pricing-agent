@@ -1,0 +1,11 @@
+{
+  "id": "ec-17-forecast",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "What will margin be next year?"
+    }
+  ],
+  "csvChecks": []
+}

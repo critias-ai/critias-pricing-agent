@@ -1,0 +1,23 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "pricing-plugin",
+  "version": "0.4.11",
+  "author": { "name": "Danial Kodvavi" },
+  "description": "AI-assisted pricing analysis, opportunity assessment, offer and charging-model design, and rollout planning for B2B, consumer, subscription and hybrid businesses.",
+  "repository": "https://github.com/critias-ai/critias-pricing-plugin",
+  "keywords": [
+    "pricing",
+    "pricing-strategy",
+    "gross-margin",
+    "price-realization",
+    "industrial-pricing",
+    "spare-parts",
+    "b2b",
+    "agent-skills",
+    "ecommerce",
+    "subscription-pricing",
+    "saas",
+    "recurring-revenue"
+  ],
+  "license": "MIT"
+}

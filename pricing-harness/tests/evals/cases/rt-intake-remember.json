@@ -1,0 +1,25 @@
+{
+  "id": "rt-intake-remember",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-l3.md",
+  "turns": [
+    {
+      "text": "What were net sales in 2025?"
+    },
+    {
+      "text": "By the way, our financial year starts in April. Remember that."
+    }
+  ],
+  "csvChecks": [],
+  "expectReads": {
+    "must": [
+      "pricing-intake/SKILL.md"
+    ]
+  },
+  "expectContext": {
+    "must": [
+      "april"
+    ],
+    "keep": true
+  }
+}

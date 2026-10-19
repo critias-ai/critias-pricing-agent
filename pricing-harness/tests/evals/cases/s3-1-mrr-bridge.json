@@ -1,0 +1,33 @@
+{
+  "id": "s3-1-mrr-bridge",
+  "inputDir": "../inputs/saas-clean",
+  "contextFile": "../contexts/saas.md",
+  "turns": [
+    {
+      "text": "Build the MRR bridge for 2025, plus NRR and GRR."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "mrr_bridge.csv",
+      "keyColumns": [
+        "movement"
+      ],
+      "valueColumns": [
+        "mrr_gbp"
+      ],
+      "ask": "mrr_bridge.csv with columns movement,mrr_gbp: rows opening, new, expansion, contraction, churn and closing for 2025 (contraction and churn negative)"
+    },
+    {
+      "file": "retention.csv",
+      "keyColumns": [
+        "metric"
+      ],
+      "valueColumns": [
+        "value_pct"
+      ],
+      "ask": "retention.csv with columns metric,value_pct: rows nrr and grr for 2025, in %"
+    }
+  ],
+  "solution": "../solutions/saas.py"
+}

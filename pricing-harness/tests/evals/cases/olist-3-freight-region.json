@@ -1,0 +1,26 @@
+{
+  "id": "olist-3-freight-region",
+  "inputDir": "../../../datasets/olist/case/files",
+  "contextFile": "../contexts/olist.md",
+  "turns": [
+    {
+      "text": "Is freight eating our marketplace economics in the north?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "freight_by_region.csv",
+      "keyColumns": [
+        "region"
+      ],
+      "valueColumns": [
+        "items",
+        "price_brl",
+        "freight_brl",
+        "freight_share_pct"
+      ],
+      "ask": "freight_by_region.csv with columns region,items,price_brl,freight_brl,freight_share_pct: each customer region, with freight_share_pct = freight ÷ (price + freight) in %"
+    }
+  ],
+  "solution": "../solutions/olist.py"
+}

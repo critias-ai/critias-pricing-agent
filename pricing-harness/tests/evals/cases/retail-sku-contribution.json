@@ -1,0 +1,23 @@
+{
+  "id": "retail-sku-contribution",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "How much did Storage's gross margin rate move between Q1 and Q2 2025, and which SKUs drove it?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "contribution.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "contribution_pp"
+      ],
+      "ask": "contribution.csv with columns sku,contribution_pp: one row for every Storage SKU sold in either quarter, its contribution to the change in percentage points, with the rows adding up to the category's change"
+    }
+  ],
+  "solution": "../solutions/retail.py"
+}

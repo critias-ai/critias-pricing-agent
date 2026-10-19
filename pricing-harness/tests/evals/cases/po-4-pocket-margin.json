@@ -1,0 +1,42 @@
+{
+  "id": "po-4-pocket-margin",
+  "inputDir": "../inputs/b2b-po",
+  "contextFile": "../contexts/b2b-po.md",
+  "turns": [
+    {
+      "text": "Which products are out of line on pocket margin?"
+    },
+    {
+      "text": "Now only within Adhesives."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "outliers_all.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "pocket_margin_pct",
+        "reference_pct",
+        "gap_gbp"
+      ],
+      "partial": true,
+      "ask": "outliers_all.csv with columns sku,pocket_margin_pct,reference_pct,gap_gbp,peer_set: one row for each product you called out of line across the whole catalogue, with its pocket margin in %, its reference in %, the gap in GBP (negative below the reference) and the peer set you used"
+    },
+    {
+      "file": "outliers_adhesives.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "pocket_margin_pct",
+        "reference_pct",
+        "gap_gbp"
+      ],
+      "partial": true,
+      "ask": "outliers_adhesives.csv with columns sku,pocket_margin_pct,reference_pct,gap_gbp,peer_set: one row for each product you called out of line within Adhesives, with its pocket margin in %, its reference in %, the gap in GBP (negative below the reference) and the peer set you used"
+    }
+  ],
+  "solution": "../solutions/b2b_edges.py"
+}

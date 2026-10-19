@@ -1,0 +1,11 @@
+{
+  "id": "s2-4-policy-proposal",
+  "inputDir": "../inputs/b2b-clean",
+  "contextFile": "../contexts/b2b.md",
+  "turns": [
+    {
+      "text": "Propose a discount policy that cuts our leakage without losing big accounts, and how we'd roll it out."
+    }
+  ],
+  "csvChecks": []
+}

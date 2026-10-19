@@ -1,0 +1,36 @@
+{
+  "id": "s2-5-floor-correction",
+  "inputDir": "../inputs/b2b-clean",
+  "contextFile": "../contexts/b2b.md",
+  "turns": [
+    {
+      "text": "How many of our 2025 invoice lines are below our price floor?"
+    },
+    {
+      "text": "Which customers account for most of it?"
+    },
+    {
+      "text": "Correction: finance raised the floor to standard cost plus 15% from 1 January 2025. Please redo it."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "below_floor.csv",
+      "keyColumns": [
+        "customer_id"
+      ],
+      "valueColumns": [
+        "lines",
+        "gap_gbp"
+      ],
+      "ask": "below_floor.csv with columns customer_id,lines,gap_gbp: each customer with 2025 lines below the corrected floor, the number of those lines and the shortfall in GBP (floor × quantity − pocket value, summed)"
+    }
+  ],
+  "expectContext": {
+    "must": [
+      "15 ?%|1\\.15"
+    ],
+    "keep": true
+  },
+  "solution": "../solutions/b2b.py"
+}

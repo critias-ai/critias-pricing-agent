@@ -1,0 +1,26 @@
+{
+  "id": "wtp-1-quotes",
+  "inputDir": "../inputs/b2b-clean",
+  "contextFile": "../contexts/b2b.md",
+  "turns": [
+    {
+      "text": "Can you work out what our customers are willing to pay from the quote history?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "win_by_band.csv",
+      "keyColumns": [
+        "size_band",
+        "discount_band"
+      ],
+      "valueColumns": [
+        "quotes",
+        "won",
+        "won_pct"
+      ],
+      "ask": "win_by_band.csv with columns size_band,discount_band,quotes,won,won_pct: all quotes by customer size band and total discount band (0-5, 5-10, 10-15, 15-20, 20+; a band includes its lower bound), with won_pct in %"
+    }
+  ],
+  "solution": "../solutions/b2b.py"
+}

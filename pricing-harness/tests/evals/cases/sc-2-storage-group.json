@@ -1,0 +1,23 @@
+{
+  "id": "sc-2-storage-group",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-scenarios.md",
+  "turns": [
+    {
+      "text": "For Storage as a whole, what's the breakeven volume on a 5% price rise?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "storage_breakeven.csv",
+      "keyColumns": [
+        "measure"
+      ],
+      "valueColumns": [
+        "pct"
+      ],
+      "ask": "storage_breakeven.csv with columns measure,pct and one row breakeven_volume: the % change in Storage volume that keeps its gross profit the same, in percent (so -11.8 means an 11.8% fall)"
+    }
+  ],
+  "solution": "../solutions/scenarios.py"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "aw-3-cost-margin",
+  "inputDir": "../../../datasets/adventureworks/case/files",
+  "contextFile": "../contexts/adventureworks.md",
+  "turns": [
+    {
+      "text": "Product costs changed. What did that do to margin by subcategory?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "margin_by_subcategory.csv",
+      "keyColumns": [
+        "subcategory"
+      ],
+      "valueColumns": [
+        "gm_fy2024_pct",
+        "gm_fy2025_pct",
+        "cost_effect_usd"
+      ],
+      "ask": "margin_by_subcategory.csv with columns subcategory,gm_fy2024_pct,gm_fy2025_pct,cost_effect_usd: every subcategory sold in FY2024 or FY2025, gross margin in % each year (blank if none sold), and cost_effect_usd = the sum over FY2025 lines of OrderQty × (standard cost in force on the order date − standard cost in force on the same date a year earlier), positive when costs rose"
+    }
+  ],
+  "solution": "../solutions/adventureworks.py"
+}

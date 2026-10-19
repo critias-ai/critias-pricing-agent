@@ -1,0 +1,25 @@
+{
+  "id": "ec-5-fiscal-ytd",
+  "inputDir": "../inputs/retail-fy",
+  "contextFile": "../contexts/retail-fy.md",
+  "turns": [
+    {
+      "text": "How are we doing this year against last?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "fytd.csv",
+      "keyColumns": [
+        "period"
+      ],
+      "valueColumns": [
+        "net_sales",
+        "gross_profit",
+        "gm_pct"
+      ],
+      "ask": "fytd.csv with columns period,net_sales,gross_profit,gm_pct and rows this_fy_to_date and last_fy_same_span"
+    }
+  ],
+  "solution": "../solutions/edges.py"
+}

@@ -1,0 +1,12 @@
+import '@fontsource/spectral/400.css';
+import '@fontsource/spectral/600.css';
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/spline-sans-mono/400.css';
+import '@fontsource/spline-sans-mono/500.css';
+import './critias-aegean.css';
+import './styles.css';
+import {createRoot} from 'react-dom/client';
+import {App} from './App.js';
+import {applyTheme} from './theme.js';
+applyTheme();
+createRoot(document.getElementById('root')!).render(<App />);

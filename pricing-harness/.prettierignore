@@ -1,0 +1,5 @@
+# Eval data is written by scripts and compared byte for byte; formatting it would break that.
+tests/evals/cases/
+tests/evals/keys/
+tests/evals/contexts/
+tests/evals/inputs/

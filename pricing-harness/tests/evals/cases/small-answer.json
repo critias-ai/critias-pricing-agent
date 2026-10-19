@@ -1,0 +1,12 @@
+{
+  "id": "small-answer",
+  "inputDir": "../inputs/small-answer",
+  "contextFile": "../contexts/small-answer.md",
+  "turns": [
+    {
+      "text": "Quick one: what was our 2021 revenue in group X?"
+    }
+  ],
+  "csvChecks": [],
+  "solution": "../solutions/margin.py"
+}

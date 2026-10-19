@@ -1,0 +1,113 @@
+diff --git a/pricing-harness/src/agent/workflow/checkpoints.ts b/pricing-harness/src/agent/workflow/checkpoints.ts
+index 3c203d3..109642e 100644
+--- a/pricing-harness/src/agent/workflow/checkpoints.ts
++++ b/pricing-harness/src/agent/workflow/checkpoints.ts
+@@ -1,3 +1,4 @@
++import {readFileSync} from 'node:fs';
+ import {mkdir, copyFile, readFile, writeFile} from 'node:fs/promises';
+ import {join, relative, basename} from 'node:path';
+ import {createHash, randomUUID} from 'node:crypto';
+@@ -163,6 +164,12 @@ export async function validateNumericalEvidence(options: {
+   let completion = producer;
+   const triggers: ReviewTrigger[] = [];
+   if (self) {
++    // Experiment (PRICING_INDEX_DIAGNOSTICS): the controller supplies index-derived diagnostics the analyst omitted.
++    const indexDiagnostics = process.env.PRICING_INDEX_DIAGNOSTICS;
++    const supplied = (output as {diagnostics?: unknown}).diagnostics;
++    if (indexDiagnostics && Array.isArray(supplied))
++      for (const d of JSON.parse(readFileSync(indexDiagnostics, 'utf8')) as {kind: string}[])
++        if (!supplied.some(s => (s as {kind?: string})?.kind === d.kind)) supplied.push(d);
+     try {
+       assertSchema(selfChecksSchema, output);
+     } catch (error) {
+diff --git a/pricing-harness/src/agent/workflow/orchestrator.ts b/pricing-harness/src/agent/workflow/orchestrator.ts
+index 3112309..08b9bce 100644
+--- a/pricing-harness/src/agent/workflow/orchestrator.ts
++++ b/pricing-harness/src/agent/workflow/orchestrator.ts
+@@ -117,6 +117,9 @@ export class WorkflowOrchestrator {
+     let firstVerifiedAnswerAt: string | undefined;
+     const visible: string[] = [];
+     let sourceProfiles: PromptProfile[] = [];
++    const indexPath = process.env.PRICING_WORKSPACE_INDEX;
++    const workspaceIndex = indexPath ? await readFile(indexPath, 'utf8') : undefined;
++    const sourceProfilesFile = indexPath ? join(dir, 'source-profiles.json') : undefined;
+     let early: {id: string; provisional: {checkpoint: Checkpoint; ref: FileRef}; labels: string[]} | undefined;
+     const say = async (text: string, options?: AssistantMessageOptions) => {
+       if (!text.trim()) return;
+@@ -169,6 +172,8 @@ export class WorkflowOrchestrator {
+         config,
+         sources,
+         sourceProfiles,
++        workspaceIndex,
++        sourceProfilesFile,
+         history: role === 'coordinator' ? compactHistory(this.options.history()) : undefined,
+         input,
+         budget,
+@@ -266,6 +271,7 @@ export class WorkflowOrchestrator {
+     try {
+       if (this.options.profileSources) {
+         sourceProfiles = compactProfiles(await this.options.profileSources(sources));
++        if (sourceProfilesFile) await writeFile(sourceProfilesFile, JSON.stringify(sourceProfiles));
+         await log.append({
+           type: 'source_profiles',
+           sources: sourceProfiles.map(p => ({path: p.path, ...('error' in p ? {error: p.error} : {})})),
+diff --git a/pricing-harness/src/agent/workflow/role-prompts.ts b/pricing-harness/src/agent/workflow/role-prompts.ts
+index d785735..4950396 100644
+--- a/pricing-harness/src/agent/workflow/role-prompts.ts
++++ b/pricing-harness/src/agent/workflow/role-prompts.ts
+@@ -1,5 +1,7 @@
+ import type {Role, ActiveRole} from './contracts.js';
+ export const sharedPrompt = `You are one role in a pricing analysis workflow. Answer the user's request on its confirmed basis, using workspace evidence and relevant skills for methods. Choose tools and work appropriate to the question. Sources, confirmed context and prior evidence are read-only; write in your stage directory. Return only JSON matching outputSchema before timeBudget.stageDeadlineUTC. All roles share the supplied budget.`;
++// Experiment (PRICING_WORKSPACE_INDEX): appended to the shared prompt when a workspace index is supplied.
++export const indexPrompt = `The prompt's workspaceIndex was precomputed by code from the source files: tables, keys, joins and data issues with stable ids, value at stake and default handling (and, when listed, a prepared view). Start from it; sourceProfiles are omitted from the prompt and saved at sourceProfilesFile. Do not re-derive or re-check what the index states. Apply each issue's default unless confirmed context overrides it, and cite issue ids in coverage, holds and diagnostic reasons. Index figures may serve as the computed control for a diagnostic when they cover the same population.`;
+ export const rolePrompts = {
+   coordinator: `Return a WorkOrder for numerical outcomes, preserving confirmed scope and comparisons. Operations name the requested results only; the analyst's diagnostics own validation, coverage and reconciliation checks. Do not add optional investigations, causal bridges or tie-outs to other sources. Set visualize for useful in-chat exploration; it is not an analyst operation. Leave methods to the skills and analyst. Use compatible verified results for quick lookups with cachedClaimIds. Omit cachedClaimIds with visualize=true only for explicit full-checkpoint exploration; otherwise choose analysis or report depth. Ask only for blocking input and record only newly confirmed definitions. Use sourceProfiles for columns, inferred types, coverage and sample values; tabular files are not readable while planning.`,
+   analyst: `Calculate requested measures using pricing skills. Generate/adapt code and run execute_analysis. After success, batch fixes within revisionRoundsRemaining; reruns consume rounds. Print self-check JSON matching checkOutputSchema with executed diagnostics, reply and task completion. Request independent review through reviewReasons when uncertain. Return scalar numerical claims, null for unavailable measures, or ranking arrays. Put narrative in coverage/holds. Supply code/results as final JSON; the harness supplies metadata. Optionally describe useful tables/charts with exploration claim-ID bindings using analysis-visualize. Pass useful results with limitations. Start from sourceProfiles: inferredType is a parsing fact, not a business meaning. End the final script with emit_handoff from harness_output.py, then return {"fromExecution":true}.`,
+diff --git a/pricing-harness/src/agent/workflow/stage-prompt.ts b/pricing-harness/src/agent/workflow/stage-prompt.ts
+index 03bdb55..cf09b86 100644
+--- a/pricing-harness/src/agent/workflow/stage-prompt.ts
++++ b/pricing-harness/src/agent/workflow/stage-prompt.ts
+@@ -19,6 +19,9 @@ export type StagePromptInput = {
+   config: Pick<HarnessConfig, 'pythonPath' | 'bundledRoot' | 'duckdbMemoryLimit' | 'duckdbThreads'>;
+   sources: Pick<SourceFile, 'relativePath' | 'sha256' | 'kind'>[];
+   sourceProfiles: PromptProfile[];
++  // Experiment: a precomputed workspace index replaces inline profiles, which move to a file.
++  workspaceIndex?: string;
++  sourceProfilesFile?: string;
+   history?: unknown;
+   input: unknown;
+   budget: WorkflowBudget;
+@@ -53,7 +56,9 @@ export function buildStagePrompt(p: StagePromptInput): string {
+       sha256: s.sha256,
+       kind: s.kind,
+     })),
+-    sourceProfiles: p.sourceProfiles,
++    sourceProfiles: p.workspaceIndex ? undefined : p.sourceProfiles,
++    workspaceIndex: p.workspaceIndex,
++    sourceProfilesFile: p.sourceProfilesFile,
+     history: p.history,
+     input: p.input,
+     outputSchema: outputSchema(p.role, p.operation),
+diff --git a/pricing-harness/src/agent/workflow/worker.ts b/pricing-harness/src/agent/workflow/worker.ts
+index 2fe4e39..6521ad2 100644
+--- a/pricing-harness/src/agent/workflow/worker.ts
++++ b/pricing-harness/src/agent/workflow/worker.ts
+@@ -14,7 +14,7 @@ import {retryTransient} from './transient-error.js';
+ import {filePathParameters, toolFilePath} from './tool-input.js';
+ import {finishHandoff, validateStageOutput, handoffContext} from './handoff.js';
+ import {steerAnalystToFinalJson, assertAnalystToolCallAllowed} from './analyst-handoff.js';
+-import {rolePrompts, sharedPrompt, stageToolNames, assertActiveStage} from './role-prompts.js';
++import {rolePrompts, sharedPrompt, indexPrompt, stageToolNames, assertActiveStage} from './role-prompts.js';
+ import {AnalystRevisions} from './revisions.js';
+ import {ModelTiming} from './model-timing.js';
+ import {assertStageReadAllowed} from './read-policy.js';
+@@ -181,7 +181,8 @@ async function execute(request: StageRequest) {
+     modelRuntime: runtime,
+     model,
+     fresh: true,
+-    stage: {directory: stageDir, systemPrompt: sharedPrompt + '\n' + rolePrompts[role], tools, toolNames},
++    stage: {directory: stageDir, systemPrompt:
++        sharedPrompt + (process.env.PRICING_WORKSPACE_INDEX ? '\n' + indexPrompt : '') + '\n' + rolePrompts[role], tools, toolNames},
+   });
+   session = handle.session;
+   session.setAutoRetryEnabled(false);

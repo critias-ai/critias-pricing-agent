@@ -1,0 +1,80 @@
+{
+  "id": "ec-9-long-assumption",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "What were net sales in 2025?"
+    },
+    {
+      "text": "For the rest of this conversation, assume unit costs rise 3% next year and we pass half of each unit's cost increase on in our prices, with volumes at 2025 levels. Just note it for now."
+    },
+    {
+      "text": "Which category had the highest net sales in 2025?"
+    },
+    {
+      "text": "How many SKUs did we sell in 2025?"
+    },
+    {
+      "text": "Which SKU made the most gross profit in 2025?"
+    },
+    {
+      "text": "What share of 2025 net sales came from Storage?"
+    },
+    {
+      "text": "How many invoice lines were returns?"
+    },
+    {
+      "text": "Which customer bought the most in 2025?"
+    },
+    {
+      "text": "What was gross margin in Q3 2025?"
+    },
+    {
+      "text": "Did Garden grow from 2024 to 2025?"
+    },
+    {
+      "text": "Which month in 2025 had the lowest net sales?"
+    },
+    {
+      "text": "How many SKUs were new in 2025?"
+    },
+    {
+      "text": "What gross profit did K07 make in 2025?"
+    },
+    {
+      "text": "Which Storage SKU sold the most units in 2025?"
+    },
+    {
+      "text": "What was gross margin in 2024?"
+    },
+    {
+      "text": "How much did returns take off 2025 net sales?"
+    },
+    {
+      "text": "Which customer bought the most Kitchen products?"
+    },
+    {
+      "text": "Under the cost assumption I gave you earlier, what would Storage gross profit be?"
+    },
+    {
+      "text": "And Kitchen, under the same assumption?"
+    },
+    {
+      "text": "Thanks, that's all for now."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "scenario.csv",
+      "keyColumns": [
+        "measure"
+      ],
+      "valueColumns": [
+        "gbp"
+      ],
+      "ask": "scenario.csv with columns measure,gbp and one row storage_gp_2025_scenario: Storage gross profit under the cost assumption from earlier"
+    }
+  ],
+  "solution": "../solutions/edges.py"
+}

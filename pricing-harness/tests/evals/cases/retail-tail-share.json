@@ -1,0 +1,22 @@
+{
+  "id": "retail-tail-share",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "How concentrated is our profit? What share of gross profit over the whole history comes from SKUs outside the top 5?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "tail.csv",
+      "keyColumns": [
+        "metric"
+      ],
+      "valueColumns": [
+        "value"
+      ],
+      "ask": "tail.csv with columns metric,value and one row whose metric is tail_share_pct"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "aw-1-waterfall",
+  "inputDir": "../../../datasets/adventureworks/case/files",
+  "contextFile": "../contexts/adventureworks.md",
+  "turns": [
+    {
+      "text": "Walk me from list price to what we actually got paid in FY2025, by channel."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "waterfall.csv",
+      "keyColumns": [
+        "channel",
+        "layer"
+      ],
+      "valueColumns": [
+        "amount_usd"
+      ],
+      "ask": "waterfall.csv with columns channel,layer,amount_usd: for internet and reseller in FY2025, one row each for list_value, channel_concession, offer_discount, net_sales, freight, net_sales_and_freight and tax (concession and discount as positive amounts)"
+    }
+  ],
+  "solution": "../solutions/adventureworks.py"
+}

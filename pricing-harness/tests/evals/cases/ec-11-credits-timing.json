@@ -1,0 +1,26 @@
+{
+  "id": "ec-11-credits-timing",
+  "inputDir": "../inputs/b2b-credits",
+  "contextFile": "../contexts/b2b-credits.md",
+  "turns": [
+    {
+      "text": "What was our net revenue by quarter?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "net_revenue.csv",
+      "keyColumns": [
+        "quarter"
+      ],
+      "valueColumns": [
+        "invoiced_gbp",
+        "credits_gbp",
+        "rebates_gbp",
+        "net_revenue_gbp"
+      ],
+      "ask": "net_revenue.csv with columns quarter,invoiced_gbp,credits_gbp,rebates_gbp,net_revenue_gbp: one row per quarter from 2024-Q1 to 2025-Q4, as YYYY-QN, with every amount in GBP"
+    }
+  ],
+  "solution": "../solutions/b2b_edges.py"
+}

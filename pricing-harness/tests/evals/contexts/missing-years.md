@@ -1,0 +1,3 @@
+# Confirmed synthetic fixture context
+
+This is fictional test data, not owner business context. Rows are sales transactions; revenue is net revenue, cogs is total transaction COGS, currency USD with two-decimal monetary precision. Use calendar years, historic group shown on each transaction. Gross margin is (revenue-COGS)/revenue; yearly group benchmark is computed from totals across eligible product rows in X. Aggregate product/year before classifying. Outliers: abs(unrounded deviation)>=500bps. Detail: annual product revenue strictly >50000, independent of outlier flag. Preserve signed credits, disclose missing-cost coverage. Do not infer commercial causes.

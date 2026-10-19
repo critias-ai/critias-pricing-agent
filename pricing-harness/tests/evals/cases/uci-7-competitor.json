@@ -1,0 +1,26 @@
+{
+  "id": "uci-7-competitor",
+  "inputDir": "../../../datasets/uci/case-competitor/files",
+  "contextFile": "../contexts/uci-competitor.md",
+  "turns": [
+    {
+      "text": "How do our 2011 prices sit against this competitor's, per unit?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "price_index.csv",
+      "keyColumns": [
+        "stock_code"
+      ],
+      "valueColumns": [
+        "our_unit_gbp",
+        "their_unit_gbp",
+        "index_pct"
+      ],
+      "partial": true,
+      "ask": "price_index.csv with columns stock_code,our_unit_gbp,their_unit_gbp,index_pct: one row per competitor item you matched to one of our products, with our 2011 average selling price per item, their price per item (pack price ÷ pack size) and our price as % of theirs"
+    }
+  ],
+  "solution": "../solutions/uci.py"
+}

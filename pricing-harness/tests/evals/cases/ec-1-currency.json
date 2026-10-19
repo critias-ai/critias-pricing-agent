@@ -1,0 +1,29 @@
+{
+  "id": "ec-1-currency",
+  "inputDir": "../inputs/b2b-currency",
+  "contextFile": "../contexts/b2b-currency.md",
+  "turns": [
+    {
+      "text": "What's our revenue and margin by customer group for 2025?",
+      "expectQuestion": true
+    },
+    {
+      "text": "The web shop prices include VAT at 20%."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "revenue_by_group.csv",
+      "keyColumns": [
+        "customer_group"
+      ],
+      "valueColumns": [
+        "revenue_gbp",
+        "cost_gbp",
+        "gm_pct"
+      ],
+      "ask": "revenue_by_group.csv with columns customer_group,revenue_gbp,cost_gbp,gm_pct: one row per customer group for 2025, with revenue in GBP before VAT, cost of goods in GBP and gross margin in %"
+    }
+  ],
+  "solution": "../solutions/b2b_edges.py"
+}

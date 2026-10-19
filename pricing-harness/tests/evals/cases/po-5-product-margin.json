@@ -1,0 +1,40 @@
+{
+  "id": "po-5-product-margin",
+  "inputDir": "../../../datasets/uci/case-po5/files",
+  "contextFile": "../contexts/uci-po5.md",
+  "turns": [
+    {
+      "text": "Across the whole range, which products were out of line on margin in 2011?"
+    },
+    {
+      "text": "Now only within Bags."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "outliers_all.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "gm_pct",
+        "reference_pct",
+        "gp_gap_gbp"
+      ],
+      "ask": "outliers_all.csv with columns sku,gm_pct,reference_pct,gp_gap_gbp,peer_set: one row for each product out of line across the whole range in 2011, with its margin in %, its reference in %, the gap in GBP (negative below the reference) and the peer set you used"
+    },
+    {
+      "file": "outliers_bags.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "gm_pct",
+        "reference_pct",
+        "gp_gap_gbp"
+      ],
+      "ask": "outliers_bags.csv with columns sku,gm_pct,reference_pct,gp_gap_gbp,peer_set: one row for each product out of line within Bags in 2011, with its margin in %, its reference in %, the gap in GBP (negative below the reference) and the peer set you used"
+    }
+  ],
+  "solution": "../solutions/uci.py"
+}

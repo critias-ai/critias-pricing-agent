@@ -1,0 +1,11 @@
+{
+  "id": "s3-4-better-seats",
+  "inputDir": "../inputs/saas-clean",
+  "contextFile": "../contexts/saas.md",
+  "turns": [
+    {
+      "text": "For Better, should we cut the per-seat price or give a discount for more seats?"
+    }
+  ],
+  "csvChecks": []
+}

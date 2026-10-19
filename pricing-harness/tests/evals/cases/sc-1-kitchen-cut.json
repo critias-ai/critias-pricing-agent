@@ -1,0 +1,25 @@
+{
+  "id": "sc-1-kitchen-cut",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-scenarios.md",
+  "turns": [
+    {
+      "text": "If we cut Kitchen prices 10%, how much extra volume do we need to keep gross profit the same?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "breakeven.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "pct",
+        "units",
+        "gp_change_gbp"
+      ],
+      "ask": "breakeven.csv with columns sku,pct,units,gp_change_gbp: one row per Kitchen SKU sold in 2025; pct the % change in volume that keeps gross profit the same, in percent (so -11.8 means an 11.8% fall) (positive is growth you need, negative a fall you can absorb), units the same in units, gp_change_gbp the gross-profit change at 2025 volumes; leave pct and units blank where breakeven doesn't apply"
+    }
+  ],
+  "solution": "../solutions/scenarios.py"
+}

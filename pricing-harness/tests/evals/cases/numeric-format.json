@@ -1,0 +1,12 @@
+{
+  "id": "numeric-format",
+  "inputDir": "../inputs/numeric-format",
+  "contextFile": "../contexts/numeric-format.md",
+  "turns": [
+    {
+      "text": "What's the margin on product A?",
+      "expectQuestion": true
+    }
+  ],
+  "csvChecks": []
+}

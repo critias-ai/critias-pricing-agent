@@ -1,0 +1,15 @@
+{
+  "id": "rt-intake-negative",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-l3.md",
+  "turns": [
+    {
+      "text": "What was gross profit in 2025?"
+    }
+  ],
+  "csvChecks": [],
+  "expectContext": {
+    "unchanged": true
+  },
+  "solution": "../solutions/retail.py"
+}

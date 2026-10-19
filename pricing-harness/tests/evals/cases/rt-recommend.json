@@ -1,0 +1,17 @@
+{
+  "id": "rt-recommend",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-l3.md",
+  "turns": [
+    {
+      "text": "What should we do about Storage?"
+    }
+  ],
+  "csvChecks": [],
+  "expectReads": {
+    "must": [
+      "pricing-recommend/SKILL.md",
+      "evidence-ranking.md"
+    ]
+  }
+}

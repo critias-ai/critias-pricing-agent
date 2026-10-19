@@ -1,0 +1,281 @@
+/* Vendored from hackerman/governance/critias-design-system/tokens/critias-aegean.css on 2026-10-12.
+   Keep in sync with that file; do not edit here. */
+/* ============================================================
+   Critias — Aegean aesthetic, Stele structure
+   Design tokens (CSS custom properties)
+   Light is :root, dark is [data-theme="dark"].
+   Generated 2026-06-07 from the locked Aegean studio selection.
+   See contrast-and-usage.md for WCAG AA guidance and the
+   Instrument Serif weight/width caveat.
+   ============================================================ */
+
+:root {
+  /* ---------- PRIMITIVES (the raw palette; do not use directly in UI) ---------- */
+
+  /* Aegean teal — primary hue */
+  --teal-50:  #ECF4F5;
+  --teal-100: #D4E8EB;
+  --teal-200: #ABD0D6;
+  --teal-300: #7EB5BE;
+  --teal-400: #4F97A3;
+  --teal-500: #2C6E7C;   /* core brand teal */
+  --teal-600: #245C68;
+  --teal-700: #1D4A54;
+  --teal-800: #163841;
+  --teal-900: #14282D;
+  --teal-950: #0D1A1F;   /* deep sea (dark surface) */
+
+  /* Brass — warm accent (main) */
+  --brass-100: #F0E3C8;
+  --brass-300: #D9BE86;
+  --brass-500: #B8893C;  /* core brass */
+  --brass-700: #8A6A2E;
+  --brass-900: #5E4820;
+
+  /* Coral — secondary accent (main) */
+  --coral-200: #EBC3B6;
+  --coral-400: #D98A6F;
+  --coral-500: #C56A4F;  /* core coral */
+  --coral-700: #9A4A33;
+
+  /* Transition tones (the two bridges in the 5-colour brand core) */
+  --sea-mist: #86B8BE;   /* cool transition */
+  --sand:     #D8C49A;   /* warm transition */
+
+  /* Marble — neutrals, teal-tinted */
+  --marble-0:   #F4F6F6;
+  --marble-50:  #EAEEEE;
+  --marble-100: #DCE2E2;
+  --marble-200: #C6CECE;
+  --marble-300: #A7B1B2;
+  --marble-400: #7E8A8C;
+  --marble-500: #5C686B;
+  --marble-600: #45504F;
+  --marble-700: #2E3F43;
+  --marble-800: #1E2E32;
+  --marble-900: #14282D;
+  --marble-950: #0D1A1F;
+
+  /* Extended 10-shade ramp (gradients, illustration, data series).
+     Smooth cool deep-sea -> warm coral. */
+  --ramp-1:  #163841;
+  --ramp-2:  #235E6B;
+  --ramp-3:  #2C6E7C;
+  --ramp-4:  #4F97A3;
+  --ramp-5:  #86B8BE;
+  --ramp-6:  #CFE0DC;
+  --ramp-7:  #D8C49A;
+  --ramp-8:  #C9A24E;
+  --ramp-9:  #B8893C;
+  --ramp-10: #C56A4F;
+
+  /* ---------- SEMANTIC (LIGHT) — use these in UI ---------- */
+
+  /* surfaces & lines */
+  --color-bg:             var(--marble-50);
+  --color-surface:        #F2F5F5;
+  --color-surface-raised: var(--marble-0);
+  --color-border:         #D2D9DA;
+  --color-border-strong:  #BAC3C4;
+  --color-rule:           var(--teal-900);   /* the 3px stele edge */
+
+  /* text */
+  --color-heading: var(--teal-900);
+  --color-text:    var(--marble-700);
+  --color-muted:   #5C6A6E;   /* AA for body text (4.8:1) */
+  --color-faint:   #97A2A4;   /* decorative / disabled only — fails AA for text */
+
+  /* primary (teal) */
+  --color-primary:          var(--teal-500);
+  --color-primary-hover:    var(--teal-600);
+  --color-primary-active:   var(--teal-700);
+  --color-primary-contrast: #F2F5F5;          /* text on a teal fill */
+  --color-link:             var(--teal-500);
+  --color-link-hover:       var(--teal-700);
+
+  /* warm accent (brass) */
+  --color-accent-warm:      var(--brass-500);  /* fills / large display only */
+  --color-accent-warm-text: var(--brass-700);  /* large text only (4.3:1) */
+  --color-on-accent-warm:   var(--teal-900);   /* ink text on a brass fill */
+
+  /* secondary accent (coral) */
+  --color-accent-secondary:      var(--coral-500); /* fills / large display only */
+  --color-accent-secondary-text: var(--coral-700); /* AA text (5.3:1) */
+  --color-on-accent-secondary:   var(--teal-950);  /* ink on coral fill = 4.7:1 (white would fail at 3.5:1) */
+
+  /* focus */
+  --color-focus: var(--teal-400);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--teal-500) 35%, transparent);
+
+  /* semantic states (muted, considered — never hazard-bright) */
+  --color-success:        #2F7A66;
+  --color-success-text:   #235D4E;   /* AA on light */
+  --color-success-bg:     #E3EFEB;
+  --color-success-border: #A9D2C6;
+
+  --color-warning:        #B8893C;
+  --color-warning-text:   #6E5320;   /* darkened for AA body text */
+  --color-warning-bg:     #F3E8D0;
+  --color-warning-border: #DEC18C;
+
+  --color-danger:         #A8412F;
+  --color-danger-text:    #8E3526;   /* AA on light (>5:1) */
+  --color-danger-bg:      #F3E0DB;
+  --color-danger-border:  #DDB1A7;
+
+  --color-info:           #3E8694;
+  --color-info-text:      #2C5B65;   /* darkened for AA body text */
+  --color-info-bg:        #DDEBEE;
+  --color-info-border:    #AFD0D6;
+
+  /* background wash (so a surface is never flat) */
+  --bg-wash:
+    radial-gradient(95% 75% at 88% 6%,  color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 58%),
+    radial-gradient(70% 60% at 2% 98%,  color-mix(in srgb, var(--color-accent-warm) 7%, transparent), transparent 55%);
+
+  /* ---------- TYPOGRAPHY ---------- */
+  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-body:    "Spectral", Georgia, serif;
+  --font-mono:    "Spline Sans Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* display (headline) treatment — the locked Stele voice.
+     DECIDED 2026-06-18: Instrument Serif is kept (founder call) and set at its
+     real Regular weight — no faux-bold. Instrument has only Regular + Italic and
+     no width axis, so --display-weight is pinned to 400 and --display-width is a
+     no-op left at 100%. Headlines render ROMAN (uppercase); italic is reserved
+     for the dialogue/quote moments only. The shipped surfaces (teaser/deck/
+     critias-web) already follow this. */
+  --display-weight:    400;
+  --display-style:     normal;
+  --display-transform: uppercase;
+  --display-width:     100%;       /* font-stretch; no-op on Instrument (no width axis) */
+  --display-leading:   1.05;
+  --display-tracking:  0.012em;    /* small positive tracking aids uppercase legibility */
+
+  /* type scale */
+  --text-xs:   0.75rem;    /* 12 */
+  --text-sm:   0.8125rem;  /* 13 */
+  --text-base: 1rem;       /* 16 */
+  --text-md:   1.0625rem;  /* 17 — lede */
+  --text-lg:   1.25rem;    /* 20 */
+  --text-xl:   1.5rem;     /* 24 */
+  --text-2xl:  2rem;       /* 32 */
+  --text-3xl:  2.5rem;     /* 40 */
+  --text-display: clamp(2.5rem, 5.4vw, 4rem);  /* 40 -> 64, the Stele headline */
+
+  --leading-tight:   1.05;
+  --leading-snug:    1.2;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.7;
+
+  --tracking-tight:  -0.01em;
+  --tracking-normal: 0;
+  --tracking-label:  0.18em;   /* mono labels */
+  --tracking-eyebrow: 0.32em;  /* eyebrow caps */
+
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* ---------- SPACE (4px base) ---------- */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+  --space-5: 20px;  --space-6: 24px;  --space-7: 32px;  --space-8: 40px;
+  --space-9: 48px;  --space-10: 64px; --space-11: 80px; --space-12: 96px;
+
+  /* ---------- RADIUS ---------- */
+  --radius-sm:  6px;
+  --radius-md:  8px;
+  --radius-lg:  11px;
+  --radius-xl:  14px;
+  --radius-pill: 999px;
+
+  /* ---------- BORDERS ---------- */
+  --border-hairline: 1px;
+  --border-rule:     3px;   /* the stele edge */
+
+  /* ---------- ELEVATION (restrained) ---------- */
+  --shadow-sm: 0 1px 2px rgba(13,26,31,0.06);
+  --shadow-md: 0 8px 24px -12px rgba(13,26,31,0.18);
+  --shadow-lg: 0 24px 60px -34px rgba(13,26,31,0.50);
+
+  /* ---------- MOTION (measured pace) ---------- */
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 400ms;
+  --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-rule:     cubic-bezier(0.7, 0, 0.3, 1);
+
+  /* ---------- LAYOUT (Stele) ---------- */
+  --measure: 64ch;        /* max reading width */
+  --measure-tight: 14ch;  /* headline measure */
+  --stele-void: 36%;      /* deliberate right-hand negative space */
+}
+
+[data-theme="dark"] {
+  /* surfaces & lines */
+  --color-bg:             var(--teal-950);
+  --color-surface:        #14252B;
+  --color-surface-raised: #1A2F36;
+  --color-border:         #233A41;
+  --color-border-strong:  #33505A;
+  --color-rule:           #7EB5BE;   /* teal stele edge on dark — reconciled 2026-06-18 to match the shipped surfaces (was #DCE7E7) */
+
+  /* text */
+  --color-heading: #DCE7E7;
+  --color-text:    #BBCBCC;
+  --color-muted:   #869A9C;   /* AA on dark (6:1) */
+  --color-faint:   #566668;   /* decorative / disabled only */
+
+  /* primary (lighter teal for dark surfaces) */
+  --color-primary:          #5FB0BC;
+  --color-primary-hover:    #6FBCC7;
+  --color-primary-active:   #7EB5BE;
+  --color-primary-contrast: var(--teal-950);
+  --color-link:             #5FB0BC;
+  --color-link-hover:       #86B8BE;
+
+  /* warm accent */
+  --color-accent-warm:      #C9A24E;
+  --color-accent-warm-text: #C9A24E;   /* passes AA on dark (7.4:1) */
+  --color-on-accent-warm:   var(--teal-950);
+
+  /* secondary accent */
+  --color-accent-secondary:      #D98A6F;
+  --color-accent-secondary-text: #D98A6F;  /* passes AA on dark (6.6:1) */
+  --color-on-accent-secondary:   var(--teal-950);
+
+  /* focus */
+  --color-focus: #5FB0BC;
+  --focus-ring: 0 0 0 3px color-mix(in srgb, #5FB0BC 40%, transparent);
+
+  /* semantic states */
+  --color-success:        #5FB39C;
+  --color-success-text:   #7FC7B0;
+  --color-success-bg:     #18302B;
+  --color-success-border: #2E5247;
+
+  --color-warning:        #C9A24E;
+  --color-warning-text:   #D6B36A;
+  --color-warning-bg:     #2C2517;
+  --color-warning-border: #5A4A2A;
+
+  --color-danger:         #D2735E;
+  --color-danger-text:    #E0917F;
+  --color-danger-bg:      #2E1A15;
+  --color-danger-border:  #5A342A;
+
+  --color-info:           #6FBCC7;
+  --color-info-text:      #8FCED7;
+  --color-info-bg:        #14303A;
+  --color-info-border:    #2C4C55;
+
+  /* shadows read deeper on dark surfaces */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 8px 24px -12px rgba(0,0,0,0.5);
+  --shadow-lg: 0 24px 60px -34px rgba(0,0,0,0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur-base: 0ms; --dur-slow: 0ms; }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "aw-4-reseller-discounts",
+  "inputDir": "../../../datasets/adventureworks/case/files",
+  "contextFile": "../contexts/adventureworks.md",
+  "turns": [
+    {
+      "text": "Which resellers get unusually deep discounts for their size?"
+    },
+    {
+      "text": "What's the best course of action?"
+    }
+  ],
+  "csvChecks": []
+}

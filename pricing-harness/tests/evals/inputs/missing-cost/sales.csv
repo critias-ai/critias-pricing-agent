@@ -1,0 +1,4 @@
+year,group,product,revenue,cogs
+2021,X,low,10000.00,5000.00
+2021,X,high,90000.00,67500.00
+2021,X,unknown,60000.00,

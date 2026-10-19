@@ -1,0 +1,35 @@
+{
+  "id": "ec-6-thin-peers",
+  "inputDir": "../inputs/b2b-peers",
+  "contextFile": "../contexts/b2b-peers.md",
+  "turns": [
+    {
+      "text": "Who's out of line on price within their segment, and what are our top 5 products by margin?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "outliers.csv",
+      "keyColumns": [
+        "customer_id"
+      ],
+      "valueColumns": [
+        "index_pct",
+        "reference_pct",
+        "gap_gbp"
+      ],
+      "ask": "outliers.csv with columns customer_id,index_pct,reference_pct,gap_gbp: every customer whose price index is at least 10 points from its segment reference, with its index and reference in % and the gap in GBP (negative below the reference)"
+    },
+    {
+      "file": "top_products.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "gm_pct"
+      ],
+      "ask": "top_products.csv with columns sku,gm_pct: the top 5 products by margin, in %, and any product tied with the fifth"
+    }
+  ],
+  "solution": "../solutions/b2b_edges.py"
+}

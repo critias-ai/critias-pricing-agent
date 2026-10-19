@@ -1,0 +1,25 @@
+{
+  "id": "ec-2-list-change",
+  "inputDir": "../inputs/b2b-list-change",
+  "contextFile": "../contexts/b2b-list-change.md",
+  "turns": [
+    {
+      "text": "Has our discounting got deeper in 2025?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "discount_depth.csv",
+      "keyColumns": [
+        "period"
+      ],
+      "valueColumns": [
+        "list_value_gbp",
+        "invoiced_value_gbp",
+        "depth_pct"
+      ],
+      "ask": "discount_depth.csv with columns period,list_value_gbp,invoiced_value_gbp,depth_pct: one row per half-year from 2024-H1 to 2025-H2, with list value at the list price in force on each invoice date, invoiced value, and discount depth in %"
+    }
+  ],
+  "solution": "../solutions/b2b_edges.py"
+}

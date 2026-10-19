@@ -1,0 +1,24 @@
+{
+  "id": "aw-2-offer-rules",
+  "inputDir": "../../../datasets/adventureworks/case/files",
+  "contextFile": "../contexts/adventureworks.md",
+  "turns": [
+    {
+      "text": "Were any discounts outside the special-offer rules?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "offer_breaks.csv",
+      "keyColumns": [
+        "special_offer_id",
+        "rule"
+      ],
+      "valueColumns": [
+        "lines"
+      ],
+      "ask": "offer_breaks.csv with columns special_offer_id,rule,lines: for every order line, count the lines breaking each rule of pricing_policy.md by offer, with rule one of discount_differs, quantity_outside_range, date_outside_offer and deeper_than_offer (a discount above the offer's DiscountPct); leave out rows with no lines"
+    }
+  ],
+  "solution": "../solutions/adventureworks.py"
+}

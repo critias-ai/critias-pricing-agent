@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: If you use Critias in your work, please cite it as below.
+title: "Critias: an open-source pricing analyst"
+type: software
+authors:
+  - family-names: Kodvavi
+    given-names: Danial
+license: Apache-2.0
+repository-code: https://github.com/critias-ai/critias-pricing-agent
+url: https://critias.ai
+keywords:
+  - pricing
+  - gross margin
+  - price-volume-mix
+  - price realisation
+  - duckdb
+  - ai agents

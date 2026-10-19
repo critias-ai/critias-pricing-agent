@@ -1,0 +1,25 @@
+{
+  "id": "s2-2-policy",
+  "inputDir": "../inputs/b2b-clean",
+  "contextFile": "../contexts/b2b.md",
+  "turns": [
+    {
+      "text": "Which deals broke our discount policy in 2025, and who approved them?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "policy_breaks.csv",
+      "keyColumns": [
+        "invoice_id"
+      ],
+      "valueColumns": [
+        "total_discount_pct",
+        "approver",
+        "breach"
+      ],
+      "ask": "policy_breaks.csv with columns invoice_id,total_discount_pct,approver,breach: one row per 2025 invoice line whose total discount broke policy.md, breach either wrong_level (above what the approver may sign off) or beyond_policy (over 30%)"
+    }
+  ],
+  "solution": "../solutions/b2b.py"
+}

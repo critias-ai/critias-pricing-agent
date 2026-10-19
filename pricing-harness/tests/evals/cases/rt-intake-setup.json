@@ -1,0 +1,34 @@
+{
+  "id": "rt-intake-setup",
+  "inputDir": "../inputs/retail",
+  "turns": [
+    {
+      "text": "Here's our sales data. Get set up so we can work on it.",
+      "expectQuestion": true
+    },
+    {
+      "text": "Yes to these three: net sales is quantity × unit_price, cost is unit_cost per unit, and negative quantities are returns. I'll come back to you on the rest."
+    }
+  ],
+  "csvChecks": [],
+  "expectReads": {
+    "must": [
+      "pricing-intake/SKILL.md"
+    ],
+    "mustNot": [
+      "analysis-visualize/SKILL.md"
+    ]
+  },
+  "expectContext": {
+    "must": [
+      "unit_price",
+      "unit_cost",
+      "return"
+    ],
+    "mustNot": [
+      "GBP",
+      "£",
+      "calendar"
+    ]
+  }
+}

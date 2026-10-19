@@ -1,0 +1,12 @@
+{
+  "id": "retail-customer-share",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "How dependent were we on customer C017 in June 2025? What share of that month's net sales was theirs?"
+    }
+  ],
+  "csvChecks": [],
+  "solution": "../solutions/retail.py"
+}

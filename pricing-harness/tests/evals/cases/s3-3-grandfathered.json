@@ -1,0 +1,25 @@
+{
+  "id": "s3-3-grandfathered",
+  "inputDir": "../inputs/saas-clean",
+  "contextFile": "../contexts/saas.md",
+  "turns": [
+    {
+      "text": "How should we move the grandfathered customers onto current prices?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "grandfathered.csv",
+      "keyColumns": [
+        "plan"
+      ],
+      "valueColumns": [
+        "customers",
+        "mrr_gbp",
+        "mrr_at_new_price_gbp"
+      ],
+      "ask": "grandfathered.csv with columns plan,customers,mrr_gbp,mrr_at_new_price_gbp: grandfathered customers billed in December 2025, by plan, with their December MRR and the same at current list prices, keeping their seats and discount"
+    }
+  ],
+  "solution": "../solutions/saas.py"
+}

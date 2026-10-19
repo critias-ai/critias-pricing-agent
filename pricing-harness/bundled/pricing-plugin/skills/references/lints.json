@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "lints": [
+    {
+      "id": "missing-is-unknown",
+      "applies": [
+        "code"
+      ],
+      "pattern": "\\b(?:coalesce|ifnull|nvl)\\s*\\([^()]*,\\s*0(?:\\.0+)?\\s*\\)|\\.fillna\\(\\s*0(?:\\.0+)?\\s*\\)",
+      "flags": "i",
+      "hint": "Missing values are unknown, not zero. If a missing value really means 0 here, say so in the answer; otherwise leave it NULL and count it."
+    },
+    {
+      "id": "rate-from-totals",
+      "applies": [
+        "code"
+      ],
+      "pattern": "\\bavg\\s*\\(\\s*[\\w.\"]*(?:rate|margin|pct|percent|ratio)[\\w\"]*\\s*\\)|\\.mean\\(\\)[^\\n]*(?:rate|margin|pct)",
+      "flags": "i",
+      "hint": "Compute a group rate from totals (sum of the numerator over sum of the denominator), not as an average of row or product rates."
+    },
+    {
+      "id": "rate-display",
+      "applies": [
+        "reply"
+      ],
+      "pattern": "\\b(?:margin|rate)\\b[^.\\n|]{0,40}\\b0\\.\\d{3,}\\b",
+      "flags": "i",
+      "hint": "Show margins and rates as percentages, and movements in percentage points or basis points."
+    }
+  ]
+}

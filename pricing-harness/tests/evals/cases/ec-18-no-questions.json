@@ -1,0 +1,10 @@
+{
+  "id": "ec-18-no-questions",
+  "inputDir": "../inputs/retail-ladder",
+  "turns": [
+    {
+      "text": "What's our margin by category, and how did it change in 2025? Don't ask me anything, just do it."
+    }
+  ],
+  "csvChecks": []
+}

@@ -1,0 +1,12 @@
+{
+  "id": "sc-5-actual-volume",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-scenarios.md",
+  "turns": [
+    {
+      "text": "If we raise S03 by 5%, how much would volume actually fall?"
+    }
+  ],
+  "csvChecks": [],
+  "solution": "../solutions/scenarios.py"
+}

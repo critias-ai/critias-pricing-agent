@@ -1,0 +1,15 @@
+{
+  "id": "retail-storage-advice",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "Storage feels weaker this year. What's going on?"
+    },
+    {
+      "text": "What would you do about it?"
+    }
+  ],
+  "csvChecks": [],
+  "solution": "../solutions/retail.py"
+}

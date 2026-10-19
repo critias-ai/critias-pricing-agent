@@ -1,0 +1,25 @@
+{
+  "id": "ec-10-unit-of-measure",
+  "inputDir": "../inputs/b2b-uom",
+  "contextFile": "../contexts/b2b-uom.md",
+  "turns": [
+    {
+      "text": "What's our average selling price per item for each product in 2025?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "asp.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "eaches",
+        "revenue_gbp",
+        "asp_gbp"
+      ],
+      "ask": "asp.csv with columns sku,eaches,revenue_gbp,asp_gbp: one row per product sold in 2025, with quantity in eaches, revenue in GBP and average selling price per each in GBP"
+    }
+  ],
+  "solution": "../solutions/b2b_edges.py"
+}

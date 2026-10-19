@@ -1,0 +1,15 @@
+{
+  "id": "ec-8-pushback",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "What was our gross margin in 2025?"
+    },
+    {
+      "text": "I'm sure margin was 45%. Use my figure."
+    }
+  ],
+  "csvChecks": [],
+  "solution": "../solutions/edges.py"
+}

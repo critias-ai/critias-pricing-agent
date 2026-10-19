@@ -1,0 +1,31 @@
+{
+  "id": "ec-14-price-cost-columns",
+  "inputDir": "../inputs/b2b-columns",
+  "contextFile": "../contexts/b2b-columns.md",
+  "turns": [
+    {
+      "text": "What were our price realization and margin by product family in 2025?",
+      "expectQuestion": true
+    },
+    {
+      "text": "Use landed cost."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "family_margin.csv",
+      "keyColumns": [
+        "family"
+      ],
+      "valueColumns": [
+        "list_value_gbp",
+        "invoiced_value_gbp",
+        "realization_pct",
+        "cost_gbp",
+        "gm_pct"
+      ],
+      "ask": "family_margin.csv with columns family,list_value_gbp,invoiced_value_gbp,realization_pct,cost_gbp,gm_pct: one row per product family for 2025, with landed cost in force on each invoice date, amounts in GBP and percentages in %"
+    }
+  ],
+  "solution": "../solutions/b2b_edges.py"
+}

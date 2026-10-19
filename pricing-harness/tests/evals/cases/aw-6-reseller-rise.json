@@ -1,0 +1,23 @@
+{
+  "id": "aw-6-reseller-rise",
+  "inputDir": "../../../datasets/adventureworks/case/files",
+  "contextFile": "../contexts/adventureworks.md",
+  "turns": [
+    {
+      "text": "Plan a 3% list increase for resellers: the impact, who is hit hardest, and how to roll it out."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "reseller_impact.csv",
+      "keyColumns": [
+        "store_id"
+      ],
+      "valueColumns": [
+        "increase_usd"
+      ],
+      "ask": "reseller_impact.csv with columns store_id,store_name,increase_usd: the 10 resellers with the largest increase, taken as 3% of their FY2025 net sales"
+    }
+  ],
+  "solution": "../solutions/adventureworks.py"
+}

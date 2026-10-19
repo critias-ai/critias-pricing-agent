@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "luna-high-100-calls-2026-10-08",
+  "provider": "openrouter",
+  "model": "openai/gpt-6-luna",
+  "thinkingLevel": "high",
+  "execution": "sequential",
+  "plannedMessages": 1,
+  "maxLiveBatchSeconds": 1800,
+  "maxEstimatedCostUSD": 1,
+  "automaticRecoveryMessages": 0,
+  "warmFixtureContext": "# Confirmed fictional evaluation context\nEvaluator-owned fixture for Northbridge Trade Supplies; confirmed for this test only on 7 October 2026. This is not a real company confirmation.\n- Scenario as-of date: 12 December 2011. Calendar quarters; latest complete quarter Q3 2011, latest complete month November 2011. December/Q4 2011 is incomplete.\n- Company-wide, all-channel analysis. Categories use product_master.category and product eligibility uses item_type, subject to explicit consistency checks. Stock-code selling units are EA; supplier packs do not automatically redefine them.\n- For this conversation, \"revenue\" means signed merchandise invoice quantity times unit_price_gbp, including signed credit/cancellation lines. Preserve source repeated observations; never silently delete sales repeats.\n- \"Margin\" means invoice margin BEFORE off-invoice adjustments and service expenses: (total signed invoice revenue - signed historical merchandise COGS)/total signed invoice revenue, weighted from totals. This scoped test measure differs from the finance note's adjusted net-sales gross margin. Off-invoice/pocket analysis needs a separate stated basis.\n- Historical COGS uses effective cost on the transaction date, inclusive valid_from and exclusive valid_to, only where units/currency and unique matches are verified. GBP/EA are the required comparable basis. Do not silently resolve contradictory unit/currency labels, gaps or overlaps.\n- Last five complete quarters means Q3 2010 through Q3 2011. Unless I change the window, follow-ups inherit it. Top-10 ranking uses signed invoice revenue over the inherited full window, within the requested category; ties break by product_id.\n- Identical master payloads with different record IDs may be collapsed in an analysis view to prevent join multiplication; do not modify original sources. Economic duplicate events need validation before aggregating.\n- Statements in company meeting notes, causal explanations, forecasts and proposed approvals are not confirmed. No pricing change or external action is authorized.\n",
+  "fileInputs": [
+    "sample_data_1/user_pack/data/",
+    "sample_data_1/user_pack/company/",
+    "sample_data_1/user_pack/data_dictionary.md"
+  ],
+  "excludeFileInputs": [
+    "prompts/",
+    "industrial_case/",
+    "evaluator-controls.json",
+    "historical responses/reviews/scripts",
+    "this plan"
+  ],
+  "scenarios": [
+    {
+      "id": "F01",
+      "title": "Initial group review",
+      "workspaceGroup": "lighting",
+      "warm": true,
+      "messages": [
+        "Review how Lighting & Candles performed over the last five complete quarters."
+      ],
+      "baselineRecords": [
+        "conversation-confirmed-1/turn-01.json",
+        "conversation-confirmed-1/turn-02.json"
+      ]
+    }
+  ],
+  "modelAttemptsPerPrompt": 100
+}

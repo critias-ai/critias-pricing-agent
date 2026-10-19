@@ -1,0 +1,23 @@
+{
+  "id": "uci-6-top50-rise",
+  "inputDir": "../../../datasets/uci/case-csv/files",
+  "contextFile": "../contexts/uci.md",
+  "turns": [
+    {
+      "text": "Put our top 50 SKUs up 4%. What's it worth, and how much volume can we lose and still keep gross profit?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "price_rise.csv",
+      "keyColumns": [
+        "metric"
+      ],
+      "valueColumns": [
+        "value"
+      ],
+      "ask": "price_rise.csv with columns metric,value and four rows: revenue_gbp, gross_profit_gbp, uplift_gbp and breakeven_volume_loss_pct (in %), for the 50 products with a cost that had the most 2011 net revenue, at 2011 volumes and costs"
+    }
+  ],
+  "solution": "../solutions/uci.py"
+}

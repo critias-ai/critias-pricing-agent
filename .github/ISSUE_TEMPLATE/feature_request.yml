@@ -1,0 +1,21 @@
+name: Feature request
+description: Suggest a feature, an analysis or a file format.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you want to do
+      description: The question or task, and who it is for.
+    validations:
+      required: true
+  - type: textarea
+    id: today
+    attributes:
+      label: What you do today
+      description: The method, spreadsheet or tool you use now.
+  - type: textarea
+    id: data
+    attributes:
+      label: Files you would provide
+      description: Format, column names and grain (e.g. one row per invoice line). No real figures.

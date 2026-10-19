@@ -1,0 +1,26 @@
+{
+  "id": "retail-outliers-storage",
+  "inputDir": "../inputs/retail-outliers",
+  "contextFile": "../contexts/retail-outliers.md",
+  "solution": "../solutions/outliers.py",
+  "turns": [
+    {
+      "text": "Just within Storage, which products are out of line?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "outliers.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "gm_pct",
+        "reference_pct",
+        "gp_gap_gbp"
+      ],
+      "partial": true,
+      "ask": "outliers.csv with columns sku,gm_pct,reference_pct,gp_gap_gbp,peer_set: one row for each product you called out of line within Storage, with its whole-history gross margin in %, its reference margin in %, the gap in GBP (negative below the reference) and the peer set you used"
+    }
+  ]
+}

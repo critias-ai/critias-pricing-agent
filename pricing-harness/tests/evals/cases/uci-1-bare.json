@@ -1,0 +1,16 @@
+{
+  "id": "uci-1-bare",
+  "inputDir": "../../../datasets/uci/case-bare/files",
+  "contextFile": "../contexts/uci-bare.md",
+  "turns": [
+    {
+      "text": "Here's our sales export. What's our revenue and margin by year?"
+    }
+  ],
+  "csvChecks": [],
+  "expectReads": {
+    "must": [
+      "pricing-intake/SKILL.md"
+    ]
+  }
+}

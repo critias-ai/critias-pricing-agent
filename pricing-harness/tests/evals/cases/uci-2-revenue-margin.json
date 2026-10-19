@@ -1,0 +1,27 @@
+{
+  "id": "uci-2-revenue-margin",
+  "inputDir": "../../../datasets/uci/case-xlsx/files",
+  "contextFile": "../contexts/uci.md",
+  "turns": [
+    {
+      "text": "What's our revenue and margin by year?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "revenue_margin_by_year.csv",
+      "keyColumns": [
+        "year"
+      ],
+      "valueColumns": [
+        "net_revenue_gbp",
+        "costed_revenue_gbp",
+        "cost_gbp",
+        "gross_profit_gbp",
+        "gm_pct"
+      ],
+      "ask": "revenue_margin_by_year.csv with columns year,net_revenue_gbp,costed_revenue_gbp,cost_gbp,gross_profit_gbp,gm_pct: one row per calendar year (2009, 2010, 2011); net_revenue_gbp is all product net revenue, costed_revenue_gbp the revenue your margin is worked out on, cost_gbp its cost of goods, gm_pct in %"
+    }
+  ],
+  "solution": "../solutions/uci.py"
+}

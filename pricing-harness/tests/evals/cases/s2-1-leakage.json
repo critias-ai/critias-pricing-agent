@@ -1,0 +1,24 @@
+{
+  "id": "s2-1-leakage",
+  "inputDir": "../inputs/b2b-clean",
+  "contextFile": "../contexts/b2b.md",
+  "turns": [
+    {
+      "text": "Where are we leaking price between list and pocket in 2025?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "waterfall.csv",
+      "keyColumns": [
+        "layer"
+      ],
+      "valueColumns": [
+        "amount_gbp",
+        "pct_of_list"
+      ],
+      "ask": "waterfall.csv with columns layer,amount_gbp,pct_of_list: one row each for list_value, tier_discount, invoice_discount, invoiced_value, freight, terms_discount, rebates and pocket_value (layers as positive amounts), for 2025 invoice lines and 2025 rebates, with pct_of_list in % of list value"
+    }
+  ],
+  "solution": "../solutions/b2b.py"
+}

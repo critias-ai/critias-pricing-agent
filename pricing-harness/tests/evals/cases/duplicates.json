@@ -1,0 +1,12 @@
+{
+  "id": "duplicates",
+  "inputDir": "../inputs/duplicates",
+  "contextFile": "../contexts/duplicates.md",
+  "turns": [
+    {
+      "text": "What's our margin on this?",
+      "expectQuestion": true
+    }
+  ],
+  "csvChecks": []
+}

@@ -1,0 +1,48 @@
+{
+  "id": "messy-conversation",
+  "inputDir": "../inputs/messy",
+  "contextFile": "../contexts/messy.md",
+  "turns": [
+    {
+      "text": "Here's our sales data for the last two years. What happened to our margin?",
+      "expectQuestion": true
+    },
+    {
+      "text": "Good questions. The December rows that show up in both sales files are the same sales, so count them once. K03B is just the new code for K03. Leave lines with no cost out of the margin figures entirely, sales and profit, but tell me how much sales that is. Rebates come off gross profit, at company level only, not by category."
+    },
+    {
+      "text": "So what was gross margin each year, and how much did rebates take off 2025?"
+    },
+    {
+      "text": "Which category got hurt most?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "yearly.csv",
+      "keyColumns": [
+        "year"
+      ],
+      "valueColumns": [
+        "net_sales",
+        "gross_profit",
+        "gm_pct",
+        "excluded_sales",
+        "rebates"
+      ],
+      "ask": "yearly.csv with columns year,net_sales,gross_profit,gm_pct,excluded_sales,rebates: one row per year; net_sales and gross_profit over the lines with a cost, gross_profit after rebates, gm_pct as a %, excluded_sales the sales left out for having no cost, and rebates the total taken off"
+    },
+    {
+      "file": "category.csv",
+      "keyColumns": [
+        "category"
+      ],
+      "valueColumns": [
+        "gm_pct_2024",
+        "gm_pct_2025"
+      ],
+      "ask": "category.csv with columns category,gm_pct_2024,gm_pct_2025: each category's gross margin in % for each year, before rebates"
+    }
+  ],
+  "solution": "../solutions/messy.py"
+}

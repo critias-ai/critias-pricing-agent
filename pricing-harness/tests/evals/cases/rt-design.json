@@ -1,0 +1,19 @@
+{
+  "id": "rt-design",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-l3.md",
+  "turns": [
+    {
+      "text": "Redesign our volume discount bands."
+    }
+  ],
+  "csvChecks": [],
+  "expectReads": {
+    "must": [
+      "pricing-design/SKILL.md"
+    ],
+    "mustNot": [
+      "pricing-execute/SKILL.md"
+    ]
+  }
+}

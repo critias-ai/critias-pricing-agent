@@ -1,0 +1,24 @@
+{
+  "id": "uci-4-country-gp",
+  "inputDir": "../../../datasets/uci/case-csv/files",
+  "contextFile": "../contexts/uci.md",
+  "turns": [
+    {
+      "text": "What drove the gross profit change by country this year?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "gp_by_country.csv",
+      "keyColumns": [
+        "country"
+      ],
+      "valueColumns": [
+        "gp_2010_gbp",
+        "gp_2011_gbp"
+      ],
+      "ask": "gp_by_country.csv with columns country,gp_2010_gbp,gp_2011_gbp: every country, gross profit for January to November of each year (the same months, since 2011 ends on 9 December), on products that have a cost"
+    }
+  ],
+  "solution": "../solutions/uci.py"
+}

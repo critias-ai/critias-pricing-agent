@@ -1,0 +1,23 @@
+{
+  "id": "retail-bridge",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "Gross profit moved quite a bit between 2024 and 2025. Can you walk me from one to the other? How much came from price, volume, mix, cost, and products we added or dropped?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "bridge.csv",
+      "keyColumns": [
+        "step"
+      ],
+      "valueColumns": [
+        "gbp"
+      ],
+      "ask": "bridge.csv with columns step,gbp and steps start, price, volume, mix, cost, new_items, lost_items, end, where start is 2024 gross profit and end is 2025 gross profit"
+    }
+  ],
+  "solution": "../solutions/retail.py"
+}

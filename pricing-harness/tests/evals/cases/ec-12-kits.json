@@ -1,0 +1,29 @@
+{
+  "id": "ec-12-kits",
+  "inputDir": "../inputs/b2b-kits",
+  "contextFile": "../contexts/b2b-kits.md",
+  "turns": [
+    {
+      "text": "What margin are we making on each product in 2025?"
+    },
+    {
+      "text": "What's S101's real margin once the kits are counted?",
+      "expectQuestion": true
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "margin_by_product.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "revenue_gbp",
+        "cost_gbp",
+        "gm_pct"
+      ],
+      "ask": "margin_by_product.csv with columns sku,revenue_gbp,cost_gbp,gm_pct: one row per product for 2025, kits included and their component lines counted in the kit, with revenue and cost in GBP and margin in %"
+    }
+  ],
+  "solution": "../solutions/b2b_edges.py"
+}

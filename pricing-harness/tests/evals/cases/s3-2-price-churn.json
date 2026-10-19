@@ -1,0 +1,25 @@
+{
+  "id": "s3-2-price-churn",
+  "inputDir": "../inputs/saas-clean",
+  "contextFile": "../contexts/saas.md",
+  "turns": [
+    {
+      "text": "Did the April price increase raise churn?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "price_test_churn.csv",
+      "keyColumns": [
+        "arm"
+      ],
+      "valueColumns": [
+        "customers",
+        "churned",
+        "churn_pct"
+      ],
+      "ask": "price_test_churn.csv with columns arm,customers,churned,churn_pct: per price_test arm, the customers billed in March 2025 and how many of them had their last billed month from April to September 2025, with churn_pct in %"
+    }
+  ],
+  "solution": "../solutions/saas.py"
+}

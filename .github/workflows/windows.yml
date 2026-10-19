@@ -1,0 +1,38 @@
+name: windows
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: windows-latest
+    # As start-windows.ps1 sets for the app: UTF-8 instead of the Windows code page.
+    env:
+      PYTHONUTF8: '1'
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: pricing-harness
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Setup script
+        run: powershell -ExecutionPolicy Bypass -File scripts\setup-windows.ps1
+      - name: Launcher starts the app
+        run: |
+          $server = Start-Process powershell -PassThru -NoNewWindow -ArgumentList '-ExecutionPolicy','Bypass','-File','scripts\start-windows.ps1',"$env:RUNNER_TEMP\workspace"
+          for ($i = 0; $i -lt 30; $i++) {
+            try { Invoke-RestMethod http://127.0.0.1:4317/api/status | ConvertTo-Json -Depth 5; break } catch { Start-Sleep 2 }
+          }
+          if ($i -eq 30) { throw 'The app did not answer on port 4317.' }
+          taskkill /pid $server.Id /T /F
+      - run: npm run typecheck
+      # eval-cases needs downloaded datasets that are not in the repository.
+      - run: npx vitest run --exclude tests/unit/eval-cases.test.ts
+      - run: .venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+      - run: .venv\Scripts\python.exe -m pytest tests/python -q

@@ -1,0 +1,11 @@
+{
+  "id": "olist-4-margin",
+  "inputDir": "../../../datasets/olist/case/files",
+  "contextFile": "../contexts/olist.md",
+  "turns": [
+    {
+      "text": "What's our margin?"
+    }
+  ],
+  "csvChecks": []
+}

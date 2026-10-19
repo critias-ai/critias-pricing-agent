@@ -1,0 +1,30 @@
+{
+  "id": "ladder-l4-conflict",
+  "inputDir": "../inputs/retail-ladder",
+  "contextFile": "../contexts/ladder-l4.md",
+  "turns": [
+    {
+      "text": "What's our margin by category, and how did it change in 2025? Include returns this time."
+    },
+    {
+      "text": "Use returns included for this answer, and leave the context file as it is for now."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "category_margin.csv",
+      "keyColumns": [
+        "category"
+      ],
+      "valueColumns": [
+        "gm_pct_2024",
+        "gm_pct_2025"
+      ],
+      "ask": "category_margin.csv with columns category,gm_pct_2024,gm_pct_2025: each category's gross margin in % for 2024 and 2025, on the basis we settled in this conversation"
+    }
+  ],
+  "expectContext": {
+    "unchanged": true
+  },
+  "solution": "../solutions/ladder.py"
+}

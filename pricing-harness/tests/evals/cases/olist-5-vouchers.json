@@ -1,0 +1,33 @@
+{
+  "id": "olist-5-vouchers",
+  "inputDir": "../../../datasets/olist/case/files",
+  "contextFile": "../contexts/olist.md",
+  "turns": [
+    {
+      "text": "Vouchers are a discount we fund, not a way of paying: take an order's voucher payments off its item prices, shared across its items in proportion to price."
+    },
+    {
+      "text": "What's our realized price by category, against the item price?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "realized_by_category.csv",
+      "keyColumns": [
+        "product_category_name"
+      ],
+      "valueColumns": [
+        "item_value_brl",
+        "voucher_brl",
+        "realized_pct"
+      ],
+      "ask": "realized_by_category.csv with columns product_category_name,item_value_brl,voucher_brl,realized_pct: every product_category_name as in the data (products with no category left out), realized_pct = (item value − voucher) ÷ item value in %"
+    }
+  ],
+  "expectContext": {
+    "must": [
+      "voucher"
+    ]
+  },
+  "solution": "../solutions/olist.py"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "s2-3-reps",
+  "inputDir": "../inputs/b2b-clean",
+  "contextFile": "../contexts/b2b.md",
+  "turns": [
+    {
+      "text": "Which reps discount out of line?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "rep_discounts.csv",
+      "keyColumns": [
+        "rep"
+      ],
+      "valueColumns": [
+        "lines",
+        "mean_discount_pct",
+        "sd_discount_pct"
+      ],
+      "ask": "rep_discounts.csv with columns rep,lines,mean_discount_pct,sd_discount_pct: per rep, over 2025 invoice lines, the number of lines and the plain mean and population standard deviation of invoice_discount_pct"
+    }
+  ],
+  "solution": "../solutions/b2b.py"
+}

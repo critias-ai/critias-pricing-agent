@@ -1,0 +1,26 @@
+{
+  "id": "ec-4-zero-base",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "What was the % change in sales by SKU from 2024 to 2025?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "sku_change.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "sales_2024",
+        "sales_2025",
+        "pct_change",
+        "status"
+      ],
+      "ask": "sku_change.csv with columns sku,sales_2024,sales_2025,pct_change,status: one row per SKU sold in either year; status continuing, new or lost; leave pct_change blank where it can't be calculated"
+    }
+  ],
+  "solution": "../solutions/edges.py"
+}

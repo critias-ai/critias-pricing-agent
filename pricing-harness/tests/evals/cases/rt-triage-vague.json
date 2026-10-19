@@ -1,0 +1,12 @@
+{
+  "id": "rt-triage-vague",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-l3.md",
+  "turns": [
+    {
+      "text": "Our pricing feels like a mess. Where do we start?",
+      "expectQuestion": true
+    }
+  ],
+  "csvChecks": []
+}

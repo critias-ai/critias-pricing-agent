@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Harness Code Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Critias Aegean tokens (subset of src/ui/critias-aegean.css) */
+:root{
+  --teal-400:#4F97A3;--teal-500:#2C6E7C;--teal-600:#245C68;--teal-700:#1D4A54;--teal-900:#14282D;--teal-950:#0D1A1F;
+  --brass-500:#B8893C;--brass-700:#8A6A2E;--coral-500:#C56A4F;--coral-700:#9A4A33;
+  --color-bg:#EAEEEE;--color-surface:#F2F5F5;--color-surface-raised:#F4F6F6;
+  --color-border:#D2D9DA;--color-border-strong:#BAC3C4;--color-rule:var(--teal-900);
+  --color-heading:var(--teal-900);--color-text:#2E3F43;--color-muted:#5C6A6E;--color-faint:#97A2A4;
+  --color-primary:var(--teal-500);--color-primary-contrast:#F2F5F5;--color-link:var(--teal-500);
+  --color-accent-warm:var(--brass-500);--color-accent-warm-text:var(--brass-700);
+  --color-accent-secondary:var(--coral-500);--color-accent-secondary-text:var(--coral-700);
+  --color-success-text:#235D4E;--color-success-bg:#E3EFEB;--color-success-border:#A9D2C6;
+  --color-warning-text:#6E5320;--color-warning-bg:#F3E8D0;--color-warning-border:#DEC18C;
+  --color-danger-text:#8E3526;--color-danger-bg:#F3E0DB;--color-danger-border:#DDB1A7;
+  --color-info-text:#2C5B65;--color-info-bg:#DDEBEE;--color-info-border:#AFD0D6;
+  --bg-wash:radial-gradient(95% 75% at 88% 6%,color-mix(in srgb,var(--color-primary) 12%,transparent),transparent 58%),radial-gradient(70% 60% at 2% 98%,color-mix(in srgb,var(--color-accent-warm) 7%,transparent),transparent 55%);
+  --font-display:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --font-body:"Spectral",Georgia,serif;
+  --font-mono:"Spline Sans Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --radius-md:8px;--radius-lg:11px;
+  --shadow-md:0 8px 24px -12px rgba(13,26,31,.18);
+  --z-server:#DDEBEE;--z-worker:#F3E8D0;--z-python:#E3EFEB;--z-ui:#F4F6F6;--z-ext:#F3E0DB;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --color-bg:#0D1A1F;--color-surface:#14252B;--color-surface-raised:#1A2F36;--color-border:#233A41;--color-border-strong:#33505A;--color-rule:#7EB5BE;
+  --color-heading:#DCE7E7;--color-text:#BBCBCC;--color-muted:#869A9C;--color-faint:#566668;
+  --color-primary:#5FB0BC;--color-primary-contrast:#0D1A1F;--color-link:#5FB0BC;
+  --color-accent-warm:#C9A24E;--color-accent-warm-text:#C9A24E;--color-accent-secondary:#D98A6F;--color-accent-secondary-text:#D98A6F;
+  --color-success-text:#7FC7B0;--color-success-bg:#18302B;--color-success-border:#2E5247;
+  --color-warning-text:#D6B36A;--color-warning-bg:#2C2517;--color-warning-border:#5A4A2A;
+  --color-danger-text:#E0917F;--color-danger-bg:#2E1A15;--color-danger-border:#5A342A;
+  --color-info-text:#8FCED7;--color-info-bg:#14303A;--color-info-border:#2C4C55;
+  --shadow-md:0 8px 24px -12px rgba(0,0,0,.5);
+  --z-server:#14303A;--z-worker:#2C2517;--z-python:#18302B;--z-ui:#1A2F36;--z-ext:#2E1A15;
+}}
+:root[data-theme="dark"]{
+  --color-bg:#0D1A1F;--color-surface:#14252B;--color-surface-raised:#1A2F36;--color-border:#233A41;--color-border-strong:#33505A;--color-rule:#7EB5BE;
+  --color-heading:#DCE7E7;--color-text:#BBCBCC;--color-muted:#869A9C;--color-faint:#566668;
+  --color-primary:#5FB0BC;--color-primary-contrast:#0D1A1F;--color-link:#5FB0BC;
+  --color-accent-warm:#C9A24E;--color-accent-warm-text:#C9A24E;--color-accent-secondary:#D98A6F;--color-accent-secondary-text:#D98A6F;
+  --color-success-text:#7FC7B0;--color-success-bg:#18302B;--color-success-border:#2E5247;
+  --color-warning-text:#D6B36A;--color-warning-bg:#2C2517;--color-warning-border:#5A4A2A;
+  --color-danger-text:#E0917F;--color-danger-bg:#2E1A15;--color-danger-border:#5A342A;
+  --color-info-text:#8FCED7;--color-info-bg:#14303A;--color-info-border:#2C4C55;
+  --shadow-md:0 8px 24px -12px rgba(0,0,0,.5);
+  --z-server:#14303A;--z-worker:#2C2517;--z-python:#18302B;--z-ui:#1A2F36;--z-ext:#2E1A15;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);background-image:var(--bg-wash);background-attachment:fixed;color:var(--color-text);font-family:var(--font-body);font-size:17px;line-height:1.6}
+a{color:var(--color-link)}
+code,.mono{font-family:var(--font-mono);font-size:.84em}
+code{background:color-mix(in srgb,var(--color-primary) 9%,transparent);padding:.05em .35em;border-radius:4px;overflow-wrap:anywhere}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+@media (max-width:640px){.wrap{padding:0 16px}}
+header.top{border-bottom:3px solid var(--color-rule);padding:14px 0}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.wordmark{font-family:var(--font-display);font-size:26px;letter-spacing:.14em;color:var(--color-heading);text-transform:uppercase;position:relative;padding-bottom:4px}
+.wordmark::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:linear-gradient(90deg,var(--color-accent-secondary) 58%,transparent)}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--color-muted)}
+nav.toc{display:flex;gap:14px;flex-wrap:wrap}
+nav.toc a{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-muted);text-decoration:none}
+nav.toc a:hover{color:var(--color-primary)}
+.hero{padding-top:64px;padding-bottom:40px}
+h1,h2{font-family:var(--font-display);font-weight:400;text-transform:uppercase;letter-spacing:.012em;line-height:1.05;color:var(--color-heading);margin:0}
+h1{font-size:clamp(2.5rem,5.4vw,4rem);max-width:14ch}
+h2{font-size:clamp(2rem,3.6vw,2.6rem);margin-bottom:8px}
+h3{font-family:var(--font-body);font-weight:600;font-size:1.15rem;color:var(--color-heading);margin:0 0 4px}
+.lede{font-size:1.15rem;max-width:64ch;color:var(--color-text);margin:20px 0 0}
+section{padding:48px 0;border-top:1px solid var(--color-border)}
+.section-head{display:grid;gap:6px;margin-bottom:24px;max-width:72ch}
+.section-head p{margin:0;color:var(--color-muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:36px}
+.stat{background:var(--color-surface-raised);border:1px solid var(--color-border);border-left:3px solid var(--color-rule);border-radius:var(--radius-md);padding:14px 16px}
+.stat b{display:block;font-family:var(--font-display);font-size:2.2rem;font-weight:400;color:var(--color-heading);line-height:1}
+.stat span{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-muted)}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin-top:18px;border:1px solid var(--color-border)}
+.bar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-family:var(--font-mono);font-size:12px;color:var(--color-muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;background:var(--c);vertical-align:-1px}
+.card{background:var(--color-surface-raised);border:1px solid var(--color-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-md)}
+.diagram{padding:12px;overflow-x:auto}
+.diagram svg{display:block;width:100%;min-width:760px;height:auto}
+.diagram text{font-family:var(--font-mono);font-size:12px;fill:var(--color-text)}
+.diagram .zt{font-size:11px;letter-spacing:.2em;fill:var(--color-muted)}
+.diagram .bt{font-weight:500;fill:var(--color-heading);font-size:12.5px}
+.diagram .st{font-size:10.5px;fill:var(--color-muted)}
+.diagram .z{stroke:var(--color-border-strong);stroke-width:1;rx:12}
+.diagram .b{fill:var(--color-surface-raised);stroke:var(--color-border-strong);stroke-width:1;rx:7}
+.diagram .bk{fill:var(--color-surface-raised);stroke:var(--color-rule);stroke-width:2;rx:7}
+.diagram .ln{stroke:var(--color-primary);stroke-width:1.6;fill:none;marker-end:url(#arr)}
+.diagram .ln2{stroke:var(--color-accent-warm);stroke-width:1.6;fill:none;marker-end:url(#arr2);stroke-dasharray:5 4}
+.diagram .lt{font-size:10.5px;fill:var(--color-primary)}
+.diagram .lt2{font-size:10.5px;fill:var(--color-accent-warm-text)}
+.cap{font-size:.92rem;color:var(--color-muted);margin:12px 4px 0}
+ol.flow{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:12px}
+ol.flow>li{counter-increment:s;display:grid;grid-template-columns:52px 1fr;gap:14px;background:var(--color-surface-raised);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:14px 16px}
+ol.flow>li::before{content:counter(s,decimal-leading-zero);font-family:var(--font-display);font-size:2rem;line-height:1;color:var(--color-accent-warm-text)}
+ol.flow p{margin:4px 0 0}
+.where{font-family:var(--font-mono);font-size:12px;color:var(--color-muted);margin-top:6px}
+.phase{font-family:var(--font-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--color-primary);margin:22px 0 8px}
+.tools{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--color-bg) 92%,transparent);backdrop-filter:blur(6px);padding:12px 0;margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--color-border)}
+.tools input{flex:1 1 260px;min-width:0;font:inherit;font-size:15px;padding:8px 12px;border-radius:var(--radius-md);border:1px solid var(--color-border-strong);background:var(--color-surface-raised);color:var(--color-text)}
+.tools input:focus{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--color-primary) 35%,transparent)}
+.chip{font-family:var(--font-mono);font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--color-border-strong);background:var(--color-surface-raised);color:var(--color-text);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--color-primary);color:var(--color-primary-contrast);border-color:var(--color-primary)}
+.group{margin:28px 0 8px}
+.group-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:3px solid var(--color-rule);padding-bottom:6px;margin-bottom:12px}
+.group-head h3{font-family:var(--font-display);font-weight:400;text-transform:uppercase;font-size:1.6rem;letter-spacing:.02em}
+.group-head span{font-family:var(--font-mono);font-size:12px;color:var(--color-muted)}
+.group-head p{flex-basis:100%;margin:2px 0 0;color:var(--color-muted);font-size:.95rem}
+.files{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+@media (max-width:420px){.files{grid-template-columns:1fr}}
+.file{background:var(--color-surface-raised);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.file header{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.file .name{font-family:var(--font-mono);font-size:13.5px;font-weight:500;color:var(--color-heading);overflow-wrap:anywhere}
+.file .loc{font-family:var(--font-mono);font-size:11px;color:var(--color-muted);white-space:nowrap}
+.file p{margin:0;font-size:.95rem}
+.file .rel{font-family:var(--font-mono);font-size:11.5px;color:var(--color-muted)}
+.file .rel b{color:var(--color-accent-warm-text);font-weight:500}
+.file.core{border-left:3px solid var(--color-accent-secondary)}
+.tag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--color-border-strong);color:var(--color-muted)}
+.tag.core{color:var(--color-accent-secondary-text);border-color:var(--color-accent-secondary)}
+.tag.dead{color:var(--color-danger-text);border-color:var(--color-danger-border);background:var(--color-danger-bg)}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--color-border);vertical-align:top}
+th{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-muted);font-weight:500}
+.tablewrap{overflow-x:auto}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.panel{padding:18px 20px}
+.panel h3{margin-bottom:8px}
+.panel ul{margin:0;padding-left:18px}
+.panel li{margin:4px 0}
+.callout{border-radius:var(--radius-md);padding:14px 16px;border:1px solid;margin:0}
+.warn{background:var(--color-warning-bg);border-color:var(--color-warning-border)}
+.warn h3{color:var(--color-warning-text)}
+.dang{background:var(--color-danger-bg);border-color:var(--color-danger-border)}
+.dang h3{color:var(--color-danger-text)}
+.info{background:var(--color-info-bg);border-color:var(--color-info-border)}
+.info h3{color:var(--color-info-text)}
+.findings{display:grid;gap:12px}
+.findings p{margin:4px 0 0;font-size:.95rem}
+.enf{font-family:var(--font-mono);font-size:11px;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.enf.code{background:var(--color-success-bg);color:var(--color-success-text);border:1px solid var(--color-success-border)}
+.enf.prompt{background:var(--color-warning-bg);color:var(--color-warning-text);border:1px solid var(--color-warning-border)}
+pre.tree{font-family:var(--font-mono);font-size:12.5px;line-height:1.55;margin:0;padding:18px 20px;overflow-x:auto;color:var(--color-text)}
+pre.tree b{color:var(--color-heading);font-weight:500}
+pre.tree i{color:var(--color-muted);font-style:normal}
+footer.end{border-top:3px solid var(--color-rule);padding:24px 0 48px;color:var(--color-muted);font-size:.9rem}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="wordmark">Critias</div>
+  <nav class="toc" aria-label="Sections">
+    <a href="#system">System</a><a href="#journey">One question</a><a href="#files">Every file</a><a href="#guards">Guard rails</a><a href="#disk">On disk</a><a href="#loose">Loose ends</a>
+  </nav>
+</div></header>
+
+<main>
+<div class="wrap hero">
+  <div class="eyebrow">pricing-harness · plugin 0.4.11 · branch feat/thin-analyst · read 2026-10-18</div>
+  <h1>What the harness ships</h1>
+  <p class="lede">This map covers every file in the shipped package (the <code>files</code> list in <code>package.json</code> plus the <code>src/</code> that builds into <code>dist/</code>), leaving out tests, evals and their scripts. It covers what each file does, which files it calls, and what runs where while a user waits for an answer. I wrote it by reading the code itself. Where <code>docs/architecture.md</code> disagrees with the code, the code wins, and the <a href="#loose">loose ends</a> section lists the gaps.</p>
+  <div class="stats">
+    <div class="stat"><b>~120</b><span>shipped source files</span></div>
+    <div class="stat"><b>~9.2k</b><span>lines in total</span></div>
+    <div class="stat"><b>4</b><span>process types at run time</span></div>
+    <div class="stat"><b>13</b><span>behaviour hooks on the agent</span></div>
+    <div class="stat"><b>7 + 1</b><span>pricing skills + visualize skill</span></div>
+  </div>
+  <div class="bar" role="img" aria-label="Lines by layer: workflow 3159, UI 1811, plugin markdown 1602, Python tools 1460, server 1130">
+    <i style="flex:3159;background:var(--brass-500)"></i><i style="flex:1811;background:var(--teal-400)"></i><i style="flex:1602;background:#86B8BE"></i><i style="flex:1460;background:#2F7A66"></i><i style="flex:1130;background:var(--teal-700)"></i>
+  </div>
+  <div class="legend">
+    <span style="--c:var(--brass-500)">Agent + workflow (TS) 3,159</span>
+    <span style="--c:var(--teal-400)">Browser UI 1,811</span>
+    <span style="--c:#86B8BE">Skills and knowledge (MD/JSON) 1,602</span>
+    <span style="--c:#2F7A66">Python data tools 1,460</span>
+    <span style="--c:var(--teal-700)">Server shell (TS) 1,130</span>
+  </div>
+</div>
+
+<!-- ============ SYSTEM ============ -->
+<section id="system"><div class="wrap">
+  <div class="section-head">
+    <div class="eyebrow">01 · System</div>
+    <h2>Four kinds of process</h2>
+    <p>The browser talks only to one local Node server. Each question forks a fresh worker process that runs the AI agent. The worker starts Python processes for SQL, scripts and data checks. Everything durable lives as files in the business workspace folder.</p>
+  </div>
+  <div class="card diagram">
+  <svg viewBox="0 0 1120 700" role="img" aria-labelledby="dt dd">
+    <title id="dt">Harness architecture</title>
+    <desc id="dd">Browser UI connects over HTTP and server-sent events to the Node server. The server's run controller hands each question to the workflow orchestrator, which forks a worker process. The worker runs the Pi agent session that calls the model provider and uses tools backed by Python processes. All state is written to the workspace folder.</desc>
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--color-primary)"/></marker>
+      <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--color-accent-warm)"/></marker>
+    </defs>
+
+    <!-- Browser -->
+    <rect class="z" x="10" y="10" width="250" height="300" style="fill:var(--z-ui)"/>
+    <text class="zt" x="26" y="34">BROWSER · src/ui</text>
+    <rect class="b" x="26" y="48" width="218" height="54"/><text class="bt" x="38" y="70">App.tsx</text><text class="st" x="38" y="88">layout, upload, submit, cancel</text>
+    <rect class="b" x="26" y="112" width="218" height="54"/><text class="bt" x="38" y="134">useSession.ts + state.ts</text><text class="st" x="38" y="152">snapshot + SSE event reducer</text>
+    <rect class="b" x="26" y="176" width="218" height="54"/><text class="bt" x="38" y="198">Thread / Message / Running</text><text class="st" x="38" y="216">chat, live steps, outcome</text>
+    <rect class="b" x="26" y="240" width="218" height="54"/><text class="bt" x="38" y="262">exploration/*</text><text class="st" x="38" y="280">verified tables + Plotly charts</text>
+
+    <!-- Server -->
+    <rect class="z" x="300" y="10" width="420" height="380" style="fill:var(--z-server)"/>
+    <text class="zt" x="316" y="34">NODE SERVER · one process, 127.0.0.1:4317</text>
+    <rect class="b" x="316" y="48" width="185" height="54"/><text class="bt" x="328" y="70">server.ts + routes/</text><text class="st" x="328" y="88">Fastify, origin check, CSP</text>
+    <rect class="b" x="519" y="48" width="185" height="54"/><text class="bt" x="531" y="70">application.ts</text><text class="st" x="531" y="88">wires everything at boot</text>
+    <rect class="bk" x="316" y="122" width="185" height="54"/><text class="bt" x="328" y="144">runs.ts RunController</text><text class="st" x="328" y="162">one run at a time</text>
+    <rect class="b" x="519" y="122" width="185" height="54"/><text class="bt" x="531" y="144">events.ts EventView</text><text class="st" x="531" y="162">snapshot + pub/sub</text>
+    <rect class="bk" x="316" y="196" width="388" height="54"/><text class="bt" x="328" y="218">orchestrator.ts  WorkflowOrchestrator</text><text class="st" x="328" y="236">prompt → turn → lints → figure check → seal → deliver</text>
+    <rect class="b" x="316" y="270" width="185" height="54"/><text class="bt" x="328" y="292">stage-runner.ts</text><text class="st" x="328" y="310">forks worker, budget gate</text>
+    <rect class="b" x="519" y="270" width="185" height="54"/><text class="bt" x="531" y="292">profiles + findings</text><text class="st" x="531" y="310">profile + scan sources</text>
+    <rect class="b" x="316" y="334" width="388" height="42"/><text class="bt" x="328" y="360">workspace · files · conversations · runtime</text>
+
+    <!-- Worker -->
+    <rect class="z" x="300" y="420" width="420" height="270" style="fill:var(--z-worker)"/>
+    <text class="zt" x="316" y="444">WORKER · forked per turn (worker.ts)</text>
+    <rect class="bk" x="316" y="458" width="388" height="54"/><text class="bt" x="328" y="480">Pi agent session  (session.ts)</text><text class="st" x="328" y="498">analyst prompt, bundled skills, compaction</text>
+    <rect class="b" x="316" y="522" width="388" height="42"/><text class="bt" x="328" y="548">nudges.ts · 13 hooks on tool calls</text>
+    <rect class="b" x="316" y="574" width="112" height="48"/><text class="bt" x="326" y="596">query</text><text class="st" x="326" y="612">query-tool.ts</text>
+    <rect class="b" x="436" y="574" width="148" height="48"/><text class="bt" x="446" y="596">execute_analysis</text><text class="st" x="446" y="612">runs .py</text>
+    <rect class="b" x="592" y="574" width="112" height="48"/><text class="bt" x="602" y="596">present</text><text class="st" x="602" y="612">tables/charts</text>
+    <rect class="b" x="316" y="632" width="388" height="42"/><text class="bt" x="328" y="658">bash · read · write · edit  (bash logs python runs)</text>
+
+    <!-- Python -->
+    <rect class="z" x="760" y="300" width="350" height="390" style="fill:var(--z-python)"/>
+    <text class="zt" x="776" y="324">PYTHON · bundled/harness-tools</text>
+    <rect class="bk" x="776" y="338" width="318" height="70"/><text class="bt" x="788" y="360">query_server.py  (long-lived)</text><text class="st" x="788" y="378">DuckDB session, typed views, save CSV</text><text class="st" x="788" y="394">+ same_rows · peer_ratio · offsets</text>
+    <rect class="b" x="776" y="418" width="318" height="54"/><text class="bt" x="788" y="440">record_execution.py</text><text class="st" x="788" y="458">runs a script, logs files it read</text>
+    <rect class="b" x="776" y="482" width="318" height="54"/><text class="bt" x="788" y="504">data_findings.py</text><text class="st" x="788" y="522">7 anomaly detectors, cached</text>
+    <rect class="b" x="776" y="546" width="318" height="54"/><text class="bt" x="788" y="568">profile_source.py</text><text class="st" x="788" y="586">column profiles, cached</text>
+    <rect class="b" x="776" y="610" width="318" height="54"/><text class="bt" x="788" y="632">data_workspace.py</text><text class="st" x="788" y="650">CSV/XLSX → cached DuckDB (shared)</text>
+
+    <!-- External -->
+    <rect class="z" x="760" y="10" width="350" height="130" style="fill:var(--z-ext)"/>
+    <text class="zt" x="776" y="34">OUTSIDE THE MACHINE</text>
+    <rect class="b" x="776" y="48" width="318" height="40"/><text class="bt" x="788" y="73">Model provider (OpenRouter / OpenAI)</text>
+    <rect class="b" x="776" y="96" width="318" height="34"/><text class="st" x="788" y="118">openrouter.ai/api/v1/models (price lookup)</text>
+
+    <!-- Disk -->
+    <rect class="z" x="760" y="160" width="350" height="120" style="fill:var(--color-surface)"/>
+    <text class="zt" x="776" y="184">WORKSPACE FOLDER (disk)</text>
+    <text class="st" x="776" y="206">files/        uploads, never modified</text>
+    <text class="st" x="776" y="224">.pricing/     context, cache, conversations,</text>
+    <text class="st" x="776" y="240">              analyst folders, checkpoints</text>
+    <text class="st" x="776" y="258">analyses/     run.json, events, steps per run</text>
+
+    <!-- arrows -->
+    <path class="ln" d="M244 80 H316"/><text class="lt" x="252" y="72">HTTP</text>
+    <path class="ln" d="M316 96 C 280 110, 270 130, 244 139"/><text class="lt" x="258" y="126">SSE</text>
+    <path class="ln" d="M408 102 V122"/>
+    <path class="ln" d="M501 149 H519"/>
+    <path class="ln" d="M408 176 V196"/>
+    <path class="ln" d="M408 250 V270"/>
+    <path class="ln" d="M611 250 V270"/>
+    <path class="ln2" d="M316 297 H286 V485 H316"/><text class="lt2" x="196" y="400">fork + IPC</text><text class="lt2" x="196" y="414">gate / allow</text>
+    <path class="ln2" d="M704 478 H726 V68 H776"/><text class="lt2" x="730" y="156" transform="rotate(90 730 156)">model calls</text>
+    <path class="ln" d="M704 590 H734 V373 H776"/>
+    <path class="ln" d="M704 606 H741 V445 H776"/>
+    <path class="ln" d="M704 290 H748 V509 H776"/>
+    <path class="ln" d="M704 304 H754 V573 H776"/>
+  </svg>
+  </div>
+  <p class="cap">Solid lines are calls inside your machine. Dashed lines cross a process boundary that matters: the forked worker, and the only traffic that leaves the machine (model calls, plus one price lookup when the model is resolved). The four solid lines on the right are, top to bottom: query → the SQL process, execute_analysis → record_execution, data findings, and profiling. The <code>bash</code> tool runs a real shell with credential variables removed from its environment. It is not a sandbox.</p>
+</div></section>
+
+<!-- ============ JOURNEY ============ -->
+<section id="journey"><div class="wrap">
+  <div class="section-head">
+    <div class="eyebrow">02 · One question, end to end</div>
+    <h2>What happens when the user presses Enter</h2>
+    <p>Follow one question from the composer to a delivered answer. Every step names the file that does it.</p>
+  </div>
+
+  <div class="phase">Boot (once, at server start)</div>
+  <ol class="flow">
+    <li><div><h3>Read settings and check the machine</h3><p><code>harness.config.json</code> is parsed strictly (an unknown key is an error) and turned into <code>PRICING_*</code> variables. Real environment variables win. Python is checked by importing <code>duckdb, pandas, openpyxl</code>. Credentials are checked through Pi's model runtime. An unknown model ID borrows connection settings from a catalogue model of the same vendor and gets its price from OpenRouter's public list.</p><div class="where">settings.ts → runtime.ts (loadConfig, resolveModel, checkRuntime) · defaults.ts</div></div></li>
+    <li><div><h3>Validate the bundle and fingerprint it</h3><p>Checks that <code>versions.json</code> matches <code>plugin.json</code>, that every skill and knowledge card has <code>name</code>/<code>description</code> frontmatter, that there are no symlinks and that every relative markdown link resolves. Then it hashes every bundled file into one fingerprint. A changed fingerprint makes every conversation start a fresh analyst session.</p><div class="where">agent/bundle.ts (validateBundle)</div></div></li>
+    <li><div><h3>Open the workspace and restore the last conversation</h3><p>Creates <code>files/ .pricing/ analyses/ outputs/</code>, adopts any files already sitting in <code>files/</code>, marks runs left "running" by a crash as interrupted, and reloads the conversation that was open. Its charts are rebuilt from frozen checkpoints, or replaced by a notice if the evidence changed.</p><div class="where">workspace.ts · files.ts (openFileStore, loadRuns) · conversations.ts · exploration-restore.ts · application.ts</div></div></li>
+  </ol>
+
+  <div class="phase">Submit</div>
+  <ol class="flow">
+    <li><div><h3>Browser posts the question</h3><p>The composer sends <code>{requestId, text, fileIds: []}</code> to <code>POST /api/messages</code>. An empty <code>fileIds</code> means "use every source in the workspace". The UI already listens on <code>/api/events</code> (server-sent events) and applies each event to its snapshot.</p><div class="where">ui/App.tsx · ui/api.ts · ui/useSession.ts · routes/chat.ts</div></div></li>
+    <li><div><h3>RunController accepts it</h3><p>Rejects bad input, a second question while one is running (409) and a machine that isn't ready (503). The same <code>requestId</code> twice returns the same run, so a retried POST cannot start two runs. It re-hashes every source, writes <code>analyses/&lt;run&gt;/run.json</code>, appends the user message and saves the conversation.</p><div class="where">agent/runs.ts (submit, start) · events.ts (setRun, appendLogical)</div></div></li>
+  </ol>
+
+  <div class="phase">Prepare the turn</div>
+  <ol class="flow">
+    <li><div><h3>Fresh session or follow-up?</h3><p>The session key is a hash of the bundle fingerprint and every source's path and hash, stored in <code>state.json</code>. If the key matches, this is a follow-up: the prompt is just the question and a deadline. If it doesn't, the analyst folder is wiped and a full prompt is built.</p><div class="where">workflow/orchestrator.ts (executeWithLog)</div></div></li>
+    <li><div><h3>Profile and scan the data (fresh sessions only)</h3><p>Each CSV/XLSX is loaded into a cached DuckDB file (all text columns) and profiled: inferred types, blanks, ranges and frequent values. The seven detectors then flag suspect rows: parse, shape, domain, uniqueness, identity, time and peer ratio. Both results are cached by file content and trimmed to fit the prompt (40k and 12k characters). A detector failure is logged and never blocks the run.</p><div class="where">source-profiles.ts → profile_source.py · data-findings.ts → data_findings.py · data_workspace.py</div></div></li>
+    <li><div><h3>Build the first prompt</h3><p>Question, working folder, Python path, deadline (budget minus one minute), <code>context.md</code>, source list, path to the profiles file, the full text of three preloaded method files (the routing skill, shared rules and metric verification) and the compact findings.</p><div class="where">workflow/stage-prompt.ts (buildStagePrompt, PRELOADED)</div></div></li>
+  </ol>
+
+  <div class="phase">The analyst works (in a forked worker)</div>
+  <ol class="flow">
+    <li><div><h3>Fork the worker</h3><p><code>StageRunner</code> forks <code>worker.js</code> in its own process group and sets a kill timer for the remaining budget. Before each model call, tool call or retry, the worker asks the parent over IPC for a go-ahead. The parent debits the budget (900 s, 100 model calls, 150 tool calls, 2 retries) and refuses once a limit is spent. It also stops the run after three identical operation/result pairs, or when usage data goes missing.</p><div class="where">stage-runner.ts · budget.ts (WorkflowBudget) · worker.ts (gate)</div></div></li>
+    <li><div><h3>Start the Pi agent session</h3><p>The analyst system prompt is the short one in <code>role-prompts.ts</code>. Pi lists the 7 pricing skills, <code>analysis-visualize</code> and every knowledge card by name and description. User extensions, context files and themes are switched off. The session is resumed from <code>.pricing/workflow/&lt;conversation&gt;/analyst/sessions</code> on follow-ups. Compaction starts when 40% of the context window is still free.</p><div class="where">session.ts (createPricingSession) · role-prompts.ts</div></div></li>
+    <li><div><h3>Tools the analyst can call</h3><p><b>query</b>: SQL against a long-lived DuckDB process with one typed view per source or sheet. Results show up to 100 rows, and <code>save</code> writes the full result to a CSV. <b>execute_analysis</b>: runs a Python file under <code>record_execution.py</code>, which logs every workspace file the script opened. <b>bash / read / write / edit</b>: the Pi built-ins. Python run through bash is logged too. <b>present</b>: names a recorded CSV, its columns and a chart type. Every query and script leaves an <code>execution-*.txt</code> in the analyst folder, and those files are the evidence used later.</p><div class="where">query-tool.ts → query_server.py · worker.ts (execute_analysis, present) · shell-evidence.ts · supervised-shell.ts · tool-input.ts</div></div></li>
+    <li><div><h3>Hooks watch every step</h3><p>Hooks block the first calculation until a task skill and a knowledge card have been read. They hold a script that reads a source file directly, block <code>pip install</code> and keep <code>context.md</code> append-only. They also block copy-pasted scripts, add SQL error fixes and plugin lint hints, warn about slow or repeated SQL, stop a tool call that grows past 40k characters, and add a "time left" line under each tool result. Inside the SQL process, <code>same_rows</code> can stop a statement whose combined totals cover different rows, and <code>peer_ratio</code> and <code>offsets</code> add notes about outlier rows and returns.</p><div class="where">nudges.ts (HOOKS) · same_rows.py · peer_ratio.py · offsets.py</div></div></li>
+    <li><div><h3>Provider hiccups</h3><p>A transient failure (429, timeout, 5xx and so on) is retried in the same session with "continue from where you stopped", at most twice. A stopped runaway call is retried once with "issue it again shorter". The final assistant text is sent back to the parent.</p><div class="where">transient-error.ts · worker.ts (read)</div></div></li>
+  </ol>
+
+  <div class="phase">Check and deliver (back in the server)</div>
+  <ol class="flow">
+    <li><div><h3>At most one nudge turn</h3><p>The parent may send one more message to the same session. It does this when the analyst computed something but replied with only a question, or when a plugin lint on the reply fires (for example, a rate written as 0.123 instead of a percentage).</p><div class="where">orchestrator.ts · reply-figures.ts (withheldResult) · nudges.ts (lintHints) · lints.json</div></div></li>
+    <li><div><h3>Figure check</h3><p>Every number in the reply with 3 or more significant digits must appear in some executed output, at the reply's precision. A printed fraction shown as a percentage counts, and so does the difference of two supported numbers. If any don't match, one recheck turn runs. Numbers still unmatched are delivered with a notice that names them.</p><div class="where">reply-figures.ts (unverifiedFigures) · stage-prompt.ts (recheckPrompt)</div></div></li>
+    <li><div><h3>Seal and bind views</h3><p>If the analyst called <code>present</code>, the CSVs it named must be unchanged outputs of an executed query or script. They are copied into <code>checkpoints/&lt;id&gt;/</code> with their hashes. Tables and charts are then built from those frozen copies, so displayed values come from files, never from model text.</p><div class="where">checkpoints.ts (sealPresentation) · workflow/exploration.ts (normalizeExploration, bindExploration)</div></div></li>
+    <li><div><h3>Deliver, then re-verify</h3><p>The reply, any notice and the bound views go to the chat. Afterwards the checkpoint and every source are hashed again. If anything changed, the views are withdrawn and the run is marked "no verified answer". Logs are written to <code>events.jsonl</code> and <code>steps.jsonl</code> with secrets redacted.</p><div class="where">orchestrator.ts · runs.ts (finish) · delivery.ts · event-log.ts · steps.ts</div></div></li>
+  </ol>
+</div></section>
+
+<!-- ============ FILES ============ -->
+<section id="files"><div class="wrap">
+  <div class="section-head">
+    <div class="eyebrow">03 · Every shipped file</div>
+    <h2>File by file</h2>
+    <p>Line counts are from the working tree. Files with a coral edge are the core of the product: read them first. "→" shows what a file calls or depends on.</p>
+  </div>
+  <div class="tools">
+    <input id="q" type="search" placeholder="Filter files: try budget, DuckDB, chart, context.md…" aria-label="Filter files">
+    <button class="chip" type="button" aria-pressed="false" id="coreOnly">Core only</button>
+  </div>
+
+  <!-- Server shell -->
+  <div class="group">
+    <div class="group-head"><h3>Server shell</h3><span>src/ · 1,130 lines</span><p>Boots the app, reads settings, serves HTTP and owns the workspace folder. Contains no AI logic.</p></div>
+    <div class="files">
+      <article class="file core"><header><span class="name">src/server.ts</span><span class="loc">79 lines</span></header><p>Entry point for <code>npm start</code>. A Fastify server bound to 127.0.0.1. It rejects any request whose Host or Origin isn't the local address (the API has no login, so this is the only access control), maps errors to JSON, sets a strict Content-Security-Policy so the UI can't load outside URLs, and serves the built UI from <code>dist/ui</code>.</p><div class="rel">→ <b>application</b>, routes/chat, routes/files</div></article>
+      <article class="file core"><header><span class="name">src/application.ts</span><span class="loc">39 lines</span></header><p>The composition root. Builds every long-lived object in order: workspace, file store, bundle check, health check, model, root agent session, EventView, restored conversation and RunController. Shared by the web server and the headless CLI.</p><div class="rel">→ runtime, workspace, files, conversations, bundle, session, events, runs</div></article>
+      <article class="file"><header><span class="name">src/runtime.ts</span><span class="loc">149 lines</span></header><p><code>loadConfig</code> turns environment variables into a typed config. Workspace, model, Python and provider are required, and paths must be absolute. <code>resolveModel</code> picks the model in Pi's catalogue, accepts newer IDs by copying a same-vendor template, fetches a price from OpenRouter, and caps output at 32k tokens per call. <code>checkRuntime</code> reports whether Python and credentials are ready.</p><div class="rel">→ settings, defaults, Pi ModelRuntime, openrouter.ai</div></article>
+      <article class="file"><header><span class="name">src/settings.ts</span><span class="loc">102 lines</span></header><p>Strict reader for <code>harness.config.json</code>. It rejects unknown keys and bad types, then maps each value to a <code>PRICING_*</code> variable. Real environment variables override the file. <code>PRICING_CONFIG_FILE</code> can point at another file.</p><div class="rel">→ defaults</div></article>
+      <article class="file"><header><span class="name">src/defaults.ts</span><span class="loc">4 lines</span></header><p>Built-in fallbacks: providers <code>openrouter</code> and <code>openai</code>, the thinking levels, and default limits of 900 s, 100 model calls and 150 tool calls.</p></article>
+      <article class="file"><header><span class="name">src/contracts.ts</span><span class="loc">110 lines</span></header><p>Types shared by the server and the browser: source files, run records, chat messages, steps, the session snapshot and the event union sent over SSE. Also <code>HarnessError</code>, which carries an HTTP status.</p></article>
+      <article class="file"><header><span class="name">src/exploration.ts</span><span class="loc">49 lines</span></header><p>Shape of an in-chat "exploration": tables, which select columns from a result CSV, and charts (line, bar, stacked, waterfall, scatter). Also the hard limits: 4 tables, 4 charts, 12 columns, 1,000 rows, 5,000 cells, 1 MiB.</p></article>
+      <article class="file core"><header><span class="name">src/workspace.ts</span><span class="loc">120 lines</span></header><p>The folder layout and the safety primitives everything else uses. <code>safePath</code> refuses paths and symlinks that leave a root. <code>atomicJSON</code> writes to a temp file then renames it. <code>hashFile</code> computes SHA-256 and caches it while device, inode, size, mtime and ctime are unchanged. It also creates the starter <code>context.md</code>.</p></article>
+      <article class="file"><header><span class="name">src/files.ts</span><span class="loc">234 lines</span></header><p>Source store. It streams an upload into <code>files/&lt;uuid&gt;/</code> with a size cap, accepts only CSV, XLSX, TXT and MD, keeps <code>files.json</code>, and can re-hash every source or report which ones changed. It also holds an "artifacts" registry for <code>outputs/</code>, but nothing ever registers an artifact (see loose ends). <code>loadRuns</code> marks runs a crash left as "running" as interrupted.</p><div class="rel">→ workspace</div></article>
+      <article class="file"><header><span class="name">src/conversations.ts</span><span class="loc">67 lines</span></header><p>Saves each conversation's visible chat to <code>.pricing/workflow/&lt;id&gt;/conversation.json</code>, with a title taken from the first question. <code>current.json</code> remembers which one to reopen. Lists conversations for the sidebar, newest first, and moves the old single-file format into a folder once.</p><div class="rel">→ workspace</div></article>
+      <article class="file"><header><span class="name">src/headless.ts</span><span class="loc">96 lines</span></header><p>CLI with no browser (<code>npm run headless</code>). <code>--status</code> prints the model and health, <code>--question "…"</code> runs one turn, and otherwise it reads JSON lines from stdin (submit, cancel, close) and prints every event as JSON. The evals drive the harness through this file.</p><div class="rel">→ application</div></article>
+      <article class="file"><header><span class="name">src/routes/chat.ts</span><span class="loc">51 lines</span></header><p>The chat API: <code>GET /api/session</code> (snapshot), <code>POST /api/messages</code>, <code>/api/cancel</code>, <code>/api/session/new</code>, <code>GET /api/conversations</code>, <code>POST /api/conversations/:id/open</code>, <code>GET /api/status</code>, and <code>GET /api/events</code>, an SSE stream with a 15 s heartbeat.</p><div class="rel">→ RunController, EventView</div></article>
+      <article class="file"><header><span class="name">src/routes/files.ts</span><span class="loc">30 lines</span></header><p><code>GET/POST /api/files</code> for sources (uploads are refused while a run is busy). <code>GET /api/outputs/:id</code> downloads an artifact after checking its hash, and serves HTML inside a sandboxing CSP.</p><div class="rel">→ files</div></article>
+    </div>
+  </div>
+
+  <!-- Agent core -->
+  <div class="group">
+    <div class="group-head"><h3>Agent core</h3><span>src/agent/ · 641 lines</span><p>Wraps the Pi agent SDK and owns the run lifecycle and UI state.</p></div>
+    <div class="files">
+      <article class="file core"><header><span class="name">src/agent/runs.ts</span><span class="loc">262 lines</span></header><p><code>RunController</code>. Allows one run at a time and makes submits idempotent by <code>requestId</code>. It snapshots sources, writes <code>run.json</code>, creates a <code>WorkflowOrchestrator</code> per question and wires its callbacks (message, step, checkpoint, invalidate). When the run finishes, it fails the run if any source changed. It also handles cancel, new conversation, opening a saved conversation, and close.</p><div class="rel">→ orchestrator, stage-runner, source-profiles, data-findings, events, conversations</div></article>
+      <article class="file"><header><span class="name">src/agent/events.ts</span><span class="loc">176 lines</span></header><p><code>EventView</code>: the server's copy of what the UI should show (messages, runs, active steps, busy flag), with a sequence number on every event so the browser can drop stale ones. A <code>settled</code> event carries the whole snapshot.</p><div class="rel">→ contracts</div></article>
+      <article class="file core"><header><span class="name">src/agent/session.ts</span><span class="loc">119 lines</span></header><p>Builds a Pi agent session with only the bundled skills: user extensions, prompt templates, themes and context files are all off. It checks that the loaded skills match the bundle exactly, refuses model or reasoning-level fallback, and tags the session with the bundle fingerprint. <code>analysisEnvironment</code> strips any variable named like a key, token, secret, password or credential before a shell or Python process starts.</p><div class="rel">→ Pi SDK, workspace, bundle</div></article>
+      <article class="file"><header><span class="name">src/agent/bundle.ts</span><span class="loc">84 lines</span></header><p>Validates <code>bundled/</code> and computes its fingerprint (see Boot, step 2). It also registers each knowledge card as its own "skill", so the agent sees every card's name and description on every turn.</p></article>
+    </div>
+  </div>
+
+  <!-- Workflow -->
+  <div class="group">
+    <div class="group-head"><h3>Workflow: the analyst loop</h3><span>src/agent/workflow/ · 2,518 lines</span><p>Runs one analyst turn, constrains it and checks what comes out. Most of the product's behaviour lives here.</p></div>
+    <div class="files">
+      <article class="file core"><header><span class="name">orchestrator.ts</span><span class="loc">219 lines</span></header><p>The per-question script: decides fresh or follow-up, profiles and scans sources, builds the prompt, runs the turn, applies at most one nudge turn and one figure recheck, seals and binds views, delivers the reply, then re-verifies evidence and sources. Any failure becomes a short user-facing message and a "no verified answer" outcome.</p><div class="rel">→ stage-prompt, stage-runner (via Runner), reply-figures, nudges (lints), checkpoints, exploration, event-log, steps, delivery</div></article>
+      <article class="file core"><header><span class="name">worker.ts</span><span class="loc">411 lines</span></header><p>Runs in the forked child process. It defines the <code>execute_analysis</code> and <code>present</code> tools, wraps bash so Python runs are logged, starts the SQL tool, creates the analyst session with the hooks, and wraps model streaming and tool calls in the budget gate. It also limits <code>write</code>/<code>edit</code> to the analyst folder plus <code>context.md</code>, reports usage and timing, and retries transient failures.</p><div class="rel">→ session, query-tool, nudges, shell-evidence, supervised-shell, transient-error, exploration, record_execution.py</div></article>
+      <article class="file"><header><span class="name">stage-runner.ts</span><span class="loc">108 lines</span></header><p>Forks <code>worker.js</code> (or <code>worker.ts</code> via tsx in dev), passes budget gate requests and answers over IPC, enforces the deadline, and kills the whole process group on finish, cancel or timeout after a 2 s grace.</p><div class="rel">→ budget</div></article>
+      <article class="file core"><header><span class="name">budget.ts</span><span class="loc">78 lines</span></header><p><code>WorkflowBudget</code>: counts model calls, tool calls and retries (at most 2) against limits and a wall clock. It stops the run after 3 identical operation/result pairs or when the SDK fails to report usage. It also adds up estimated cost for <code>run.json</code>.</p></article>
+      <article class="file core"><header><span class="name">nudges.ts</span><span class="loc">429 lines</span></header><p>The 13 behaviour hooks, installed as one Pi extension: <code>skill-read</code>, <code>source-read</code>, <code>focus-thinking</code> (reasoning level drops after the first analysis), <code>no-installs</code>, <code>context-append-only</code>, <code>reuse-scripts</code>, <code>error-hints</code>, <code>plugin-lints</code>, <code>slow-query</code>, <code>repeated-sql</code>, <code>runaway-stream</code> and <code>pacing</code>. Each can be switched off with <code>PRICING_HOOKS_OFF</code>. Also loads <code>lints.json</code> from the plugin.</p><div class="rel">→ lints.json, skills folder</div></article>
+      <article class="file core"><header><span class="name">query-tool.ts</span><span class="loc">199 lines</span></header><p>Starts <code>query_server.py</code> once per turn and talks to it in JSON lines. Defines the <code>query</code> tool, whose description lists every view and its columns. Formats results as markdown tables and records each call as <code>query-*.sql</code> + <code>execution-*.txt</code> evidence. A saved CSV becomes presentable.</p><div class="rel">→ query_server.py</div></article>
+      <article class="file core"><header><span class="name">reply-figures.ts</span><span class="loc">38 lines</span></header><p>The numeric honesty check (see "Figure check" above). Also <code>withheldResult</code>, which spots a reply that asks a question and shows no figure.</p></article>
+      <article class="file"><header><span class="name">checkpoints.ts</span><span class="loc">66 lines</span></header><p><code>sealPresentation</code> copies presented CSVs into a checkpoint folder and writes <code>checkpoint.json</code> with every hash. <code>loadCheckpoint</code> re-verifies all of them. <code>stableRefs</code> checks that a list of files still has the same hashes.</p><div class="rel">→ workspace</div></article>
+      <article class="file"><header><span class="name">exploration.ts</span><span class="loc">221 lines</span></header><p>Validates what the analyst passed to <code>present</code>, dropping bad tables or charts with a reason. Includes a small CSV parser, and builds the delivered tables from the frozen files. Blank cells are "held", numbers are "approved", and text cells can't be charted.</p></article>
+      <article class="file"><header><span class="name">exploration-restore.ts</span><span class="loc">30 lines</span></header><p>When a saved conversation is opened, rebuilds each message's tables and charts from its checkpoint, or replaces them with a "could not be restored" notice.</p></article>
+      <article class="file"><header><span class="name">stage-prompt.ts</span><span class="loc">74 lines</span></header><p>Text of the first-turn prompt, the follow-up prompt and the nudge/recheck messages. <code>PRELOADED</code> lists the three method files whose full text goes into the first prompt.</p></article>
+      <article class="file"><header><span class="name">role-prompts.ts</span><span class="loc">6 lines</span></header><p>The analyst's system prompt (one paragraph of working rules plus how to treat harness notes), the base tool list, and <code>harnessNote</code>, which wraps harness messages in <code>&lt;harness-note&gt;</code> tags so the model can tell them from the user.</p></article>
+      <article class="file"><header><span class="name">source-profiles.ts</span><span class="loc">141 lines</span></header><p>Calls <code>profile_source.py</code> per CSV/XLSX, caches results in memory by hash, and packs them into a compact column-row form. Sample values, then columns, are dropped until it fits in 40k characters.</p><div class="rel">→ profile_source.py</div></article>
+      <article class="file"><header><span class="name">data-findings.ts</span><span class="loc">72 lines</span></header><p>Calls <code>data_findings.py</code> on all CSV/XLSX sources and compacts the result to 12k characters, interleaving detectors so each keeps its top findings. Always keeps "gaps" (sources or checks that could not run), so a skipped check never reads as clean data.</p><div class="rel">→ data_findings.py</div></article>
+      <article class="file"><header><span class="name">steps.ts</span><span class="loc">179 lines</span></header><p>Turns worker events into the step list the UI shows ("Ran x.py", "Query: SELECT…", "Thinking"). Summaries are fixed wording built from tool arguments, never model-written text.</p></article>
+      <article class="file"><header><span class="name">shell-evidence.ts</span><span class="loc">44 lines</span></header><p>Wraps the bash tool: a successful command that runs <code>python</code> is saved as <code>bash-*.sh</code> + <code>execution-*.txt</code>, and CSVs it wrote become presentable.</p></article>
+      <article class="file"><header><span class="name">supervised-shell.ts</span><span class="loc">29 lines</span></header><p>Runs bash commands as plain child processes inside the worker's process group, so killing the worker kills them. The comment states it is not a sandbox.</p></article>
+      <article class="file"><header><span class="name">transient-error.ts</span><span class="loc">27 lines</span></header><p>Recognises retryable provider errors and holds the "continue" and "issue it shorter" messages used for retries.</p></article>
+      <article class="file"><header><span class="name">model-timing.ts</span><span class="loc">38 lines</span></header><p>Per model call: wait at the gate, time to first token, generation time and tokens per second. Written to the event log.</p></article>
+      <article class="file"><header><span class="name">event-log.ts</span><span class="loc">35 lines</span></header><p>Append-only JSONL writer that serialises writes so lines never interleave. Truncates long strings and replaces the values of secret-named environment variables with <code>[REDACTED]</code>.</p></article>
+      <article class="file"><header><span class="name">contracts.ts</span><span class="loc">51 lines</span></header><p>Types for the worker protocol: <code>StageRequest</code>, <code>StageResult</code>, <code>Execution</code> (script + output + files read), <code>Checkpoint</code>, <code>Runner</code>.</p></article>
+      <article class="file"><header><span class="name">delivery.ts</span><span class="loc">10 lines</span></header><p>Maps an internal failure reason to one of four user-facing sentences.</p></article>
+      <article class="file"><header><span class="name">tool-input.ts</span><span class="loc">13 lines</span></header><p>Schema for the <code>execute_analysis</code> argument. It must be an absolute path, not a shell command.</p></article>
+    </div>
+  </div>
+
+  <!-- Python -->
+  <div class="group">
+    <div class="group-head"><h3>Python data tools</h3><span>bundled/harness-tools/ · 1,460 lines</span><p>Run with the venv's Python. The docstrings commit to "facts only, no business definitions": code flags and counts, and the analyst or user decides.</p></div>
+    <div class="files">
+      <article class="file core"><header><span class="name">query_server.py</span><span class="loc">284 lines</span></header><p>The long-lived SQL process. Attaches each prepared source and creates a typed view per file or sheet, then locks DuckDB: external access is off, the only allowed directory is the analyst folder, and configuration is locked. Only certain statement kinds run (SELECT/WITH/DESCRIBE/SHOW/SUMMARIZE/EXPLAIN/VALUES/CREATE VIEW or TABLE/DROP/COPY). TEMP is rewritten to permanent so definitions last the conversation. Runs batches, returns 100 rows, saves CSVs, and calls the three SQL checks.</p><div class="rel">→ data_workspace, same_rows, peer_ratio, offsets, data_findings (peer columns)</div></article>
+      <article class="file core"><header><span class="name">data_workspace.py</span><span class="loc">219 lines</span></header><p>Shared base. <code>prepare_source</code> loads a CSV (strict parsing, delimiter sniffed, UTF-8 only) or one XLSX sheet into a DuckDB <code>raw</code> table with all-text columns. The result is cached by content hash, import options and tool versions, and written atomically. <code>profile_prepared</code> computes column facts, and <code>create_typed_view</code> casts a column only when no present value would be lost.</p></article>
+      <article class="file core"><header><span class="name">data_findings.py</span><span class="loc">309 lines</span></header><p>Seven detectors (VERSION 10): D1 values that fail the column's main format, D2 spelling or shape variants, D3 keys missing from a reference, D4 duplicates, D5 a column that should equal a product of two others, D6 future or reversed dates, D7 values a power of ten, ×12 or a sign away from their group median. Writes <code>findings.json</code> + <code>flags.parquet</code> (finding → row id) and caches by content.</p><div class="rel">→ data_workspace</div></article>
+      <article class="file"><header><span class="name">same_rows.py</span><span class="loc">227 lines</span></header><p>Runs before a statement. When one expression combines aggregates of different columns (<code>sum(sales) - sum(cogs)</code>), it counts the rows that only one side covers because of NULLs or FILTERs. It may stop the statement and explain. Parses SQL through DuckDB's own JSON form of the query.</p></article>
+      <article class="file"><header><span class="name">peer_ratio.py</span><span class="loc">157 lines</span></header><p>Runs after a statement. If rows far (≥5×) from their key's median carry ≥0.5% of a summed total, it adds a note. Uses the column/key pairs that <code>data_findings</code> judged well described by a median.</p></article>
+      <article class="file"><header><span class="name">offsets.py</span><span class="loc">115 lines</span></header><p>Runs after a grouped sum of a whole-number column. It notes groups where negative rows (returns) cancel ≥50% of positive ones while the net stays positive, because per-unit values there rest on little net volume.</p></article>
+      <article class="file"><header><span class="name">record_execution.py</span><span class="loc">122 lines</span></header><p>Runs a generated script via <code>runpy</code> with a Python audit hook, recording every file it opened for reading and every DuckDB statement (including paths in SQL strings). Writes a provenance JSON. The docstring says plainly that this is evidence, not a sandbox.</p></article>
+      <article class="file"><header><span class="name">profile_source.py</span><span class="loc">27 lines</span></header><p>CLI wrapper: prepares and profiles one CSV, or up to 10 sheets of an XLSX, and prints JSON.</p><div class="rel">→ data_workspace</div></article>
+      <article class="file"><header><span class="name">data-analysis.md</span><span class="loc">7 lines</span></header><p>A short data guide the agent can read: the query tool, the "reduce → compute → revise → show" pattern, reserved words, and how to use <code>findings.json</code>/<code>flags.parquet</code>.</p></article>
+    </div>
+  </div>
+
+  <!-- Skills -->
+  <div class="group">
+    <div class="group-head"><h3>Method: skills and knowledge</h3><span>bundled/pricing-plugin · bundled/harness-skills · 1,602 lines</span><p>Markdown the model reads. The plugin is a separate MIT-licensed project (critias-ai/critias-pricing-plugin), vendored at 0.4.11. Its content changes the bundle fingerprint, so editing a skill restarts every conversation's analyst.</p></div>
+    <div class="files">
+      <article class="file core"><header><span class="name">skills/pricing-triage/SKILL.md</span><span class="loc">38 lines</span></header><p>The router. Preloaded on fresh sessions. Sends a request to the right task skill and answers short definitions.</p></article>
+      <article class="file core"><header><span class="name">skills/references/shared-rules.md</span><span class="loc">73 lines</span></header><p>Rules every skill defers to. Preloaded. Covers what counts as a confirmed company fact, how to handle unconfirmed claims and data findings, bounding uncertainty, and output conventions.</p></article>
+      <article class="file core"><header><span class="name">skills/knowledge/metric-verification.md</span><span class="loc">111 lines</span></header><p>The largest card, and preloaded. How to check that a metric is correct and comparable before using it.</p></article>
+      <article class="file"><header><span class="name">pricing-analyze · scan · recommend · design · execute · intake</span><span class="loc">38–56 lines each</span></header><p>The six task skills: calculate and explain, scan for anomalies, prioritise actions, design offers and policies, plan rollout, and record company context. Only <b>intake</b> may write <code>.pricing/context.md</code>, and only facts the user confirmed (<code>references/context-format.md</code>, <code>context-outline.md</code>).</p></article>
+      <article class="file"><header><span class="name">skills/knowledge/*.md · methods/*.md</span><span class="loc">17 cards</span></header><p>Domain cards: margin drivers, price waterfall, recurring metrics, retail economics, plus 12 method cards (discount governance, evidence ranking, experiments, hybrid offers, offer architecture, peer comparisons, price-change economics, price realization, recurring scenarios, renewals, segmentation, value estimation). <code>index.md</code> is a lookup table and is not registered as a skill.</p></article>
+      <article class="file"><header><span class="name">skills/references/lints.json</span><span class="loc">32 lines</span></header><p>Three plugin-owned lints applied by <code>nudges.ts</code>: missing values must not become 0 (<code>coalesce(x,0)</code>, <code>fillna(0)</code>), group rates come from totals (no <code>avg(rate)</code>), and rates are shown as percentages in replies.</p></article>
+      <article class="file"><header><span class="name">references/handoff · html-reporting · pdf-export.md</span><span class="loc">7–10 lines each</span></header><p>Plugin guidance for continuing in another skill and for HTML/PDF reports. In this harness, HTML report generation is blocked in <code>worker.ts</code> (see loose ends).</p></article>
+      <article class="file"><header><span class="name">harness-skills/analysis-visualize/</span><span class="loc">13 + 54 lines</span></header><p>The harness's own skill: when and how to call <code>present</code>, with chart selection and in-chat exploration references.</p></article>
+      <article class="file"><header><span class="name">plugin.json · LICENSE · versions.json</span><span class="loc">small</span></header><p>Plugin metadata (version must equal <code>versions.json</code>), the MIT licence (must exist), and the version record shown in <code>/api/status</code>.</p></article>
+    </div>
+  </div>
+
+  <!-- UI -->
+  <div class="group">
+    <div class="group-head"><h3>Browser UI</h3><span>src/ui/ · 1,811 lines</span><p>React 19 + assistant-ui, built by Vite into <code>dist/ui</code>. It holds no business logic: it renders the server's snapshot.</p></div>
+    <div class="files">
+      <article class="file core"><header><span class="name">App.tsx</span><span class="loc">205 lines</span></header><p>The page: conversation sidebar, top bar with the Critias wordmark and model ID, readiness notices, error bar with "retry same request", thread, composer and bottom bar (sources, recent runs). Connects assistant-ui to the server through an external-store runtime.</p></article>
+      <article class="file core"><header><span class="name">useSession.ts</span><span class="loc">99 lines</span></header><p>Opens the SSE stream, buffers events until the <code>/api/session</code> snapshot arrives, then applies them in order. Starts the handshake again if the server restarted or the conversation changed.</p></article>
+      <article class="file"><header><span class="name">state.ts</span><span class="loc">27 lines</span></header><p>Pure reducer: applies one event to the snapshot, dropping stale sequence numbers. Keeps unchanged message objects so charts don't redraw.</p></article>
+      <article class="file"><header><span class="name">api.ts · thread-messages.ts · thread-context.ts</span><span class="loc">62 lines</span></header><p>A small <code>fetch</code> wrapper, conversion of chat messages to assistant-ui's shape, and a React context for the thread.</p></article>
+      <article class="file"><header><span class="name">Thread · Message · MarkdownText · Mermaid</span><span class="loc">146 lines</span></header><p>The message list with example questions when empty. Markdown is rendered with raw HTML off, so model text can't inject markup. Mermaid diagrams are lazy-loaded with strict security.</p></article>
+      <article class="file"><header><span class="name">RunningView.tsx · run-view.ts · steps-store.ts</span><span class="loc">202 lines</span></header><p>The live "Analysing…" view: stepper, one live line, an expandable step list and a timer. Steps live in a store outside React, so step updates never re-render messages.</p></article>
+      <article class="file"><header><span class="name">Composer · Sources · Conversations · Announcer</span><span class="loc">185 lines</span></header><p>Input (Enter sends, Shift+Enter adds a line, file picker), the source list (every file is used), the saved-conversation sidebar, and a screen-reader live region ("Answer ready").</p></article>
+      <article class="file"><header><span class="name">outcome.ts · numbers.ts · theme.ts</span><span class="loc">52 lines</span></header><p>Marks a run's last message "no checked answer" with a retry; right-aligns numeric table cells; follows the system light/dark preference.</p></article>
+      <article class="file"><header><span class="name">exploration/*</span><span class="loc">408 lines</span></header><p>Renders verified results. <code>Exploration</code> shows the first view inline and the rest one click away. <code>ResultTable</code> sorts, filters and pages, and <code>PlotlyChart</code> + <code>plotly-adapter</code> draw the five chart kinds with Critias colours. All values come from the sealed files.</p></article>
+      <article class="file"><header><span class="name">styles.css · critias-aegean.css · wordmarks</span><span class="loc">401 lines + 2 SVG</span></header><p>The app's layout on top of the vendored Critias token file (do not edit it here; it mirrors the governance design system).</p></article>
+      <article class="file"><header><span class="name">main.tsx · index.html</span><span class="loc">13 lines</span></header><p>Mounts React and applies the theme. The Vite entry page.</p></article>
+    </div>
+  </div>
+
+  <!-- Install -->
+  <div class="group">
+    <div class="group-head"><h3>Install and configuration</h3><span>root of pricing-harness/</span><p>What a user runs and edits.</p></div>
+    <div class="files">
+      <article class="file"><header><span class="name">harness.config.json</span><span class="loc">24 lines</span></header><p>Model (default <code>deepseek/deepseek-v4.1-flash</code> on OpenRouter, high reasoning), port, upload cap (2 GiB), DuckDB memory and threads, and the per-turn limits. It also carries an <code>evaluation</code> block used only by eval scripts.</p></article>
+      <article class="file"><header><span class="name">.env.example</span><span class="loc">14 lines</span></header><p>Where the OpenRouter or OpenAI key goes. Pi's own stored credentials (<code>~/.pi/agent/auth.json</code>) also work.</p></article>
+      <article class="file"><header><span class="name">scripts/setup-macos.sh · start-macos.sh</span><span class="loc">12 + 10 lines</span></header><p>Setup checks Node ≥22.19, creates <code>.venv</code> from <code>requirements.txt</code>, runs <code>npm ci</code> and builds. Start sets the workspace, an optional model, the provider and the Python path, then runs <code>dist/server.js</code> with <code>.env</code>.</p></article>
+      <article class="file"><header><span class="name">package.json · npm-shrinkwrap · requirements.txt</span><span class="loc">locked</span></header><p>Runtime dependencies: Fastify, the Pi SDK 1.0.4, assistant-ui, React, Plotly, Mermaid, fonts, and Python's DuckDB/pandas/openpyxl. <code>playwright</code> is listed as a runtime dependency.</p></article>
+      <article class="file"><header><span class="name">docs/ (4 shipped)</span><span class="loc">markdown</span></header><p><code>local-setup</code>, <code>data-dictionary</code>, <code>architecture</code>, <code>acceptance</code>. <code>architecture.md</code> is partly out of date (see loose ends).</p></article>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ GUARDS ============ -->
+<section id="guards"><div class="wrap">
+  <div class="section-head">
+    <div class="eyebrow">04 · Guard rails</div>
+    <h2>Enforced by code or by prompt</h2>
+    <p>A vibecoded system is only as safe as the parts that don't depend on the model behaving. This table separates rules the code enforces from rules the model is only asked to follow.</p>
+  </div>
+  <div class="card tablewrap">
+  <table>
+    <thead><tr><th>Rule</th><th>How</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td>Only the local browser can call the API</td><td><span class="enf code">code</span></td><td>Host + Origin check in <code>server.ts</code>. No other authentication.</td></tr>
+      <tr><td>UI makes no outside requests</td><td><span class="enf code">code</span></td><td>CSP in <code>server.ts</code>; raw HTML off in <code>MarkdownText</code></td></tr>
+      <tr><td>Uploads are never modified; paths can't escape</td><td><span class="enf code">code</span></td><td><code>safePath</code>, <code>files.ts</code>; SQL sees sources read-only</td></tr>
+      <tr><td>Credentials not visible to agent processes</td><td><span class="enf code">code</span></td><td><code>analysisEnvironment</code> strips secret-named variables; <code>redactSecrets</code> in logs</td></tr>
+      <tr><td>Time, call and retry limits; no loops</td><td><span class="enf code">code</span></td><td><code>budget.ts</code>, gate in <code>stage-runner.ts</code>, process-group kill</td></tr>
+      <tr><td>SQL can't attach, install, change settings or read outside the folder</td><td><span class="enf code">code</span></td><td>Allow-list + <code>enable_external_access=false</code> + <code>lock_configuration</code> in <code>query_server.py</code></td></tr>
+      <tr><td><code>write</code>/<code>edit</code> limited to the analyst folder + context.md</td><td><span class="enf code">code</span></td><td><code>writablePath</code> in <code>worker.ts</code>. <b>bash can still write anywhere the user can.</b></td></tr>
+      <tr><td>context.md is append-only</td><td><span class="enf code">code</span></td><td><code>context-append-only</code> hook on write/edit. Not on bash.</td></tr>
+      <tr><td>No package installs</td><td><span class="enf code">code</span> (pattern)</td><td><code>no-installs</code> regex on bash commands</td></tr>
+      <tr><td>Read the method before calculating</td><td><span class="enf code">code</span> (soft)</td><td><code>skill-read</code> blocks at most twice, then lets the call through</td></tr>
+      <tr><td>Source rows go through SQL, not straight into Python</td><td><span class="enf code">code</span> (soft)</td><td><code>source-read</code> holds a run once per turn; sending it again runs it</td></tr>
+      <tr><td>Figures in the reply come from executed output</td><td><span class="enf code">code</span> (check)</td><td><code>reply-figures.ts</code>; unmatched numbers are named, not removed</td></tr>
+      <tr><td>Charts and tables show exact computed values</td><td><span class="enf code">code</span></td><td>Recorded hashes + checkpoint copies + binder</td></tr>
+      <tr><td>Record only facts the user confirmed</td><td><span class="enf prompt">prompt</span></td><td>Analyst prompt, shared rules, intake skill</td></tr>
+      <tr><td>Ask before treating anomalous rows</td><td><span class="enf prompt">prompt</span></td><td>Stage prompt + shared rules; code only flags</td></tr>
+      <tr><td>Keep population and assumptions across follow-ups</td><td><span class="enf prompt">prompt</span></td><td>Analyst prompt</td></tr>
+      <tr><td>Scripts don't do harm on the machine</td><td><span class="enf prompt">neither</span></td><td>Native execution. The code comments say it is not a sandbox.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div></section>
+
+<!-- ============ DISK ============ -->
+<section id="disk"><div class="wrap">
+  <div class="section-head">
+    <div class="eyebrow">05 · On disk</div>
+    <h2>What the workspace looks like</h2>
+    <p>Everything lives in the folder passed to <code>start-macos.sh</code>. There is no database server. Deleting <code>.pricing/data-cache</code> is safe because it is rebuilt from sources.</p>
+  </div>
+  <div class="card"><pre class="tree"><b>&lt;workspace&gt;/</b>
+├─ <b>files/</b>&lt;uuid&gt;/sales.csv              <i>uploads; never modified (files.ts)</i>
+├─ <b>analyses/</b>&lt;run&gt;/
+│  ├─ run.json                         <i>state, outcome, budget, cost, versions (runs.ts)</i>
+│  ├─ events.jsonl                     <i>every worker event, secrets redacted (orchestrator)</i>
+│  └─ steps.jsonl                      <i>the UI step list</i>
+├─ <b>outputs/</b>                            <i>artifact downloads; nothing writes here today</i>
+└─ <b>.pricing/</b>
+   ├─ context.md                       <i>confirmed company facts; append-only for the agent</i>
+   ├─ files.json · outputs.json        <i>source and artifact registries</i>
+   ├─ source-profiles.json             <i>last fresh session's profiles</i>
+   ├─ data-cache/                      <i>prepared DuckDB per source + findings (Python)</i>
+   ├─ sessions/                        <i>root Pi session (gives the conversation id)</i>
+   ├─ tmp/&lt;run&gt;/                       <i>removed when the run ends</i>
+   └─ <b>workflow/</b>
+      ├─ current.json                  <i>which conversation reopens</i>
+      └─ &lt;conversation&gt;/
+         ├─ conversation.json          <i>visible chat + title</i>
+         ├─ state.json                 <i>session key, settled lints, recorded CSV hashes</i>
+         ├─ <b>analyst/</b>                    <i>the agent's working folder</i>
+         │  ├─ sessions/ · pi/         <i>Pi session (resumed on follow-ups)</i>
+         │  ├─ *.py · *.csv            <i>scripts and results the agent wrote</i>
+         │  ├─ query-*.sql · bash-*.sh <i>what ran</i>
+         │  ├─ execution-*.txt         <i>outputs = evidence for the figure check</i>
+         │  ├─ provenance-*.json       <i>files each script read</i>
+         │  ├─ skills-read.json        <i>skill-read gate memory</i>
+         │  └─ qdb/analysis.duckdb     <i>persistent views the agent defined</i>
+         └─ checkpoints/&lt;id&gt;/          <i>frozen CSVs + checkpoint.json for delivered views</i></pre></div>
+</div></section>
+
+<!-- ============ LOOSE ENDS ============ -->
+<section id="loose"><div class="wrap">
+  <div class="section-head">
+    <div class="eyebrow">06 · Loose ends</div>
+    <h2>Things I noticed while reading</h2>
+    <p>None of these breaks the main path, but each one is code or text that doesn't match what the product does today. Listed roughly by how much they could surprise you.</p>
+  </div>
+  <div class="findings">
+    <div class="callout dang"><h3>bash bypasses the write guard and the context.md rule</h3><p>The write limits and the append-only rule cover only the <code>write</code> and <code>edit</code> tools. The analyst also has <code>bash</code> in the workspace with your user's permissions, so it can write, delete or overwrite <code>context.md</code> or any file you can. The only protections are credential stripping, the install regex and the process-group kill. The code says this plainly, but the product docs should say it too.</p></div>
+    <div class="callout warn"><h3><code>docs/architecture.md</code> describes a retired design</h3><p>It talks about <code>handoff.json</code>, <code>emit_handoff</code>, claim approval and <code>checked-figures.ts</code>. None of these exist. Checkpoints are now created by the <code>present</code> tool. It also says "five detectors" (the code has seven), "Pricing Plugin 0.4.3" (0.4.11) and "Workflow 3.0" (<code>versions.json</code> says 2.2.0). This file ships to users.</p></div>
+    <div class="callout warn"><h3>The root agent session is never prompted</h3><p><code>application.ts</code> creates a full Pi session with its own long system prompt and a workspace-wide bash tool, but nothing ever calls <code>prompt()</code> on it. In practice it only mints the conversation ID. Its prompt text in <code>session.ts</code> is dead text that still mentions a "present tool" and documentation reading.</p></div>
+    <div class="callout warn"><h3>The artifact/outputs path is half-removed</h3><p><code>files.registerPublishedRun</code> is never called, so <code>/api/outputs</code> can only ever serve artifacts from older workspaces. Meanwhile the plugin's shared rules tell the agent to follow <code>html-reporting.md</code> for circulated reports, while <code>worker.ts</code> blocks report commands with "report generation is retired". The two contradict each other.</p></div>
+    <div class="callout info"><h3>Smaller items</h3><p>· <code>harness.config.json</code> ships an <code>evaluation</code> block that points at a plan file under <code>docs/superpowers/</code>.<br>· <code>playwright</code> is a runtime dependency, which adds a browser download to installs that don't need one.<br>· <code>piSdk: '1.0.4'</code> is hard-coded in three places (<code>runs.ts</code>, <code>routes/chat.ts</code>, <code>versions.json</code>).<br>· <code>resolveModel</code> runs at boot, in the health check and again in every worker turn. With an ID outside the catalogue, each run fetches OpenRouter's model list (10 s timeout).<br>· The figure check skips any bare 1900–2100 number as a year (noted in the code).<br>· Data findings and profiles are computed only on fresh sessions. A follow-up after the user confirms a treatment reuses the first scan, which is intended but worth knowing.<br>· <code>peer_ratio</code> and <code>offsets</code> check only SQL. Sums done in Python aren't checked, as their docstrings say.</p></div>
+  </div>
+</div></section>
+</main>
+
+<footer class="end"><div class="wrap">Read from the working tree of <code>pricing-harness</code> on feat/thin-analyst (head 2aa1510), 2026-10-18. Excludes <code>tests/</code>, evals and eval scripts, and dev-only docs. Line counts exclude test files.</div></footer>
+
+<script>
+(function(){
+  var q=document.getElementById('q'),core=document.getElementById('coreOnly');
+  function apply(){
+    var t=q.value.trim().toLowerCase(),c=core.getAttribute('aria-pressed')==='true';
+    document.querySelectorAll('#files .group').forEach(function(g){
+      var shown=0;
+      g.querySelectorAll('.file').forEach(function(f){
+        var ok=(!t||f.textContent.toLowerCase().indexOf(t)>=0)&&(!c||f.classList.contains('core'));
+        f.classList.toggle('hidden',!ok);if(ok)shown++;
+      });
+      g.classList.toggle('hidden',shown===0);
+    });
+  }
+  q.addEventListener('input',apply);
+  core.addEventListener('click',function(){core.setAttribute('aria-pressed',core.getAttribute('aria-pressed')==='true'?'false':'true');apply();});
+})();
+</script>
+</body>
+</html>

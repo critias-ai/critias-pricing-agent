@@ -1,0 +1,389 @@
+Summary,Issue Type,Description,Priority,Labels
+PH-01 — Freeze the first data dictionary and independent benchmark pack,Task,"Plan reference: PH-01
+Epic/slice: headless
+
+**Type / priority:** Task / P0. **Dependencies:** Real-data access and owner confirmation of its definitions during execution. **Deliverable:** A reviewed definition of correct results before model/UI work.
+
+**Files:** Create `docs/data-dictionary.md`, `tests/evals/spec.ts`, `tests/evals/cases/margin-baseline.json`, `tests/evals/cases/margin-boundaries.json`, `tests/evals/inputs/weighted.csv`, `tests/evals/inputs/boundaries.csv`, `tests/evals/private/margin-expected.json`, `tests/evals/oracle_margin.py`, `tests/python/test_oracle_margin.py`.
+
+**Interfaces:** `loadCase(path: string): Promise<EvalCase>` validates case identity, prompt/turns, input/context paths and requested output schema. `compute_margin_oracle(rows: list[dict[str,str]]) -> list[dict]` is evaluator-only. A case's solver input contains no oracle path or expected values.
+
+**Acceptance:** Dictionary names actual row grain, raw columns, revenue/cost meaning, product identifiers/historical group mappings, sign treatment, number/date format, calendar, currency and known gaps. Confirm the benchmark's annual/cumulative choices and reference date with the owner; do not apply them globally. Independent expected totals reconcile. The weighted fixture contains revenues 10,000/90,000 and margins 50%/25%, giving 27.5% group margin. The boundary fixture has `(revenue,COGS)` A `(50000,32500)`, B `(50001,37500.75)`, C `(1,0.65)`, giving exactly 30% group margin. Additional real-data questions and expected outputs are agreed as part of benchmark preparation.
+
+- [ ] Write `test_weighted_and_boundary_oracle`: assert group margin `Decimal(""0.275"")`; boundary deviations A `500`, B `-500`; A outlier true/detail false; B outlier true/detail true. Cross-check this fixture independently in a spreadsheet or hand calculation.
+- [ ] Run `python -m pytest tests/python/test_oracle_margin.py -q`; expect failure because the oracle is absent.
+- [ ] Implement the evaluator oracle and case loader, save independent keys outside solver inputs, and obtain confirmation of real-data definitions in the dictionary.
+- [ ] Run the same command; expect all assertions to pass. Review input/expected segregation and dictionary confirmation.
+- [ ] Commit as `test: define independent pricing benchmark pack`.",Highest,pricing-harness-headless
+PH-02 — Configure and verify one local runtime,Task,"Plan reference: PH-02
+Epic/slice: headless
+
+**Type / priority:** Task / P0. **Dependencies:** None; planning choices are confirmed. **Deliverable:** Explicit configuration and actionable setup health.
+
+**Files:** Create `package.json`, `package-lock.json`, `tsconfig.json`, `tsconfig.server.json`, `requirements.in`, `requirements.txt`, `src/runtime.ts`, `docs/local-setup.md`, `tests/unit/runtime.test.ts`. Fold TypeScript/Vitest/pytest setup into this ticket.
+
+**Interfaces:** Produce `loadConfig(env): HarnessConfig`, `checkRuntime(config): Promise<Health>`, and `resolveModel(config): Promise<{runtime:ModelRuntime; model:NonNullable<CreateAgentSessionOptions[""model""]>}>`. Use Pi `ModelRuntime` and `ModelRegistry`, not a second provider client.
+
+**Acceptance:** Explicit workspace/OpenRouter model/Python; missing credentials/config gives a useful error. SDK pinned to `1.0.4`; Node `>=22.19.0`, macOS Python environment documented. Lock resolved compatible Python dependencies, Node dependencies and Playwright version, recording actual versions. Use documented configurable upload/DuckDB defaults. Browser/vision missing is distinguishable from analysis readiness. A wrong provider/model fails rather than silently falling back. Secrets remain server-side.
+
+- [ ] Write `requiresExplicitModelAndPython` with missing provider/model/Python rejected, and `keepsAnalysisReadyWithoutPreview` asserting `agent.ready === true`, `python.ready === true`, `preview.ready === false` for a stubbed missing browser. Assert returned status contains no API key.
+- [ ] Run `npm test -- tests/unit/runtime.test.ts`; expect the readiness/config assertions to fail.
+- [ ] Implement config validation, direct-exec dependency probes and Pi model/auth resolution; document the owner-selected platform/provider setup and commit exact locks.
+- [ ] Run the same command and `npm run typecheck`; expect PASS. Run dependency health on the chosen platform.
+- [ ] Commit as `feat: configure a verified local analysis runtime`.",Highest,pricing-harness-headless
+PH-03 — Vendor and validate the fixed skill bundle,Task,"Plan reference: PH-03
+Epic/slice: headless
+
+**Type / priority:** Task / P0. **Dependencies:** PH-02. **Deliverable:** A deterministic, complete runtime bundle.
+
+**Files:** Create `bundled/versions.json`, `bundled/pricing-plugin/{plugin.json,LICENSE,skills/**}`, `src/agent/bundle.ts`, `tests/unit/bundle.test.ts`; modify packaging allowlist in `package.json`. The visualization tree arrives in PH-10–PH-14.
+
+**Interfaces:** `validateBundle(bundledRoot, options?): Promise<BundleInfo>` from section 3.3. Pricing-only validation is available for the initial headless milestone and the controlled skill comparison; the production release requires all eight skills.
+
+**Acceptance:** Copy the complete reviewed pricing runtime tree and preserve relative references. Verify seven exact pricing entry points and later exactly eight total. Missing shared files, invalid metadata and duplicate names fail. Hash runtime contents, not absolute paths. Package excludes evaluator material, workspace context and prior outputs. No code polls GitHub or downloads skills on startup/install.
+
+- [ ] Write `fingerprintIsPortableAndChangesWithSkillBytes`: copy the same bundle into two temporary directories, assert equal fingerprints, edit one skill, assert inequality. Write `rejectsMissingKnowledgeAndDuplicateSkill`, including `pricing-intake/references/context-outline.md`.
+- [ ] Run `npm test -- tests/unit/bundle.test.ts`; expect validation/fingerprint failures.
+- [ ] Implement bundle validation/fingerprinting and a build copy step rooted at the installed module. Record pricing commit/version and application-owned visualization version.
+- [ ] Run the same command and inspect `npm pack --dry-run --json`; expect tests to pass and only runtime assets in the package.
+- [ ] Commit as `feat: bundle pricing skills without automatic updates`.",Highest,pricing-harness-headless
+PH-04 — Initialize a workspace without changing its business data,Task,"Plan reference: PH-04
+Epic/slice: headless
+
+**Type / priority:** Task / P0. **Dependencies:** PH-02. **Deliverable:** Stable directories, confirmed context and atomic metadata IO.
+
+**Files:** Create `src/workspace.ts`, `src/contracts.ts`, `tests/unit/workspace.test.ts`.
+
+**Interfaces:** `openWorkspace(root: string): Promise<WorkspacePaths>` returns absolute `root`, `pricing`, `files`, `analyses`, `outputs`, `sessions` paths. `writeJsonAtomic(path: string, value: unknown): Promise<void>` writes metadata safely. Define transport types from section 3.
+
+**Acceptance:** Create absent directories and an empty context outline containing no invented facts. Preserve existing context and files byte-for-byte. Allow supported pre-existing files beneath `files/`; upload-ID subdirectories are not required for manually supplied files. Application root and business workspace remain separate. Validate root resolution; do not follow a source/output symlink outside its permitted root.
+
+- [ ] Write `reopenPreservesContextAndSources`: open a workspace twice and assert context/source hashes unchanged. Write `atomicJsonRetainsOldValueOnWriteFailure` and `rejectsEscapedWorkspacePath`.
+- [ ] Run `npm test -- tests/unit/workspace.test.ts`; expect directory/preservation behavior to fail.
+- [ ] Implement workspace initialization and atomic JSON replacement; expose the shared contract types without domain formulas.
+- [ ] Run the same command and `npm run typecheck`; expect PASS with a workspace path containing spaces.
+- [ ] Commit as `feat: initialize and preserve a pricing workspace`.",Highest,pricing-harness-headless
+PH-05 — Create and resume the explicitly wired Pi session,Task,"Plan reference: PH-05
+Epic/slice: headless
+
+**Type / priority:** Task / P0. **Dependencies:** PH-02–PH-04. **Deliverable:** The single factory used by CLI, browser and evaluation.
+
+**Files:** Create `src/agent/session.ts`, `tests/integration/session.test.ts`; modify `src/agent/bundle.ts` only to expose the explicit development inventory.
+
+**Interfaces:** Consume `HarnessConfig`, `BundleInfo`, resolved `ModelRuntime/model`, `WorkspacePaths`; produce `createPricingSession(options): Promise<AgentHandle>` from section 3.3. Return the session manager so transcript projection reads Pi's persisted active branch.
+
+**Acceptance:** Explicit resource settings suppress ambient skills/extensions/packages/context. Use exact bundled paths and four tool names. Skill metadata is advertised; complete skills are read on demand. Same fingerprint resumes the latest conversation; changed/missing fingerprint starts fresh and retains history/context. Configured model is verified rather than silently replaced. Exactly eight production skills after PH-14.
+
+- [ ] Write `loadsOnlyBundledSkillsFromAnotherCwd` with an unrelated ambient skill present; assert loaded pricing names match the seven-entry list. Write `changedBundleStartsFreshWithoutDeletingHistory`, asserting same-fingerprint session ID reuse and changed-fingerprint ID inequality.
+- [ ] Run `npm test -- tests/integration/session.test.ts`; expect factory/resume assertions to fail.
+- [ ] Implement the HLD loader/settings/manager wiring, pass the resolved model runtime, append `harness-bundle`, and compile against SDK `1.0.4`.
+- [ ] Run the same command and `npm run typecheck`; expect PASS without making a live model request. Extend the inventory assertion to eight in PH-14.
+- [ ] Commit as `feat: wire bundled skills into a persistent Pi session`.",Highest,pricing-harness-headless
+PH-06 — Normalize Pi events and make snapshots authoritative,Task,"Plan reference: PH-06
+Epic/slice: headless
+
+**Type / priority:** Task / P0. **Dependencies:** PH-04, PH-05. **Deliverable:** A small transport-independent event view.
+
+**Files:** Create `src/agent/events.ts`, `tests/unit/events.test.ts`; modify `src/contracts.ts` with narrowed event payloads.
+
+**Interfaces:** `createEventView(handle: AgentHandle, initial: {runs:RunRecord[]; artifacts:Artifact[]}): EventView`; `EventView.snapshot(): SessionSnapshot`, `subscribe(listener: (event: HarnessEvent)=>void): ()=>void`, `setRun(run: RunRecord): void`, `settleRun(run: RunRecord, artifacts: Artifact[]): void`, `dispose(): void`. Terminal runs remain in history while `activeRun` becomes null.
+
+**Acceptance:** Subscribe before prompts. Message events contain the latest full text under a stable ID; UI does not receive thinking/raw dataset output. Pi retry/compaction status remains active. Sequences reflect already-applied state. Transcript uses the active session branch and retains pre-compaction visible conversation. Bounded UI summaries do not alter model-visible tool output. Rebinding disposes the old subscription.
+
+- [ ] Write `retryDoesNotEmitSettledOnAgentEnd`: feed `agent_end` with `willRetry:true`, assert no terminal event. Write `snapshotSequenceIncludesPublishedMessage`, and `summariesAreBoundedWithoutMutatingToolResults`, asserting the display cap of `4096` characters.
+- [ ] Run `npm test -- tests/unit/events.test.ts`; expect event/view assertions to fail.
+- [ ] Implement the SDK event adapter, transcript projection and monotonic event sequencing; expose final state only when the controller finalizes.
+- [ ] Run the same command and `npm run typecheck`; expect PASS for message replacements, retry, compaction and subscription disposal.
+- [ ] Commit as `feat: expose consistent agent events and snapshots`.",Highest,pricing-harness-headless
+"PH-07 — Own one run, cancellation and reproduction metadata",Task,"Plan reference: PH-07
+Epic/slice: headless
+
+**Type / priority:** Task / P0. **Dependencies:** PH-02, PH-04–PH-06, PH-09. **Deliverable:** Correct run ownership independent of HTTP.
+
+**Files:** Create `src/agent/runs.ts`, `tests/unit/runs.test.ts`; modify `src/agent/session.ts` to support fresh-session rebinding.
+
+**Interfaces:** Produce `RunController` methods/constructor from section 3.4. Consume `AgentHandle`, `EventView`, workspace paths and the PH-09 file/artifact service. Unit tests stub the session/model, not a missing application module.
+
+**Acceptance:** Acquire the guard synchronously; pending acceptance and prompt promises are observed. Record model, runtime/bundle versions, source IDs/hashes and lifecycle in `run.json`. Same request ID reuses acceptance; a different concurrent request returns `BUSY`. Failed preflight clears the guard. Cancel waits for Pi idle; finalization occurs once. Provider/tool failure returns a useful error. New conversation is idle-only. Process restart marks unfinished runs interrupted; no automatic rerun or rollback.
+
+- [ ] Write `onlyOneConcurrentSubmissionIsAccepted`, asserting one prompt invocation and one `BUSY`. Write `sameRequestDoesNotPromptAgain` with delayed source hashing, `failedPreflightReleasesGuard`, `cancelWaitsForIdle`, `earlyAgentEndDoesNotReleaseGuard`, and `changedSourceFailsFinalization` with code `SOURCE_CHANGED`.
+- [ ] Run `npm test -- tests/unit/runs.test.ts`; expect ownership/cancellation assertions to fail.
+- [ ] Implement operational prompt construction, lifecycle guard, request-ID map, finalizer, metadata updates and session rebinding. Observe rejected prompt promises; await cleanup on close.
+- [ ] Run the same command and `npm run typecheck`; expect PASS, including cancellation during a retry and retained partial calculations.
+- [ ] Commit as `feat: manage one reproducible cancellable agent run`.",Highest,pricing-harness-headless
+PH-08 — Prove the first headless pricing analysis,Story,"Plan reference: PH-08
+Epic/slice: headless
+
+**Type / priority:** Story / P0. **Dependencies:** PH-01–PH-07, PH-09, PH-23. **Deliverable:** A real question produces executed, reconciled results before UI development.
+
+**Files:** Create `src/headless.ts`, `tests/integration/headless.test.ts`; modify `docs/local-setup.md` and package scripts.
+
+**Interfaces:** `runHeadless(config: HarnessConfig, input: SubmitRequest): Promise<RunRecord>` uses the production factory/controller, waits for finalization and closes its subscriptions. CLI accepts explicit workspace and question; selected files are resolved through the same registry.
+
+**Acceptance:** Question reads appropriate pricing skill/context, profiles actual data and invokes configured Python. Results CSV and reproducible script are saved. Context clarification is ordinary chat: unconfirmed margin/calendar facts are asked, confirmed replies reused, findings not silently persisted. Existing analysis can answer simply without forced charts. Validate the baseline against the PH-01 oracle rather than plausible prose.
+
+- [ ] Write `headlessUsesProductionFactoryAndPreservesSources`, using a fake Pi turn to assert factory/controller reuse and unchanged source hashes. Define live `margin-baseline` evidence checks for script execution, group margin and full qualifying/outlier populations.
+- [ ] Run `npm test -- tests/integration/headless.test.ts`; expect entry-point wiring to fail.
+- [ ] Implement the headless entry point and output/status printing with secrets omitted; execute the real benchmark after PH-01 definitions are confirmed, using an explicit configured OpenRouter model ID.
+- [ ] Run the unit/integration command; expect PASS. Run the live baseline and independently review arithmetic before calling this milestone complete.
+- [ ] Commit as `feat: run pricing analysis headlessly through the harness`.",Highest,pricing-harness-headless
+PH-09 — Register sources and serve validated final artifacts,Task,"Plan reference: PH-09
+Epic/slice: headless
+
+**Type / priority:** Task / P0. **Dependencies:** PH-02, PH-04. **Deliverable:** File identity and safe browser delivery; PH-12 later exercises publication through the report helper.
+
+**Files:** Create `src/files.ts`, `src/routes/files.ts`, `tests/integration/files.test.ts`; modify `src/contracts.ts` if needed for file route types.
+
+**Interfaces:** `openFileStore(paths: WorkspacePaths, options:{maxUploadBytes:number}): Promise<FileStore>`; `FileStore.listSources(): SourceFile[]`, `saveUpload(stream: Readable, name: string): Promise<SourceFile>`, `resolveSources(ids: string[]): SourceFile[]`, `snapshotSources(): Promise<SourceFile[]>`, `checkSourcesUnchanged(inputs: RunRecord[""inputs""]): Promise<string[]>`, `registerPublishedRun(runId: string): Promise<Artifact[]>`, `listArtifacts(): Artifact[]`, `resolveArtifact(id: string): Promise<Artifact>`. `snapshotSources` refreshes current hashes/registry; the unchanged check returns changed/missing IDs without rewriting the run record. `registerFileRoutes(app: FastifyInstance, store: FileStore, isBusy: ()=>boolean): void`.
+
+**Acceptance:** Adopt supported existing files under `files/` without moving them; initial discovery runs on startup. Newly placed local files can be picked up on restart rather than introducing a watcher. Upload with opaque ID, retained bytes/hash, size cap, extension check and collision-safe path. One file per request. JSON registry persists IDs across restart; fresh snapshots observe pre-run content changes. Serve registered outputs only; a complete valid manifest is required. Reject path/symlink escape, missing file and oversized upload. Busy rejects new uploads, not downloads. Never list `.partial` files.
+
+- [ ] Write `sameFilenameGetsDifferentIdsAndOriginalBytes`, `oversizedUploadLeavesNoFinalFile`, `rejectsTraversalAndSymlinkEscape`, and `onlyManifestFilesBecomeArtifacts`, asserting `413`, no partial registration and stable IDs after reopen.
+- [ ] Run `npm test -- tests/integration/files.test.ts`; expect storage/route assertions to fail.
+- [ ] Implement streamed uploads, initial source discovery, atomic serialized registries, manifest validation and opaque-ID response streaming.
+- [ ] Run the same command and `npm run typecheck`; expect PASS with a large streamed test file and two identical display filenames.
+- [ ] Commit as `feat: register workspace inputs and deliver final artifacts`.",Highest,pricing-harness-headless
+PH-10 — Package a small Plotly theme and useful figure examples,Task,"Plan reference: PH-10
+Epic/slice: reporting
+
+**Type / priority:** Task / P0. **Dependencies:** PH-02. **Deliverable:** Consistent appearance without a second charting API.
+
+**Files:** Create `bundled/harness-skills/analysis-visualize/scripts/plotly_theme.py`, `bundled/harness-skills/analysis-visualize/references/chart-selection.md`, `tests/python/test_plotly_theme.py`.
+
+**Interfaces:** `apply_theme(fig: go.Figure) -> go.Figure`. The reference demonstrates native Plotly line, sorted horizontal deviation bar, revenue/deviation scatter and heatmap, using already calculated values.
+
+**Acceptance:** Shared typography/palette/grid/hover, responsive width, no default animation. Threshold/benchmark lines remain analytically explicit. Percentage axes use fractional data; bps axes use numeric bps. Missing points remain gaps; diverging scales are centered appropriately. No hundreds-of-lines default or hidden benchmark recalculation. Example snippets are instructional, not a mandatory chart sequence.
+
+- [ ] Write `test_theme_preserves_data_and_units`: use `[0.30, None, 0.35]`, assert data unchanged, missing preserved and percent tick formatting retained after theme application. Assert an explicit zero-centered colour scale is not removed.
+- [ ] Run `python -m pytest tests/python/test_plotly_theme.py -q`; expect missing/theme behavior to fail.
+- [ ] Implement the single theme function and the chart-choice reference with captions, qualifications, full-table preservation and prepared-data interactions.
+- [ ] Run the same command; expect PASS. Review actual Plotly examples with the PH-13 browser helper when it becomes available.
+- [ ] Commit as `feat: add a focused Plotly theme and chart guidance`.",Highest,pricing-harness-reporting
+PH-11 — Validate the report description and its referenced evidence,Task,"Plan reference: PH-11
+Epic/slice: reporting
+
+**Type / priority:** Task / P0. **Dependencies:** PH-02, PH-10. **Deliverable:** A small checked input to the HTML renderer.
+
+**Files:** Create `bundled/harness-skills/analysis-visualize/scripts/report_contract.py`, `bundled/harness-skills/analysis-visualize/references/html-reporting.md`, `tests/python/test_report_contract.py`.
+
+**Interfaces:** Produce `load_report(path: Path) -> ValidatedReport` from section 4.2. `ValidatedReport` holds the validated content, resolved run-root paths, native loaded figures and table schemas; it makes no claim that the financial calculation is correct.
+
+**Acceptance:** Version `1`, exact required fields, unique chart/table IDs, explicit formatting/currency, positive display limits and existing CSV columns. All paths remain inside the analysis run. Required figure/script/table failure is fatal and names the failing reference. Native Plotly schema is accepted, not translated into a new DSL. Unknown JSON fields are rejected to expose spelling errors.
+
+- [ ] Write `test_rejects_missing_figure_column_and_escape`, covering nonexistent figure, column `margin_typo`, `../other-run/results.csv`, duplicate ID, `maxRows=0` and unknown schema version. Assert each fails with its field/path named; a valid two-chart description passes.
+- [ ] Run `python -m pytest tests/python/test_report_contract.py -q`; expect loader/validation to fail.
+- [ ] Implement lightweight typed validation with ordinary Python structures and Plotly parsing; document the exact report fields and helper arguments.
+- [ ] Run the same command; expect PASS and no silent omission of a referenced chart/table.
+- [ ] Commit as `feat: validate report inputs and evidence references`.",Highest,pricing-harness-reporting
+PH-12 — Render and publish self-contained interactive HTML,Story,"Plan reference: PH-12
+Epic/slice: reporting
+
+**Type / priority:** Story / P0. **Dependencies:** PH-09–PH-11. **Deliverable:** An offline report and complete companion downloads.
+
+**Files:** Create `bundled/harness-skills/analysis-visualize/scripts/render_report.py`, `bundled/harness-skills/analysis-visualize/assets/report.html`, `tests/python/test_render_report.py`; modify `src/files.ts` only if publication validation needs correction.
+
+**Interfaces:** `render_report(report_path: Path, output_path: Path) -> PublishedManifest`; CLI `python <skill-root>/scripts/render_report.py --report <analysis-run>/report.json --output <output-run>/report.html`. Consume `load_report` and `apply_theme`; emit section 3.2 manifest.
+
+**Acceptance:** Title/scope/findings/charts/tables/limitations/method appear. Exactly one embedded Plotly.js bundle for any positive chart count, none for table-only HTML; no CDN. Escape plain text/cells; explicit percent/bps/currency formatting; labelled table truncation with complete CSV downloads. Publish script and all unique referenced CSVs. Manifest last; failed render does not replace an older valid report or create new final registration. No new-data query behavior in browser JavaScript.
+
+- [ ] Write `test_offline_report_has_one_plotly_bundle_and_full_csv`, using two figures, a ten-row CSV displayed at `maxRows=3`, fraction `0.30`, bps `500`, missing and zero, plus text `<b>Product</b>`. Assert one library bundle, visible `30%`/`500 bps`, escaped text, labelled `3 of 10`, and ten rows in the copied CSV.
+- [ ] Run `python -m pytest tests/python/test_render_report.py -q`; expect publication/rendering assertions to fail. Add `test_failed_render_keeps_previous_report_and_no_new_manifest`.
+- [ ] Implement native Plotly fragments, Jinja template, unique companion copying and atomic manifest publication; return actionable CLI errors with a nonzero exit code.
+- [ ] Run the same command; expect PASS. PH-13/PH-21 prove browser interaction and offline loading rather than HTML-string checks alone.
+- [ ] Commit as `feat: publish offline Plotly HTML reports`.",Highest,pricing-harness-reporting
+PH-13 — Preview the actual report and capture rendering evidence,Task,"Plan reference: PH-13
+Epic/slice: reporting
+
+**Type / priority:** Task / P0. **Dependencies:** PH-02, PH-12. **Deliverable:** Screenshots/diagnostics the model can inspect.
+
+**Files:** Create `bundled/harness-skills/analysis-visualize/scripts/preview_report.mjs`, `tests/integration/preview.test.ts`; modify Node package assets to include the helper and its dependency resolution.
+
+**Interfaces:** `previewReport(input: string, outputDir: string): Promise<PreviewResult>`; CLI `node <skill-root>/scripts/preview_report.mjs --input <report.html> --output-dir <previews>`. `PreviewResult` has `status: ""rendered""|""failed""|""unavailable""`, screenshot paths, console/page errors, rendered/expected chart counts and viewport dimensions.
+
+**Acceptance:** Open actual file, wait for expected Plotly graph readiness, capture every report section and diagnostics. Default inspection uses a desktop viewport; tests additionally exercise a narrow viewport. Missing Chromium is `unavailable`; a broken chart is `failed`; neither is called inspected. Helper resolves dependencies from installed application even when invoked from another workspace. No network is required to render the report.
+
+- [ ] Write `capturesEverySectionAndReportsBrokenChart`, asserting screenshots exist for findings/charts/tables/method, expected chart count matches, and deliberately broken JavaScript produces `failed` with an error. Write `missingBrowserReturnsUnavailable`.
+- [ ] Run `npm test -- tests/integration/preview.test.ts`; expect helper/diagnostics assertions to fail.
+- [ ] Implement Playwright rendering, section screenshot capture and JSON diagnostics; use bounded timeouts and close browser resources in `finally`.
+- [ ] Run the same command with Chromium installed; expect PASS. Open/read the produced screenshots to verify that the captured content is the actual report.
+- [ ] Commit as `feat: capture report previews and browser diagnostics`.",Highest,pricing-harness-reporting
+PH-14 — Install and behavior-test the visualization skill,Story,"Plan reference: PH-14
+Epic/slice: reporting
+
+**Type / priority:** Story / P0. **Dependencies:** PH-03, PH-05, PH-10–PH-13. **Deliverable:** An agent knows when and how to produce an inspected report.
+
+**Files:** Create `bundled/harness-skills/analysis-visualize/SKILL.md`, `tests/integration/visualization-skill.test.ts`, `tests/evals/cases/visualization.json`; modify `bundled/versions.json`, `src/agent/bundle.ts` and package asset checks.
+
+**Interfaces:** Consume the helper CLI contracts and checked result files. Expose skill metadata `name: analysis-visualize` with the HLD description. Production session inventory becomes exactly eight; temporary pricing-only development mode remains CLI-only until removed for release.
+
+**Acceptance:** Relevant chart/report requests lead to reading the skill and references. Agent chooses a small useful chart set, uses existing results, applies units/theme, writes report JSON, invokes renderer/preview, reads actual screenshots and corrects material problems. Missing preview/vision is disclosed. A short factual answer can remain in chat. Final text includes findings, HTML/CSV links and material limits. No report claims a new population benchmark after simple filtering.
+
+- [ ] Write `productionInventoryIsExactlyEight`, asserting seven pricing names plus `analysis-visualize` and all helper/reference assets. Define live visualization checks recording skill reads, renderer/preview invocation and screenshot reads; absence of such evidence fails a claim of inspection.
+- [ ] Run `npm test -- tests/integration/visualization-skill.test.ts`; expect eight-skill/resource assertions to fail before packaging.
+- [ ] Package the HLD skill instructions and references; implement no domain code. Run the same case with and without the visualization skill, keeping dataset/model/settings fixed.
+- [ ] Run the structural command; expect PASS. Review the live comparison for chart correctness, readable screenshots, useful selection and honest inspection claims before accepting behavior.
+- [ ] Commit as `feat: package agent guidance for Plotly reports`.",Highest,pricing-harness-reporting
+"PH-15 — Expose the local chat, session and SSE API",Story,"Plan reference: PH-15
+Epic/slice: browser
+
+**Type / priority:** Story / P0. **Dependencies:** PH-02, PH-05–PH-07, PH-09; PH-14 for production skill inventory. **Deliverable:** The headless behavior works over a small loopback server.
+
+**Files:** Create `src/server.ts`, `src/routes/chat.ts`, `tests/integration/api.test.ts`; modify package start/development scripts.
+
+**Interfaces:** `startServer(config: HarnessConfig): Promise<{url:string; close:()=>Promise<void>}>`; `registerChatRoutes(app: FastifyInstance, controller: RunController, health: Health): void`. Consume file routes and event subscriptions; return section 3.6 contracts.
+
+**Acceptance:** Subscribe before run execution; POST returns `202` without waiting for completion. Second active request gets `409`; cancel waits for idle; idle cancel is safe. Fresh conversation rebinds subscriptions. SSE starts with hello, uses heartbeat and removes listeners on disconnect. Status includes skills/versions/readiness without secrets. Serve built UI from the installed location. Shutdown aborts/settles active work and closes resources.
+
+- [ ] Write `acceptedRequestStreamsAndCancelSettles`, asserting `202`, ordered message/tool events, no early settled event on retry, and cancellation returns `busy:false`. Write `newSessionRebindsAndKeepsPriorHistory`, and `serverBindsLoopback`.
+- [ ] Run `npm test -- tests/integration/api.test.ts`; expect route/lifecycle assertions to fail.
+- [ ] Implement Fastify composition and the small routes using controller/file-store behavior; do not duplicate agent business logic in endpoints.
+- [ ] Run the same command and `npm run typecheck`; expect PASS. Use a real EventSource-compatible streaming integration, not only mocked route output.
+- [ ] Commit as `feat: serve local chat and agent events`.",Highest,pricing-harness-browser
+PH-16 — Build chat streaming and reconnect without duplicate work,Story,"Plan reference: PH-16
+Epic/slice: browser
+
+**Type / priority:** Story / P0. **Dependencies:** PH-06, PH-15. **Deliverable:** A usable conversation view with correct connection recovery.
+
+**Files:** Create `index.html`, `src/ui/main.tsx`, `src/ui/App.tsx`, `src/ui/Chat.tsx`, `src/ui/api.ts`, `src/ui/useSession.ts`, `src/ui/styles.css`, `vite.config.ts`, `tests/browser/chat.spec.ts`; modify build scripts.
+
+**Interfaces:** `useSession(): {snapshot:SessionSnapshot|null; connected:boolean; error:string|null; send:(input:SubmitRequest)=>Promise<RunAccepted>; cancel:()=>Promise<void>; newSession:()=>Promise<void>}`. API functions mirror transport types; UI has no alternate conversation store.
+
+**Acceptance:** Show streamed latest message text, bounded tool progress, retry/cancel status, workspace and model. Buffer-SSE/snapshot handshake handles races, duplicates and changed server/session IDs. Reconnect never resubmits the question. If a POST acknowledgement is lost, inspect state/reuse the same request ID within the process; no automatic new request after restart. Stop/new conversation controls reflect the authoritative busy state.
+
+- [ ] Write browser `reconnectShowsCurrentTextWithoutSecondPost`: disconnect SSE during a fake active run, reconnect and assert one `/api/messages` submission and the current final text. Add a snapshot race with duplicate/out-of-order buffered events, asserting one message per ID.
+- [ ] Run `npx playwright test tests/browser/chat.spec.ts`; expect reconnect/message assertions to fail before the UI exists.
+- [ ] Implement typed API client, EventSource handshake and chat view; disable run submission during work and render errors without exposed stacks.
+- [ ] Run the same command and `npm run typecheck`; expect PASS for retry, cancellation, fresh session and server-instance replacement.
+- [ ] Commit as `feat: show a recoverable streamed pricing conversation`.",Highest,pricing-harness-browser
+PH-17 — Add file selection and uploads to the composer,Story,"Plan reference: PH-17
+Epic/slice: browser
+
+**Type / priority:** Story / P0. **Dependencies:** PH-09, PH-16. **Deliverable:** A question can reference real registered data without path entry.
+
+**Files:** Create `src/ui/Composer.tsx`, `tests/browser/uploads.spec.ts`; modify `src/ui/App.tsx` and `src/ui/api.ts`.
+
+**Interfaces:** Composer accepts available `SourceFile[]`, selected IDs, busy state and `onSubmit(text:string,fileIds:string[]):Promise<void>`. Upload client sends one multipart file per request and returns `SourceFile`.
+
+**Acceptance:** Upload supported formats, list sources, choose relevant attachments and submit their opaque IDs. Show names/size and actionable format/limit failures. Preserve composer text when a POST fails; clear only after accepted submission. Disable upload/send while busy. Two same-name files remain distinct. Do not auto-open spreadsheet content in the browser or build a data-cleaning interface.
+
+- [ ] Write browser `uploadsSameNameFilesAndSubmitsSelectedId`, asserting different IDs and only the selected ID in POST. Add `failedUploadAndMessageKeepComposerText`, covering `413` and `409`.
+- [ ] Run `npx playwright test tests/browser/uploads.spec.ts`; expect composer/attachment assertions to fail.
+- [ ] Implement composer, upload progress/errors and file list/selection around the existing endpoints.
+- [ ] Run the same command and `npm run typecheck`; expect PASS with CSV, XLSX and Markdown attachments.
+- [ ] Commit as `feat: attach sales files to pricing questions`.",Highest,pricing-harness-browser
+PH-18 — Preview and download published outputs,Story,"Plan reference: PH-18
+Epic/slice: browser
+
+**Type / priority:** Story / P0. **Dependencies:** PH-09, PH-12, PH-16. **Deliverable:** The user's report is accessible and usable from the app.
+
+**Files:** Create `src/ui/Outputs.tsx`, `tests/browser/outputs.spec.ts`; modify `src/ui/App.tsx`, `src/ui/api.ts`, `src/ui/Chat.tsx` for artifact link resolution.
+
+**Interfaces:** `Outputs({artifacts:Artifact[],runStates:Record<string,RunState>})`; artifact IDs resolve to `/api/outputs/:id`, with attachment disposition for download. Convert final-answer workspace output links only when they match a registered artifact; do not expose arbitrary filesystem URLs.
+
+**Acceptance:** HTML preview uses `iframe sandbox=""allow-scripts""` without same-origin permission. Open/download actions live outside iframe. CSV/script downloads retain complete bytes. Prior valid outputs persist across conversations/restart. Running scratch/partial files are not presented. A cancelled/failed run is visibly labelled without implying report validation. No automatic cross-chart filtering, PDF export or report editor.
+
+- [ ] Write browser `previewIsIsolatedAndDownloadMatchesArtifact`, asserting iframe sandbox, interactive chart presence and downloaded CSV hash. Add `doesNotShowPartialOrUnregisteredLinks`, and prior-output visibility after new session.
+- [ ] Run `npx playwright test tests/browser/outputs.spec.ts`; expect output preview/link assertions to fail.
+- [ ] Implement artifact list, isolated iframe, outside open/download controls and exact registered-path link mapping.
+- [ ] Run the same command and `npm run typecheck`; expect PASS, including parent access denied from iframe and offline-capable exported HTML.
+- [ ] Commit as `feat: preview and download pricing report artifacts`.",Highest,pricing-harness-browser
+PH-19 — Run model acceptance inside an input-only container,Task,"Plan reference: PH-19
+Epic/slice: acceptance
+
+**Type / priority:** Task / P0 for automated acceptance. **Dependencies:** PH-01, PH-08, PH-14; evaluator configuration freezes the selected model ID. **Deliverable:** Evaluation evidence without answer-key exposure.
+
+**Files:** Create `tests/evals/run.ts`, `tests/evals/runtime/Dockerfile`, `tests/evals/runtime/.dockerignore`, `tests/integration/eval-isolation.test.ts`; modify `src/headless.ts` with JSON-lines stdin/stdout mode and `docs/acceptance.md`.
+
+**Interfaces:** `runEval(casePath: string, config: EvalConfig): Promise<EvalRunResult>`. Headless stdin accepts `{type:""submit"", request:SubmitRequest}`, `{type:""cancel""}`, `{type:""close""}`. Stdout emits accepted/event/error records and `{type:""turn_end"",run:RunRecord,snapshot:SessionSnapshot}`; runtime diagnostics use stderr without secrets. Host sends only the current turn, not queued replies or keys.
+
+**Acceptance:** Docker image contains built runtime, dependencies and bundled assets only. Mount one clean case workspace, with sources read-only; no repository root, private keys, previous outputs or Docker socket mount. OpenRouter credentials supplied at runtime, never in image layers/artifacts. Host keeps case evaluation criteria/oracle. Follow-up replies enter only after the previous turn finishes. Collect traces and final artifacts after the run; evaluate outside the solver. Same session factory/controller as production. The normal app never requires Docker.
+
+- [ ] Write `solverCannotReadEvaluatorKeys`: place a random sentinel key on the host, mount only case inputs, and assert attempted container reads of the host key/repository/private directory fail. Assert the runtime image file listing contains no eval fixtures/keys and production session factory is used.
+- [ ] Run `npm test -- tests/integration/eval-isolation.test.ts`; expect missing/isolation behavior to fail, with Docker available.
+- [ ] Implement the host runner and minimal container packaging; add the headless JSON-lines driver for multi-turn interaction. Freeze package/model settings and retain transcripts/tool evidence with each eval run.
+- [ ] Run the same command; expect PASS. Run one small live case and verify its outputs with host-only expected data.
+- [ ] Commit as `test: isolate pricing model acceptance from answer keys`.",Highest,pricing-harness-acceptance
+"PH-20 — Cover the fresh numeric, reasoning and visualization cases",Task,"Plan reference: PH-20
+Epic/slice: acceptance
+
+**Type / priority:** Task / P0. **Dependencies:** PH-01, PH-12–PH-14, PH-19, PH-23. **Deliverable:** A small suite that catches commercially meaningful mistakes.
+
+**Files:** Create `tests/evals/verify.ts`, `tests/unit/eval-verifier.test.ts`, `tests/evals/cases/{missing-cost,numeric-format,credits,duplicates,missing-years,context-confirmation,context-import,changing-cost,small-answer,csv-xlsx-parity,report-failure,preview-unavailable}.json`, their small `inputs/**` and independently derived `private/**`; modify `docs/acceptance.md`.
+
+**Interfaces:** `verifyEval(caseSpec: EvalCase, result: EvalRunResult, oraclePath: string): Promise<EvalVerdict>`. Verdict separates exact/tolerance checks, rendering/artifact checks and human review decisions; one critical failure means FAIL regardless of other successes.
+
+**Acceptance:** About 15 fresh cases including existing baseline/boundary/visualization cases. Check weighted arithmetic and independent populations, full CSV/chart consistency, missing costs/years, historical group membership/comparability, ambiguous numerics, signed credits, duplicate/join cardinality, confirmed-context updates and unsupported causes. Smaller CSV/XLSX equivalents agree. Missing browser/vision and report failure retain valid calculations with qualifications. Claims of screenshot inspection require trace evidence and actual readable images. Tiny questions need not force a report.
+
+- [ ] Write `criticalBoundaryAndPopulationChecksFailIndependently`: a candidate missing a high-revenue non-outlier fails; incorrectly including revenue `50000` fails; excluding deviation `500` fails; classifying `499.99` or `-499.99` bps as an outlier after display rounding fails. Write `moneyRateAndBpsTolerancesAreDistinct`, asserting case monetary precision, rate `1e-10` and bps `1e-6`. Deliberately broken candidates must fail before model results are used.
+- [ ] Run `npm test -- tests/unit/eval-verifier.test.ts`; expect absent/checker behavior to fail.
+- [ ] Implement checker/case fixtures and independent expected results; add manual review rubric for explanation, scope, useful chart choice and unsupported causal/optimal-price claims.
+- [ ] Run the verifier tests; expect PASS on valid candidates and rejection of planted errors. Run the isolated small live suite and review its screenshots/transcripts. Preserve failures as regressions instead of weakening expected results.
+- [ ] Commit as `test: verify pricing arithmetic context and report behavior`.",Highest,pricing-harness-acceptance
+PH-21 — Verify the built macOS application and offline browser outputs,Task,"Plan reference: PH-21
+Epic/slice: acceptance
+
+**Type / priority:** Task / P0. **Dependencies:** PH-14–PH-18. **Deliverable:** The packaged local application works outside its source checkout.
+
+**Files:** Create `tests/integration/packaged-app.test.ts`, `tests/browser/report-interactions.spec.ts`; modify `docs/local-setup.md`, package build/start scripts and distribution asset allowlist.
+
+**Interfaces:** Built `dist/` plus `bundled/`, Node/Python dependencies and documented macOS launch command. No desktop installer is introduced; dependencies are installed once through the documented development installation.
+
+**Acceptance:** Install/unpack into a path containing spaces, launch from a different directory and load exactly eight skills/helpers/license. Browser upload→question→Stop/reopen→outputs works. A downloaded report opens with network requests blocked, contains all declared figures and renders at desktop/narrow widths. Hover units, legend toggles and any prepared selector work. Parent access from report iframe is denied. Distribution contains no data/context/eval keys and no updater.
+
+- [ ] Write `packagedAppFindsBundledResourcesOutsideCwd`, using a packed build and a separate workspace; assert eight names and helper paths. Write browser `offlineReportRendersAndControlsWork`, with offline routing, zero external dependencies, correct tooltip units and preserved prepared benchmark after selector changes.
+- [ ] Run `npm test -- tests/integration/packaged-app.test.ts` and `npx playwright test tests/browser/report-interactions.spec.ts`; expect packaging/interaction checks to fail before integration.
+- [ ] Fix distribution copying/path resolution and macOS instructions; test the existing UI rather than introducing installer or dashboard features.
+- [ ] Run the same commands plus `npm run build` and `npm run typecheck`; expect PASS. Read captured narrow/desktop screenshots for clipped labels and visible qualifications.
+- [ ] Commit as `test: verify packaged macOS app and offline reports`.",Highest,pricing-harness-acceptance
+PH-22 — Record the first-release acceptance decision,Task,"Plan reference: PH-22
+Epic/slice: acceptance
+
+**Type / priority:** Task / P0 release gate. **Dependencies:** PH-20, PH-21, PH-24. **Deliverable:** A reviewable release result and a small maintenance procedure.
+
+**Files:** Create `docs/releases/first-release-acceptance.md`; modify `docs/acceptance.md`, `docs/local-setup.md`, `bundled/versions.json` only to record accepted versions.
+
+**Interfaces:** `EvalVerdict` results, package/browser checks and native scale results; no new runtime interface.
+
+**Acceptance:** Record actual app/plugin/helper/SDK/Python/library/model versions, the dataset versions and tested host. All critical checks pass, with manual review of claims and screenshots. Repeat critical baseline/boundary/missing-cost/context/visualization cases three times. Include measured large-data behavior and known limits. Compare visualization skill absent/present; do not call registration alone behavioral validation. Document deliberate bundle replacement→fresh session→small/full regression procedure. Exclude private results/keys from released package.
+
+- [ ] Run the unit/integration/Python/browser checks and full isolated case suite; retain outputs and identify any failing critical check.
+- [ ] Repeat the critical model cases three times and review explanations/screenshots; the checkable result is no critical failure in the frozen release combination.
+- [ ] Run PH-24 native scale tests; record measured import/query/resources instead of claiming an untested capacity.
+- [ ] Write the release acceptance record. Any unresolved critical failure blocks release and receives a focused regression ticket; do not average it away.
+- [ ] Commit as `docs: record verified first pricing harness release`.
+
+This is a verification/documentation ticket, not product code, so no artificial failing test is required.",Highest,pricing-harness-acceptance
+PH-23 — Prepare large sources with bounded DuckDB execution,Task,"Plan reference: PH-23
+Epic/slice: headless
+
+**Type / priority:** Task / P0. **Dependencies:** PH-02, PH-04, PH-09. **Deliverable:** Disk-backed data access that keeps the agent and Python memory bounded.
+
+Execute this ticket before PH-08 and PH-20, as their dependencies specify.
+
+**Files:** Create `bundled/harness-tools/data_workspace.py`, `bundled/harness-tools/data-analysis.md`, `tests/python/test_data_workspace.py`; modify `requirements.in`, `requirements.txt`, `src/runtime.ts`, `src/agent/runs.ts`, `bundled/versions.json` and bundle hashing/packaging checks.
+
+**Interfaces:** `prepare_source(source: Path, cache_root: Path, options: ImportOptions) -> PreparedSource`; `connect_analysis(run_dir: Path, temp_dir: Path, memory_limit: str, threads: int) -> duckdb.DuckDBPyConnection`; `attach_source(conn, prepared: PreparedSource, alias: str) -> None`; `fetch_small_result(conn, sql: str, max_rows: int = 100_000) -> pandas.DataFrame`. Types are described in section 4.5. CLI accepts one source and explicit import options; returns bounded JSON metadata, not source rows.
+
+**Acceptance:** CSV streams into a persisted local DuckDB cache; raw fields remain strings until the generated script makes explicit checked conversions. Strict parser errors are visible; no `ignore_errors`/silent bad-row dropping. Cache key includes source hash, import options and helper/DuckDB version; an identical source/options reuse it, changed bytes invalidate it. Cache publication is atomic. XLSX uses read-only openpyxl and bounded batches for smaller inputs, with explicit sheet/header choice; no formula-evaluation promise. Analysis connections set configurable memory/thread/spill settings and attach source caches read-only. No extra skill entry or domain normalization engine.
+
+- [ ] Write `test_raw_strings_and_missing_cost_are_preserved`, using `""1,234""`, `""12,5""`, a blank cost and a signed credit. Assert no guessed numeric conversion and no missing→zero. Add `test_reuses_matching_cache_and_invalidates_changed_source`, `test_csv_xlsx_parity_in_batches`, `test_failed_import_publishes_no_cache` and a 101-row result with `max_rows=100` that raises instead of truncating.
+- [ ] Run `python -m pytest tests/python/test_data_workspace.py -q`; expect missing/preparation behavior to fail.
+- [ ] Implement minimal raw staging, content/options cache keys, resource-configured connections and metadata. Add operational guidance: aggregate/filter/join in DuckDB; validate casts/cardinality/coverage; extract only bounded results; stream full requested CSV with DuckDB `COPY` when needed.
+- [ ] Run the same command; expect PASS. The 3m/30m proof is PH-24; these small tests do not claim full-scale capacity.
+- [ ] Commit as `feat: support disk-backed transaction analysis with DuckDB`.",Highest,pricing-harness-headless
+PH-24 — Demonstrate 3-million and 30-million-row CSV capability,Task,"Plan reference: PH-24
+Epic/slice: acceptance
+
+**Type / priority:** Task / P0 for capacity claim. **Dependencies:** PH-01, PH-23. **Deliverable:** Evidence for the owner's data-size requirement on native macOS.
+
+**Files:** Create `tests/perf/generate_scale.py`, `tests/perf/test_scale.py`; modify `docs/acceptance.md` with the measured envelope and `package.json` with an explicit scale-test command.
+
+**Interfaces:** `generate_scale(path: Path, rows: int, seed: int) -> ScaleExpected` writes CSV incrementally, deriving independent expected aggregates from deterministic repeated patterns rather than the query under test. `ScaleExpected` contains row count, exact monetary totals and keyed group/product-year expectations. Scale runner returns timings, peak process-tree memory, spill/output/cache sizes and value-check results. `PRICING_SCALE_ROWS` selects the opt-in size; no custom pytest option/plugin is required.
+
+**Acceptance:** Native tests at `3_000_000` and `30_000_000` rows execute the same preparation/query helpers with the documented resource settings. Confirm all rows imported, exact revenue/profit totals and group/product-year coverage, independent threshold behavior, bounded model summaries and complete requested result exports. No full-source pandas materialization. Repeated queries reuse cache. Record actual row width, bytes, host, resources and import/query time; row count alone is not an unconditional promise. Tests are opt-in because they create large temporary files; small regression tests run routinely.
+
+- [ ] Write `test_scaled_csv_reconciles_without_full_dataframe`, asserting exact requested row count, closed-form expected totals, populated group/product-year results and cache reuse. Record process-tree RSS and spill/disk use; treat the configured DuckDB memory limit as an engine budget, not a false hard bound on total Python memory.
+- [ ] Run `PRICING_SCALE_ROWS=3000000 python -m pytest tests/perf/test_scale.py -q`; expect absent scale/helper behavior to fail.
+- [ ] Implement incremental fixtures, query/check runner and resource measurements. Use integer monetary values and independently derived expected formulas; account for all temporary/cache/source copies in disk reporting.
+- [ ] Run with `PRICING_SCALE_ROWS=3000000` and `PRICING_SCALE_ROWS=30000000`; expect reconciliation, coverage and cache tests to PASS with no out-of-memory failure. Record durations; if the larger case fails, fix it before advertising 30m capability.
+- [ ] Commit as `test: demonstrate large CSV analysis on macOS`.",Highest,pricing-harness-acceptance

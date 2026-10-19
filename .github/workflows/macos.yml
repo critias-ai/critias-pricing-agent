@@ -1,0 +1,27 @@
+name: macos
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: pricing-harness
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Setup script
+        run: bash scripts/setup-macos.sh
+      - run: npm run typecheck
+      - run: npm run format:check
+      # eval-cases needs downloaded datasets that are not in the repository.
+      - run: npx vitest run --exclude tests/unit/eval-cases.test.ts
+      - run: .venv/bin/python -m pip install -r requirements-dev.txt
+      - run: .venv/bin/python -m pytest tests/python -q

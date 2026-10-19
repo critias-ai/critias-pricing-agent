@@ -1,0 +1,75 @@
+{
+  "id": "retail-cards-conversation",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "Did we actually raise prices in 2025, or is it just the product mix? What's the real price change from 2024 to 2025?"
+    },
+    {
+      "text": "If we put Storage prices up 5% next year and volumes hold, what's that worth in gross profit?"
+    },
+    {
+      "text": "How much volume could each Storage SKU lose before that increase stops paying for itself?"
+    },
+    {
+      "text": "Separately, what drove Storage's gross profit change from 2024 to 2025: price, volume, mix or cost?"
+    },
+    {
+      "text": "Last one: which category had the biggest real price increase from 2024 to 2025?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "price_change.csv",
+      "keyColumns": [
+        "measure"
+      ],
+      "valueColumns": [
+        "pct"
+      ],
+      "ask": "price_change.csv with columns measure,pct and one row price_change: the 2024 to 2025 price change in %"
+    },
+    {
+      "file": "storage_scenario.csv",
+      "keyColumns": [
+        "measure"
+      ],
+      "valueColumns": [
+        "gbp"
+      ],
+      "ask": "storage_scenario.csv with columns measure,gbp and rows baseline_gp, proposed_gp, gain for the Storage +5% scenario"
+    },
+    {
+      "file": "breakeven.csv",
+      "keyColumns": [
+        "sku"
+      ],
+      "valueColumns": [
+        "pct"
+      ],
+      "ask": "breakeven.csv with columns sku,pct: for each Storage SKU, the % change in volume (negative) at which the increase stops paying"
+    },
+    {
+      "file": "storage_bridge.csv",
+      "keyColumns": [
+        "step"
+      ],
+      "valueColumns": [
+        "gbp"
+      ],
+      "ask": "storage_bridge.csv with columns step,gbp and steps start, price, volume, mix, cost, new_items, lost_items, end for Storage, 2024 to 2025"
+    },
+    {
+      "file": "category_prices.csv",
+      "keyColumns": [
+        "category"
+      ],
+      "valueColumns": [
+        "pct"
+      ],
+      "ask": "category_prices.csv with columns category,pct: each category's real price change from 2024 to 2025 in %"
+    }
+  ],
+  "solution": "../solutions/retail.py"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "wtp-3-best-plan",
+  "inputDir": "../inputs/saas-clean",
+  "contextFile": "../contexts/saas.md",
+  "turns": [
+    {
+      "text": "What would customers pay for the Best plan?"
+    }
+  ],
+  "csvChecks": []
+}

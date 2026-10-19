@@ -1,0 +1,20 @@
+{
+  "id": "rt-execute",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-l3.md",
+  "turns": [
+    {
+      "text": "We've agreed +5% on Storage from January. Plan the rollout."
+    }
+  ],
+  "csvChecks": [],
+  "expectReads": {
+    "must": [
+      "pricing-execute/SKILL.md"
+    ],
+    "mustNot": [
+      "pricing-recommend/SKILL.md",
+      "pricing-design/SKILL.md"
+    ]
+  }
+}

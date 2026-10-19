@@ -1,0 +1,11 @@
+{
+  "id": "rt-triage-definition",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-l3.md",
+  "turns": [
+    {
+      "text": "What's the difference between markup and margin?"
+    }
+  ],
+  "csvChecks": []
+}

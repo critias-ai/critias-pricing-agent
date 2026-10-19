@@ -1,0 +1,40 @@
+{
+  "id": "ladder-l0-none",
+  "inputDir": "../inputs/retail-ladder-neutral",
+  "turns": [
+    {
+      "text": "What's our margin by category, and how did it change in 2025?",
+      "expectQuestion": true
+    },
+    {
+      "text": "Yes: price_b is what customers paid after discount; price_a is the list price before discount and not used for margin; unit_cost is our cost per unit; and returns (negative quantities) stay in the totals. Amounts are in GBP."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "category_margin.csv",
+      "keyColumns": [
+        "category"
+      ],
+      "valueColumns": [
+        "gm_pct_2024",
+        "gm_pct_2025"
+      ],
+      "ask": "category_margin.csv with columns category,gm_pct_2024,gm_pct_2025: each category's gross margin in % for 2024 and 2025, on the basis we settled in this conversation"
+    }
+  ],
+  "expectReads": {
+    "must": [
+      "pricing-intake/SKILL.md"
+    ]
+  },
+  "expectContext": {
+    "must": [
+      "price_b",
+      "unit_cost",
+      "return",
+      "GBP"
+    ]
+  },
+  "solution": "../solutions/ladder.py"
+}

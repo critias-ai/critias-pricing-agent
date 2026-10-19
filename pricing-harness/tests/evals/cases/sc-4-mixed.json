@@ -1,0 +1,24 @@
+{
+  "id": "sc-4-mixed",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-scenarios.md",
+  "turns": [
+    {
+      "text": "Storage up 5%, Kitchen down 3%, and costs up 2% everywhere: what happens to gross profit, and what volume change in each category keeps it whole?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "category_scenario.csv",
+      "keyColumns": [
+        "category"
+      ],
+      "valueColumns": [
+        "gp_change_gbp",
+        "breakeven_pct"
+      ],
+      "ask": "category_scenario.csv with columns category,gp_change_gbp,breakeven_pct: one row per category and a row named total; gp_change_gbp the gross-profit change at 2025 volumes, breakeven_pct the % volume change in that category, in percent (so -11.8 means an 11.8% fall),, with its SKU mix held, that keeps its gross profit the same (blank for total)"
+    }
+  ],
+  "solution": "../solutions/scenarios.py"
+}

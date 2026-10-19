@@ -1,0 +1,45 @@
+{
+  "id": "retail-bridge-conversation",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "Can you give me a quarterly view of the business for 2024 and 2025? Net sales, gross profit and gross margin by quarter."
+    },
+    {
+      "text": "ok. Which categories drove the margin change from 2024 to 2025?"
+    },
+    {
+      "text": "Drill into Storage. Which SKUs moved its margin most between Q1 and Q2 2025? Top 5 is fine, with their margin each quarter."
+    },
+    {
+      "text": "S03 looks odd in Q2 2025. How much of its gross profit change vs Q1 was price, how much was quantity and how much was cost?"
+    },
+    {
+      "text": "Back to the whole company: of the 2024 to 2025 change in gross profit, how much is price, volume, mix and cost?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "s03_bridge.csv",
+      "keyColumns": [
+        "step"
+      ],
+      "valueColumns": [
+        "gbp"
+      ],
+      "ask": "s03_bridge.csv with columns step,gbp and steps price, quantity, cost for S03's Q1 to Q2 2025 change"
+    },
+    {
+      "file": "bridge.csv",
+      "keyColumns": [
+        "step"
+      ],
+      "valueColumns": [
+        "gbp"
+      ],
+      "ask": "bridge.csv with columns step,gbp and steps start, price, volume, mix, cost, new_items, lost_items, end for the company's 2024 to 2025 change"
+    }
+  ],
+  "solution": "../solutions/retail.py"
+}

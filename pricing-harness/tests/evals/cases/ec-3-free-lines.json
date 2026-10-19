@@ -1,0 +1,26 @@
+{
+  "id": "ec-3-free-lines",
+  "inputDir": "../../../datasets/uci/case-csv/files",
+  "contextFile": "../contexts/uci.md",
+  "turns": [
+    {
+      "text": "What's our average selling price and margin for 2011?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "summary.csv",
+      "keyColumns": [
+        "treatment"
+      ],
+      "valueColumns": [
+        "quantity",
+        "revenue_gbp",
+        "asp_gbp",
+        "gm_pct"
+      ],
+      "ask": "summary.csv with columns treatment,quantity,revenue_gbp,asp_gbp,gm_pct: two rows for 2011 product net revenue, treatment free_lines_included and free_lines_excluded (lines priced at zero), with quantity in items, revenue in GBP, average selling price per item and margin in %"
+    }
+  ],
+  "solution": "../solutions/uci.py"
+}

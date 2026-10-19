@@ -1,0 +1,24 @@
+{
+  "id": "aw-7-raw-files",
+  "inputDir": "../../../datasets/adventureworks/case-raw/files",
+  "contextFile": "../contexts/adventureworks-raw.md",
+  "turns": [
+    {
+      "text": "What were net sales, the sum of line totals, by fiscal year (July to June, named by the year it ends) for internet and reseller orders?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "sales_by_fy.csv",
+      "keyColumns": [
+        "fy",
+        "channel"
+      ],
+      "valueColumns": [
+        "net_sales_usd"
+      ],
+      "ask": "sales_by_fy.csv with columns fy,channel,net_sales_usd: every fiscal year in the data, channel internet or reseller (OnlineOrderFlag 1 or 0)"
+    }
+  ],
+  "solution": "../solutions/adventureworks.py"
+}

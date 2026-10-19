@@ -1,0 +1,45 @@
+{
+  "id": "ladder-l5-other-company",
+  "inputDir": "../inputs/retail-ladder",
+  "uploads": [
+    "../inputs/other-company/brightwater-context.md"
+  ],
+  "turns": [
+    {
+      "text": "What's our margin by category, and how did it change in 2025?",
+      "expectQuestion": true
+    },
+    {
+      "text": "That file is our sister company's and doesn't apply here. For us: net_price is what customers paid after discount; list_price is before discount and not used for margin; unit_cost is our cost per unit; and returns (negative quantities) stay in the totals. Amounts are in GBP."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "category_margin.csv",
+      "keyColumns": [
+        "category"
+      ],
+      "valueColumns": [
+        "gm_pct_2024",
+        "gm_pct_2025"
+      ],
+      "ask": "category_margin.csv with columns category,gm_pct_2024,gm_pct_2025: each category's gross margin in % for 2024 and 2025, on the basis we settled in this conversation"
+    }
+  ],
+  "expectReads": {
+    "must": [
+      "pricing-intake/SKILL.md"
+    ]
+  },
+  "expectContext": {
+    "must": [
+      "net_price",
+      "return"
+    ],
+    "mustNot": [
+      "Brightwater",
+      "USD"
+    ]
+  },
+  "solution": "../solutions/ladder.py"
+}

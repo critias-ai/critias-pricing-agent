@@ -1,0 +1,27 @@
+{
+  "id": "olist-2-seller-peers",
+  "inputDir": "../../../datasets/olist/case/files",
+  "contextFile": "../contexts/olist.md",
+  "turns": [
+    {
+      "text": "Are some sellers charging well above their peers for the same category and region?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "sellers_above_peers.csv",
+      "keyColumns": [
+        "seller_id",
+        "category"
+      ],
+      "valueColumns": [
+        "items",
+        "avg_price_brl",
+        "peer_median_brl",
+        "index"
+      ],
+      "ask": "sellers_above_peers.csv with columns seller_id,category,items,avg_price_brl,peer_median_brl,index: every seller and product_category_name pair charging well above its peers as the context defines it (products with no category left out)"
+    }
+  ],
+  "solution": "../solutions/olist.py"
+}

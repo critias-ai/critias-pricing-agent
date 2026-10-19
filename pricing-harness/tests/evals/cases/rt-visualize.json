@@ -1,0 +1,20 @@
+{
+  "id": "rt-visualize",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail-l3.md",
+  "turns": [
+    {
+      "text": "What were net sales by quarter in 2025?"
+    },
+    {
+      "text": "Show me that as a chart."
+    }
+  ],
+  "csvChecks": [],
+  "expectReads": {
+    "must": [
+      "analysis-visualize/SKILL.md"
+    ]
+  },
+  "expectChart": true
+}

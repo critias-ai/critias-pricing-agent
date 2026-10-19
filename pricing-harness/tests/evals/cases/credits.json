@@ -1,0 +1,31 @@
+{
+  "id": "credits",
+  "inputDir": "../inputs/credits",
+  "contextFile": "../contexts/credits.md",
+  "turns": [
+    {
+      "text": "What were our product margins in group X for 2021? Anything stand out?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "results.csv",
+      "keyColumns": [
+        "year",
+        "group",
+        "product"
+      ],
+      "valueColumns": [
+        "revenue",
+        "cogs",
+        "margin",
+        "group_margin",
+        "deviation_bps",
+        "outlier",
+        "detail_needed"
+      ],
+      "ask": "results.csv with columns year,group,product,revenue,cogs,margin,group_margin,deviation_bps,outlier,detail_needed: one row per product and year whose margin you could work out, margin and group_margin as fractions (0.25, not 25%), deviation_bps as the product's margin minus the group's in basis points, outlier and detail_needed as true or false"
+    }
+  ],
+  "solution": "../solutions/margin.py"
+}

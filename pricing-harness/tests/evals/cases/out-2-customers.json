@@ -1,0 +1,29 @@
+{
+  "id": "out-2-customers",
+  "inputDir": "../../../datasets/uci/case-out2/files",
+  "contextFile": "../contexts/uci-out.md",
+  "turns": [
+    {
+      "text": "Anything odd about what customers pay?"
+    },
+    {
+      "text": "What's the best course of action?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "outliers.csv",
+      "keyColumns": [
+        "customer_id"
+      ],
+      "valueColumns": [
+        "index_pct",
+        "peer_index_pct",
+        "gap_gbp"
+      ],
+      "partial": true,
+      "ask": "outliers.csv with columns customer_id,index_pct,peer_index_pct,gap_gbp: one row for each customer you called out of line, with their 2011 price index and their size-matched peers' median index in %, and the gap in GBP (negative below peers)"
+    }
+  ],
+  "solution": "../solutions/uci.py"
+}

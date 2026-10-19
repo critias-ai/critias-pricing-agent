@@ -1,0 +1,23 @@
+{
+  "id": "uci-3-price-or-mix",
+  "inputDir": "../../../datasets/uci/case-csv/files",
+  "contextFile": "../contexts/uci.md",
+  "turns": [
+    {
+      "text": "Did we raise prices in 2011, or is it mix?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "price_change.csv",
+      "keyColumns": [
+        "metric"
+      ],
+      "valueColumns": [
+        "value"
+      ],
+      "ask": "price_change.csv with columns metric,value and three rows: products_compared, price_change_pct (like-for-like, in %) and revenue_change_pct (product net revenue, January to November 2011 against the same months of 2010, in %)"
+    }
+  ],
+  "solution": "../solutions/uci.py"
+}

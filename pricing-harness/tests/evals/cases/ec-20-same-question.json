@@ -1,0 +1,27 @@
+{
+  "id": "ec-20-same-question",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "What was gross margin by category in 2025?"
+    },
+    {
+      "text": "Which SKU had the most returns?"
+    },
+    {
+      "text": "How many customers bought in 2025?"
+    },
+    {
+      "text": "What was our biggest month by net sales?"
+    },
+    {
+      "text": "Which category grew fastest?"
+    },
+    {
+      "text": "Remind me, what margin did each category make in 2025?"
+    }
+  ],
+  "csvChecks": [],
+  "solution": "../solutions/edges.py"
+}

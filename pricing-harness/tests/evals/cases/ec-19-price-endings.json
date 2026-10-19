@@ -1,0 +1,31 @@
+{
+  "id": "ec-19-price-endings",
+  "inputDir": "../../../datasets/adventureworks/case/files",
+  "contextFile": "../contexts/adventureworks.md",
+  "turns": [
+    {
+      "text": "What price do we need on each bike we still sell for a 40% margin at standard cost?"
+    },
+    {
+      "text": "Round them up to end in .99."
+    },
+    {
+      "text": "What do the .99 endings add to revenue against the exact 40% prices, at FY2025 volumes?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "bike_prices.csv",
+      "keyColumns": [
+        "product_id"
+      ],
+      "valueColumns": [
+        "standard_cost",
+        "price_40_margin",
+        "price_99"
+      ],
+      "ask": "bike_prices.csv with columns product_id,name,standard_cost,price_40_margin,price_99: every bike still on sale (category Bikes, no SellEndDate), current standard cost, the price for exactly 40% margin rounded to the cent, and that price rounded up to the next price ending in .99"
+    }
+  ],
+  "solution": "../solutions/adventureworks.py"
+}

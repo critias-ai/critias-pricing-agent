@@ -1,0 +1,32 @@
+{
+  "id": "visualization",
+  "inputDir": "../inputs/visualization",
+  "contextFile": "../contexts/visualization.md",
+  "turns": [
+    {
+      "text": "Can you chart group X's margin by year for me, and tell me which products stand out?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "results.csv",
+      "keyColumns": [
+        "year",
+        "group",
+        "product"
+      ],
+      "valueColumns": [
+        "revenue",
+        "cogs",
+        "margin",
+        "group_margin",
+        "deviation_bps",
+        "outlier",
+        "detail_needed"
+      ],
+      "ask": "results.csv with columns year,group,product,revenue,cogs,margin,group_margin,deviation_bps,outlier,detail_needed: one row per product and year whose margin you could work out, margin and group_margin as fractions (0.25, not 25%), deviation_bps as the product's margin minus the group's in basis points, outlier and detail_needed as true or false"
+    }
+  ],
+  "expectChart": true,
+  "solution": "../solutions/margin.py"
+}

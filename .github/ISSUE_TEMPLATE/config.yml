@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/critias-ai/critias-pricing-agent/discussions
+    about: Ask a question or suggest an idea in Discussions.
+  - name: Skill or knowledge-card problem
+    url: https://github.com/critias-ai/critias-pricing-plugin/issues/new/choose
+    about: Problems with a pricing method belong in the plugin repository.
+  - name: Security problem
+    url: https://github.com/critias-ai/critias-pricing-agent/security/advisories/new
+    about: Report a vulnerability privately.

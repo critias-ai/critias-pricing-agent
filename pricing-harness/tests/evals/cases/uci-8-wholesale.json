@@ -1,0 +1,35 @@
+{
+  "id": "uci-8-wholesale",
+  "inputDir": "../../../datasets/uci/case-csv/files",
+  "contextFile": "../contexts/uci.md",
+  "turns": [
+    {
+      "text": "What was our monthly product revenue in 2011?"
+    },
+    {
+      "text": "From now on, treat any customer who bought more than 1,000 units in a year as wholesale, and leave wholesale out of retail figures like this one."
+    },
+    {
+      "text": "Chart it."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "monthly_revenue.csv",
+      "keyColumns": [
+        "month"
+      ],
+      "valueColumns": [
+        "revenue_gbp"
+      ],
+      "ask": "monthly_revenue.csv with columns month,revenue_gbp: 2011 product net revenue per month (YYYY-MM) without wholesale customers (over 1,000 net units in 2011); guest orders stay in"
+    }
+  ],
+  "expectChart": true,
+  "expectContext": {
+    "must": [
+      "1,?000"
+    ]
+  },
+  "solution": "../solutions/uci.py"
+}

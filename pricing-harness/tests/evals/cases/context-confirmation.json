@@ -1,0 +1,35 @@
+{
+  "id": "context-confirmation",
+  "inputDir": "../inputs/context-confirmation",
+  "contextFile": "../contexts/context-confirmation.md",
+  "turns": [
+    {
+      "text": "What are our margins by product?",
+      "expectQuestion": true
+    },
+    {
+      "text": "Yes: cogs is the total cost of each sale in USD, every row is a normal sale, and group X is the product group. Compare each product with the group's overall margin each year and flag anything 5 points or more away from it. Separately, mark the products with more than $50k revenue in a year; those are the ones big enough to look at in detail."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "results.csv",
+      "keyColumns": [
+        "year",
+        "group",
+        "product"
+      ],
+      "valueColumns": [
+        "revenue",
+        "cogs",
+        "margin",
+        "group_margin",
+        "deviation_bps",
+        "outlier",
+        "detail_needed"
+      ],
+      "ask": "results.csv with columns year,group,product,revenue,cogs,margin,group_margin,deviation_bps,outlier,detail_needed: one row per product and year whose margin you could work out, margin and group_margin as fractions (0.25, not 25%), deviation_bps as the product's margin minus the group's in basis points, outlier and detail_needed as true or false"
+    }
+  ],
+  "solution": "../solutions/margin.py"
+}

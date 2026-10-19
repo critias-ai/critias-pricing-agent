@@ -1,0 +1,29 @@
+{
+  "id": "out-1-customers",
+  "inputDir": "../inputs/b2b",
+  "contextFile": "../contexts/b2b-out.md",
+  "turns": [
+    {
+      "text": "Anything odd about what customers pay?"
+    },
+    {
+      "text": "What's the best course of action?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "outliers.csv",
+      "keyColumns": [
+        "customer_id"
+      ],
+      "valueColumns": [
+        "index_pct",
+        "peer_index_pct",
+        "gap_gbp"
+      ],
+      "partial": true,
+      "ask": "outliers.csv with columns customer_id,index_pct,peer_index_pct,gap_gbp: one row for each customer you called out of line, with their price index and their size-matched peers' median index in %, and the gap in GBP (negative below peers)"
+    }
+  ],
+  "solution": "../solutions/b2b.py"
+}

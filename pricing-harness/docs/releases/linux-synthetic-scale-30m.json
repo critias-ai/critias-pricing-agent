@@ -1,0 +1,22 @@
+{
+  "host": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "native_macos": false,
+  "python": "3.12.14",
+  "duckdb": "1.5.6",
+  "requested_rows": 30000000,
+  "checked_rows": 30000000,
+  "source_bytes": 570000033,
+  "disk_bytes": 652603145,
+  "peak_process_rss_bytes": 370921472,
+  "memory_limit": "4GB",
+  "threads": 4,
+  "generate_seconds": 14.376289777999773,
+  "import_seconds": 25.268330090000745,
+  "query_export_seconds": 4.791519763999531,
+  "cache_check_seconds": 0.6391056880001997,
+  "cache_reused": true,
+  "groups": 100,
+  "independent_outliers": 60,
+  "independent_detail": 100,
+  "all_checks_passed": true
+}

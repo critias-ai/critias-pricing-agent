@@ -1,0 +1,61 @@
+customer_id,name,size_band,rep,contract_type,contract_start,payment_terms
+C001,Customer 001,small,R01,standard,2021-02-01,net 30
+C002,Customer 002,small,R02,standard,2022-03-01,net 30
+C003,Customer 003,small,R03,standard,2023-04-01,2/10 net 30
+C004,Customer 004,small,R04,standard,2024-05-01,net 30
+C005,Customer 005,small,R05,standard,2020-06-01,net 30
+C006,Customer 006,small,R01,standard,2021-07-01,2/10 net 30
+C007,Customer 007,small,R02,standard,2022-08-01,net 30
+C008,Customer 008,small,R03,standard,2023-09-01,net 30
+C009,Customer 009,small,R04,standard,2024-10-01,2/10 net 30
+C010,Customer 010,small,R05,standard,2020-11-01,net 30
+C011,Customer 011,small,R01,standard,2021-12-01,net 30
+C012,Customer 012,small,R02,standard,2022-01-01,2/10 net 30
+C013,Customer 013,small,R03,standard,2023-02-01,net 30
+C014,Customer 014,small,R04,standard,2024-03-01,net 30
+C015,Customer 015,small,R05,standard,2020-04-01,2/10 net 30
+C016,Customer 016,small,R01,standard,2021-05-01,net 30
+C017,Customer 017,small,R02,standard,2022-06-01,net 30
+C018,Customer 018,small,R03,standard,2023-07-01,2/10 net 30
+C019,Customer 019,small,R04,standard,2024-08-01,net 30
+C020,Customer 020,small,R05,standard,2020-09-01,net 30
+C021,Customer 021,small,R01,standard,2021-10-01,2/10 net 30
+C022,Customer 022,small,R02,standard,2022-11-01,net 30
+C023,Customer 023,small,R03,standard,2023-12-01,net 30
+C024,Customer 024,small,R04,standard,2024-01-01,2/10 net 30
+C025,Customer 025,small,R05,standard,2020-02-01,net 30
+C026,Customer 026,small,R01,standard,2021-03-01,net 30
+C027,Customer 027,small,R02,legacy,2018-03-01,2/10 net 30
+C028,Customer 028,small,R04,standard,2023-05-01,net 30
+C029,Customer 029,small,R04,standard,2024-06-01,net 30
+C030,Customer 030,small,R05,standard,2020-07-01,2/10 net 30
+C031,Customer 031,mid,R01,standard,2021-08-01,net 30
+C032,Customer 032,mid,R02,standard,2022-09-01,net 30
+C033,Customer 033,mid,R03,standard,2023-10-01,2/10 net 30
+C034,Customer 034,mid,R04,standard,2024-11-01,net 30
+C035,Customer 035,mid,R05,standard,2020-12-01,net 30
+C036,Customer 036,mid,R01,standard,2021-01-01,2/10 net 30
+C037,Customer 037,mid,R02,standard,2022-02-01,net 30
+C038,Customer 038,mid,R03,standard,2023-03-01,net 30
+C039,Customer 039,mid,R04,standard,2024-04-01,2/10 net 30
+C040,Customer 040,mid,R05,standard,2020-05-01,net 30
+C041,Customer 041,mid,R01,standard,2021-06-01,net 30
+C042,Customer 042,mid,R02,standard,2022-07-01,2/10 net 30
+C043,Customer 043,mid,R03,standard,2023-08-01,net 30
+C044,Customer 044,mid,R04,standard,2024-09-01,net 30
+C045,Customer 045,mid,R05,standard,2020-10-01,2/10 net 30
+C046,Customer 046,mid,R01,standard,2021-11-01,net 30
+C047,Customer 047,mid,R02,standard,2022-12-01,net 30
+C048,Customer 048,mid,R03,standard,2023-01-01,2/10 net 30
+C049,Customer 049,mid,R04,standard,2024-02-01,net 30
+C050,Customer 050,mid,R05,standard,2020-03-01,net 30
+C051,Customer 051,large,R01,standard,2021-04-01,2/10 net 30
+C052,Customer 052,large,R02,standard,2022-05-01,net 30
+C053,Customer 053,large,R03,standard,2023-06-01,net 30
+C054,Customer 054,large,R04,standard,2024-07-01,2/10 net 30
+C055,Customer 055,large,R05,standard,2020-08-01,net 30
+C056,Customer 056,large,R01,standard,2021-09-01,net 30
+C057,Customer 057,large,R02,standard,2022-10-01,2/10 net 30
+C058,Customer 058,large,R03,standard,2023-11-01,net 30
+C059,Customer 059,large,R04,standard,2024-12-01,net 30
+C060,Customer 060,large,R05,standard,2020-01-01,2/10 net 30

@@ -1,0 +1,23 @@
+{
+  "id": "ec-16-seasonal",
+  "inputDir": "../inputs/retail",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "Q1 2025 margin fell against Q4 2024. Why?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "quarter_margin.csv",
+      "keyColumns": [
+        "quarter"
+      ],
+      "valueColumns": [
+        "gm_pct"
+      ],
+      "ask": "quarter_margin.csv with columns quarter,gm_pct and rows 2024-Q1, 2024-Q4 and 2025-Q1"
+    }
+  ],
+  "solution": "../solutions/edges.py"
+}

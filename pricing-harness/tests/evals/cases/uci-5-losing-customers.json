@@ -1,0 +1,23 @@
+{
+  "id": "uci-5-losing-customers",
+  "inputDir": "../../../datasets/uci/case-csv/files",
+  "contextFile": "../contexts/uci.md",
+  "turns": [
+    {
+      "text": "Which customers did we lose money on in 2011, once returns and postage are counted?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "losing_customers.csv",
+      "keyColumns": [
+        "customer_id"
+      ],
+      "valueColumns": [
+        "contribution_gbp"
+      ],
+      "ask": "losing_customers.csv with columns customer_id,contribution_gbp: every customer (with a Customer ID) whose 2011 contribution was below zero; contribution = gross profit on products with a cost + carriage charged (POST and DOT lines) - £8.00 per ordinary invoice with product lines"
+    }
+  ],
+  "solution": "../solutions/uci.py"
+}

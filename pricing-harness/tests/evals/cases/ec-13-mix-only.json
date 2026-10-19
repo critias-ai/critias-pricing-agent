@@ -1,0 +1,25 @@
+{
+  "id": "ec-13-mix-only",
+  "inputDir": "../inputs/retail-mix",
+  "contextFile": "../contexts/retail.md",
+  "turns": [
+    {
+      "text": "Our average selling price went up in 2025. How much of that came from price rises?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "asp.csv",
+      "keyColumns": [
+        "year"
+      ],
+      "valueColumns": [
+        "net_sales_gbp",
+        "quantity",
+        "asp_gbp"
+      ],
+      "ask": "asp.csv with columns year,net_sales_gbp,quantity,asp_gbp: one row each for 2024 and 2025, with net sales in GBP, quantity and average selling price (net sales ÷ quantity)"
+    }
+  ],
+  "solution": "../solutions/edges.py"
+}

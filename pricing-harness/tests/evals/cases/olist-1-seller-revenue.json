@@ -1,0 +1,24 @@
+{
+  "id": "olist-1-seller-revenue",
+  "inputDir": "../../../datasets/olist/case/files",
+  "contextFile": "../contexts/olist.md",
+  "turns": [
+    {
+      "text": "What's net revenue per seller after cancellations, with freight shown separately?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "seller_revenue.csv",
+      "keyColumns": [
+        "seller_id"
+      ],
+      "valueColumns": [
+        "net_revenue_brl",
+        "freight_brl"
+      ],
+      "ask": "seller_revenue.csv with columns seller_id,net_revenue_brl,freight_brl: the 20 sellers with the most net revenue"
+    }
+  ],
+  "solution": "../solutions/olist.py"
+}

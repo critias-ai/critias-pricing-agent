@@ -1,0 +1,27 @@
+{
+  "id": "s3-5-ltv-cac",
+  "inputDir": "../inputs/saas-clean",
+  "contextFile": "../contexts/saas.md",
+  "turns": [
+    {
+      "text": "Which of our customer groups are worth what we pay to acquire them? Look at the 2024 sign-ups."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "cohorts.csv",
+      "keyColumns": [
+        "channel",
+        "cohort"
+      ],
+      "valueColumns": [
+        "customers",
+        "cac_gbp",
+        "gp_12m_gbp",
+        "churn_12m_pct"
+      ],
+      "ask": "cohorts.csv with columns channel,cohort,customers,cac_gbp,gp_12m_gbp,ltv_to_cac,churn_12m_pct: one row per channel and half-year of 2024 sign-ups (cohort 2024-H1 or 2024-H2), with CAC, gross profit per customer over their first 12 months (the sign-up month and the 11 after), its ratio to CAC, and the % whose last billed month came before their 12th month (so they weren't billed for all 12)"
+    }
+  ],
+  "solution": "../solutions/saas.py"
+}
