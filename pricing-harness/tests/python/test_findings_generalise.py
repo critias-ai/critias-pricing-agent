@@ -1,5 +1,6 @@
 """Data findings on the shapes the generalisation sources bring (plan section 3k): one test per gap the D0-2 rewrite closed."""
 import os
+from pathlib import Path
 from test_data_findings import LINE, df, issues, line, pack
 
 
@@ -67,10 +68,12 @@ def test_a_non_utf8_source_is_reported_and_the_rest_still_checked(tmp_path):
     rows = lines()
     rows[8] = line(8, price='80.00')
     pack(tmp_path, rows)
-    (tmp_path / 'notes.csv').write_bytes('note_id,text\nN1,caf\u00e9\n'.encode('utf-16'))
-    result = df.detect([str(tmp_path / n) for n in ('products.csv', 'customers.csv', 'lines.csv', 'notes.csv')], tmp_path / 'cache')
+    (tmp_path / 'notes.csv').write_bytes('note_id,text\nN1,caf\u00e9\n'.encode('latin-1'))
+    (tmp_path / 'ads.csv').write_bytes('ad_id,text\nA1,caf\u00e9\n'.encode('utf-16'))  # UTF-16 with a byte-order mark is read
+    result = df.detect([str(tmp_path / n) for n in ('products.csv', 'customers.csv', 'lines.csv', 'notes.csv', 'ads.csv')], tmp_path / 'cache')
     cover = {os.path.basename(c['source']): c for c in result[1]['coverage']}
     assert cover['notes.csv']['status'] == 'skipped' and 'UTF-8' in cover['notes.csv']['reason']
+    assert cover['ads.csv']['status'] == 'ran'
     assert ('price', 'x1e2 vs product_id median') in issues(result, 'lines.csv')
 
 
@@ -183,3 +186,10 @@ def test_a_multi_character_delimiter_is_reported_when_rows_end_in_another(tmp_pa
     result = pack(tmp_path, extra={'store.csv': ['292+|Bike Store+|279&|', '294+|Bike Shop+|280&|']})
     cover = {os.path.basename(c['source']): c for c in result[1]['coverage']}
     assert cover['store.csv']['status'] == 'skipped' and 'delimiter' in cover['store.csv']['reason']
+
+
+def test_the_messy_google_export_is_checked_not_skipped(tmp_path):
+    google = Path(__file__).resolve().parents[1] / 'evals/inputs/founder/google_ads.csv'
+    (tmp_path / 'google_ads.csv').write_bytes(google.read_bytes())
+    result = df.detect([str(tmp_path / 'google_ads.csv')], tmp_path / 'cache')
+    assert result[1]['coverage'][0]['status'] == 'ran'

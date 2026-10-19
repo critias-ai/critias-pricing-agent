@@ -72,6 +72,15 @@ describe('a model newer than Pi’s catalogue', () => {
     const expected = {input: 0.5, output: 2.5, cacheRead: 0.05, cacheWrite: 0.625};
     for (const [k, v] of Object.entries(expected)) expect(model.cost[k as keyof typeof expected]).toBeCloseTo(v, 10);
   });
+  it('borrows reasoning levels from the closest catalogue entry, not the vendor’s first', async () => {
+    vi.stubGlobal('fetch', async () => {
+      throw new Error('offline');
+    });
+    const {model} = await resolveModel({...config, modelId: 'deepseek/deepseek-v4.1-flash-1017'});
+    expect(model.id).toBe('deepseek/deepseek-v4.1-flash-1017');
+    expect(model.reasoning).toBe(true);
+    expect((model as {thinkingLevelMap?: Record<string, unknown>}).thinkingLevelMap?.high).toBe('high');
+  });
   it('keeps a zero price when OpenRouter cannot be reached', async () => {
     vi.stubGlobal('fetch', async () => {
       throw new Error('offline');

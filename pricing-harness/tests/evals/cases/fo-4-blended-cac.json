@@ -1,0 +1,26 @@
+{
+  "id": "fo-4-blended-cac",
+  "inputDir": "../inputs/founder-clean",
+  "contextFile": "../contexts/founder.md",
+  "turns": [
+    {
+      "text": "What did each new customer cost us, month by month in 2025, counting everything we spend to win them?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "cac_2025.csv",
+      "keyColumns": [
+        "month"
+      ],
+      "valueColumns": [
+        "new_customers",
+        "ad_spend_eur",
+        "other_acquisition_eur",
+        "blended_cac_eur"
+      ],
+      "ask": "cac_2025.csv with columns month,new_customers,ad_spend_eur,other_acquisition_eur,blended_cac_eur: one row per month of 2025"
+    }
+  ],
+  "solution": "../solutions/founder.py"
+}

@@ -11,9 +11,9 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import duckdb
-from data_workspace import ImportOptions, cached_source_hash, identifier as q, prepare_source, quote
+from data_workspace import ImportOptions, cached_source_hash, header_row, identifier as q, prepare_source, quote, text_encoding
 
-VERSION = '10'
+VERSION = '11'
 DOMINANT, RARE, KEYLIKE, RATIO, MAX_SHAPES, UNSTABLE, MIN_SHAPED = 0.95, 0.001, 0.99, 5, 30, 0.02, 5
 INT, DEC = r'^[+-]?[0-9]+$', r'^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?$'
 INVISIBLE = r'[\x{200B}\x{00A0}\x{FEFF}]'
@@ -48,7 +48,7 @@ DETECTORS = {'parse': 'ran', 'shape': 'skipped: no text columns', 'domain': 'ski
 
 def unreadable(e):
     if isinstance(e, UnicodeDecodeError):
-        return 'not UTF-8; convert it to UTF-8 first'
+        return 'not UTF-8 or UTF-16; convert it to UTF-8 first'
     if isinstance(e, csv.Error):
         return 'delimiter not recognised (only , ; tab and | are read); convert it first'
     return f'{type(e).__name__}: {e}'[:200]
@@ -57,19 +57,21 @@ def unreadable(e):
 def prepare(path, cache):
     """Each CSV, or each sheet of a workbook, as its own source; a source that cannot be read becomes its reason."""
     try:
-        sheets = [None]
+        sheets, row = [None], 1
         if not path.lower().endswith(('.xlsx', '.xlsm')):  # a separator such as +| sniffs as | and leaves + on every value
-            with open(path, encoding='utf-8-sig') as f:
+            with open(path, encoding=text_encoding(path)) as f:
                 sample = f.read(65536)
             if any(sample.count(d) and sum(sample.count(x + d) for x in '+&~^#*!') == sample.count(d) for d in ',;\t|'):  # +| fields, &| row ends
                 raise csv.Error('multi-character delimiter')
-            first = next(csv.reader(io.StringIO(sample), csv.Sniffer().sniff(sample, delimiters=',;\t|')), [])
+            delimiter = csv.Sniffer().sniff(sample, delimiters=',;\t|').delimiter
+            row = header_row(sample, delimiter)  # a title or date-range row above the header is left out
+            first = next(itertools.islice(csv.reader(io.StringIO(sample), delimiter=delimiter), row - 1, None), [])
             if any(re.match(DATA_CELL, v.strip()) for v in first):
                 return {path: f"no header row: the first row holds data ({', '.join(first[:3])}, …); add column names first"[:200]}
         else:
             from openpyxl import load_workbook
             sheets = load_workbook(path, read_only=True).sheetnames
-        return {path if s is None else f'{path}#{s}': prepare_source(Path(path), cache, ImportOptions(format='csv' if s is None else 'xlsx', sheet=s, encoding='utf-8-sig'))  # utf-8-sig: a byte-order mark is not part of the first header
+        return {path if s is None else f'{path}#{s}': prepare_source(Path(path), cache, ImportOptions(format='csv' if s is None else 'xlsx', sheet=s, encoding='utf-8-sig', header_row=row if s is None else 1))  # utf-8-sig: a byte-order mark is not part of the first header
                 for s in sheets}
     except FileNotFoundError:
         raise

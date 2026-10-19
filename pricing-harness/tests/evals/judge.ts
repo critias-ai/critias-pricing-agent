@@ -4,7 +4,7 @@
 import {dirname, join, resolve} from 'node:path';
 import type {ThinkingLevel} from '@earendil-works/pi-ai';
 import {resolveModel, type HarnessConfig} from '../../src/runtime.js';
-import type {RubricItem} from './spec.js';
+import type {JudgeMetrics, RubricItem} from './spec.js';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '../..');
 export type Verdict = {id: string; pass: boolean; quote: string};
@@ -72,14 +72,15 @@ export function grade(answer: string, replies: string[], rubric: RubricItem[]) {
 
 const family = (id: string, provider: string) => (id.includes('/') ? id.split('/')[0] : provider);
 
-// keep: receives the judge's raw answer, so a later grading fix can re-score it without another call.
+// keep: receives the judge's raw answer, so a later grading fix can re-score it without another call, and the call's
+// tokens, cost and seconds, so the report shows the judge apart from the analyst.
 export async function judge(
   turns: string[],
   replies: string[],
   rubric: RubricItem[],
   context = '',
   truth = '',
-  keep: (answer: string) => void = () => {},
+  keep: (answer: string, metrics: JudgeMetrics) => void = () => {},
 ) {
   try {
     process.loadEnvFile(join(ROOT, '.env')); // the runner, unlike the harness it starts, has not read .env
@@ -92,6 +93,7 @@ export async function judge(
     throw new Error('PRICING_JUDGE_MODEL must come from another model family than the analyst');
   const {runtime, model} = await resolveModel({provider, modelId, maxOutputTokens: 32000} as HarnessConfig); // high reasoning used up 8,000 and left no answer
   const level = process.env.PRICING_JUDGE_THINKING?.trim();
+  const started = Date.now();
   const reply = await runtime.completeSimple(
     model,
     {messages: [{role: 'user', content: judgePrompt(turns, replies, rubric, context, truth), timestamp: Date.now()}]},
@@ -99,6 +101,11 @@ export async function judge(
   );
   if (reply.stopReason === 'error') throw new Error(reply.errorMessage ?? 'judge call failed');
   const answer = reply.content.flatMap(c => (c.type === 'text' ? [c.text] : [])).join('');
-  keep(answer);
+  keep(answer, {
+    seconds: (Date.now() - started) / 1000,
+    inputTokens: reply.usage?.input ?? 0,
+    outputTokens: reply.usage?.output ?? 0,
+    costUSD: reply.usage?.cost?.total ?? 0,
+  });
   return grade(answer, replies, rubric);
 }

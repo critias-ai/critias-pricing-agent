@@ -16,6 +16,7 @@ description: "Knowledge card. Use for MRR, ARR, retention (NRR, GRR), cohorts an
 
 - MRR is the monthly normalized eligible recurring amount under that recipe.
 - An annual 1,200 recurring item contributes 100 per month. Its prepayment is cash or invoicing, not MRR.
+- MRR at a month end is a point in time: the instant the month ends, in the confirmed time zone given by its name, not a fixed offset (daylight saving moves it). Count a period that starts at or before that instant and ends after it. Comparing dates double-counts a renewal on the last day.
 - Setup, hardware and other one-time charges stay separate, unless a differently named company measure intentionally includes them.
 
 **ARR**
@@ -32,6 +33,7 @@ description: "Knowledge card. Use for MRR, ARR, retention (NRR, GRR), cohorts an
 
 **Cash, billing and revenue**
 
+- The [export checklist](../pricing-intake/references/payment-and-spend-exports.md) says which files to ask for.
 - Processor payouts are cash, net of fees, refunds, dispute withdrawals and reserves. They are not revenue and not MRR.
 - Show the gross-to-net bridge as separate lines: gross charges, refunds, disputes and reversals, processor fees, other adjustments, net settled. The user confirms which line their "revenue" means; a column or report name never settles it.
 - Net settled ties to payouts only against an independent figure, such as a payouts report or bank deposits. Summing one ledger by its own payout key is not a tie.
@@ -86,7 +88,7 @@ GRR = sum(min(b_i, e_i) for i in C) / B
 - Acquisition spend has two records: the platform's spend report (accrued daily) and the card or bank charge (billed in batches, with lag, FX and possibly tax). Use one per platform for CAC and the other only as a tie. Counting both double-counts. Spend not yet billed at the export date is an expected tie residual; size it before tracing ([metric verification](metric-verification.md)).
 - Confirm what makes a customer new. Zero-value trial invoices are not paid acquisitions.
 - When costs carry no customer link, report blended CAC: included acquisition costs in a window ÷ new customers in the same window, with "new customer" and "included costs" confirmed. Paid-only and all-in versions are different measures; name them, and show both over time, because a growing unpaid share can hide rising paid CAC.
-- Per-channel CAC needs a customer-level channel field, taken from the customer's first payment, since renewals may not carry it. Report it only for linked customers, and state the linked share. Never assign customers to channels from platform totals.
+- Per-channel CAC needs a customer-level channel field, taken from the customer's first payment, since renewals may not carry it. Report it only for linked customers, and state the linked share. Never assign customers to channels from platform totals. Unlinked customers include organic and referral ones, so never split them across paid platforms. Linked-only CAC overstates every platform's true CAC; the ranking between platforms holds if they tag at similar rates, so state it with that condition rather than withholding it.
 - Platform-reported conversions and revenue are not customer counts or billed revenue.
 - Compare channels on payback or cohort contribution, not CAC alone. Retention differences can reverse a CAC ranking.
 - Payback needs a confirmed contribution basis. Label a steady-state shortcut (CAC ÷ monthly contribution per new customer) as such, apart from observed cohort payback. A cohort that has not recovered its cost within the data has no observed payback; say so rather than extrapolating.

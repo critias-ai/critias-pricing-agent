@@ -190,3 +190,15 @@ def test_a_headerless_file_is_read_with_numbered_columns_and_a_note_to_ask(tmp_p
                        {'orders.csv': '43659\t2022-05-30 00:00:00.000\t20565.62\n43660\t2022-05-30 00:00:00.000\t1294.25\n'})
     assert r[1]['rows'] == [[43659, '20565.62'], [43660, '1294.25']]
     assert any(n.startswith('orders: no header row') and 'Ask the user' in n for n in ready['notes'])
+
+
+def test_a_report_title_above_the_header_is_left_out(tmp_path):
+    # The messy founder Google Ads export: UTF-16, tabs, a title and a date-range row above the header, two total rows.
+    (tmp_path / 'files').mkdir()
+    google = Path(__file__).resolve().parents[1] / 'evals/inputs/founder/google_ads.csv'
+    (tmp_path / 'files' / 'google_ads.csv').write_bytes(google.read_bytes())
+    ready, r = session(tmp_path, ['SELECT count(*) FILTER (Day LIKE \'Total:%\') AS totals, count(*) AS n FROM google_ads'],
+                       {'google_ads.csv': None})
+    assert [c.rsplit(' ', 1)[0] for c in ready['tables'][0]['columns']] == ['Day', 'Campaign', 'Currency code', 'Cost', 'Impr.', 'Clicks', 'Conv.']
+    assert r[1]['rows'] == [[2, 4934]]
+    assert any(n.startswith('google_ads: the header is on row 3') for n in ready['notes'])

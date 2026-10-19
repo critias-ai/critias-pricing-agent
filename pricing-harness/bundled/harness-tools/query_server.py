@@ -3,6 +3,7 @@ JSON lines in ({"id","sql"}), JSON lines out. Facts only; this module has no fin
 import argparse
 import csv
 import io
+import itertools
 import json
 import math
 import os
@@ -16,7 +17,7 @@ from pathlib import Path
 import duckdb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from data_workspace import ImportOptions, attach_source, connect_analysis, create_typed_view, prepare_source, profile_prepared
+from data_workspace import ImportOptions, attach_source, connect_analysis, create_typed_view, header_row, prepare_source, profile_prepared, text_encoding
 from same_rows import mismatches, note, stop_message
 from peer_ratio import PeerRatio
 from offsets import Offsets
@@ -70,11 +71,13 @@ def targets(path):
                     for sheet in book.sheetnames]
         finally:
             book.close()
-    with open(path, encoding='utf-8-sig', newline='') as f:
+    with open(path, encoding=text_encoding(path), newline='') as f:
         sample = f.read(65536)
-    first = next(csv.reader(io.StringIO(sample), csv.Sniffer().sniff(sample, delimiters=',;\t|')), [])
+    delimiter = csv.Sniffer().sniff(sample, delimiters=',;\t|').delimiter
+    row = header_row(sample, delimiter)
+    first = next(itertools.islice(csv.reader(io.StringIO(sample), delimiter=delimiter), row - 1, None), [])
     headerless = any(DATA_CELL.match(v.strip()) for v in first)
-    return [(alias_for(path), ImportOptions(format='csv', header_row=0 if headerless else 1))]
+    return [(alias_for(path), ImportOptions(format='csv', header_row=0 if headerless else row))]
 
 
 def attach_views(conn, root, cache, sources):
@@ -100,6 +103,8 @@ def attach_views(conn, root, cache, sources):
                 columns = [(r[0], r[1]) for r in conn.execute(f'DESCRIBE "{name}"').fetchall()]
                 if not options.header_row:
                     notes.append(NO_HEADER.format(name, len(columns)))
+                if options.header_row > 1:
+                    notes.append(f'{name}: the header is on row {options.header_row}; the rows above it (a title or date range) were left out.')
                 tables.append({'name': name, 'rows': prepared.row_count, 'typed': typed, 'file': rel,
                                **({'sheet': options.sheet} if options.sheet else {}),
                                'columns': [f'{c} {t}' for c, t in columns]})

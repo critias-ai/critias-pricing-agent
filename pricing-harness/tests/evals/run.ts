@@ -350,7 +350,10 @@ export async function main(args: string[]) {
                 key.rubric,
                 await contextOf(spec),
                 key.judgeTruth,
-                answer => (o.judgeAnswer = answer),
+                (answer, metrics) => {
+                  o.judgeAnswer = answer;
+                  o.judgeMetrics = metrics;
+                },
               ).catch((e: Error) => [
                 `${USAGE_LIMIT.test(e.message) ? 'Usage limit (judge)' : 'Judge error'}: ${e.message}`,
               ])

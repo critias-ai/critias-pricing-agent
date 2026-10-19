@@ -1,0 +1,24 @@
+{
+  "id": "fo-2-mrr",
+  "inputDir": "../inputs/founder-clean",
+  "contextFile": "../contexts/founder.md",
+  "turns": [
+    {
+      "text": "What was our MRR at the end of each month this year, and how many paying customers did we have?"
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "mrr_2026.csv",
+      "keyColumns": [
+        "month"
+      ],
+      "valueColumns": [
+        "mrr_eur",
+        "paying_customers"
+      ],
+      "ask": "mrr_2026.csv with columns month,mrr_eur,paying_customers: one row per month from January to September 2026, MRR and paying customers at each month end"
+    }
+  ],
+  "solution": "../solutions/founder.py"
+}

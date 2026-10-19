@@ -73,3 +73,19 @@ def test_prepare_source_cache_hit_does_not_rehash(tmp_path,monkeypatch):
     monkeypatch.setattr(m,'source_hash',lambda path:(calls.append(path),original(path))[1])
     m.prepare_source(source,tmp_path/'cache',options)
     assert calls==[]
+
+def test_utf16_csv_imports_with_the_same_values_as_utf8(tmp_path):
+    m=helper();text='Day\tCampaign\tCost\n2026-01-01\tMarke Müller – Suche\t1,234.50\n2026-01-02\tBrand\t7.00\n'
+    (tmp_path/'u8.csv').write_text(text,encoding='utf-8');(tmp_path/'u16.csv').write_text(text,encoding='utf-16')  # utf-16 writes a BOM
+    assert m.text_encoding(tmp_path/'u16.csv')=='utf-16' and m.text_encoding(tmp_path/'u8.csv')=='utf-8-sig'
+    rows={}
+    for name in ('u8','u16'):
+        prepared=m.prepare_source(tmp_path/f'{name}.csv',tmp_path/'cache',m.ImportOptions(format='csv'))
+        conn=m.connect_analysis(tmp_path/f'run-{name}',tmp_path/'tmp',memory_limit='128MB',threads=1)
+        try:m.attach_source(conn,prepared,'src');rows[name]=conn.execute('SELECT * FROM src.raw ORDER BY 1').fetchall()
+        finally:conn.close()
+        assert prepared.column_mapping=={'Day':'Day','Campaign':'Campaign','Cost':'Cost'}
+        assert not list(prepared.database_path.parent.glob('*.csv'))  # the decoded copy is not kept
+    assert rows['u16']==rows['u8']==[('2026-01-01','Marke Müller – Suche','1,234.50'),('2026-01-02','Brand','7.00')]
+    (tmp_path/'latin.csv').write_text('a,b\n1,2\n',encoding='latin-1')
+    with pytest.raises(ValueError,match='UTF-8 or UTF-16'):m.prepare_source(tmp_path/'latin.csv',tmp_path/'cache',m.ImportOptions(format='csv',encoding='latin-1'))

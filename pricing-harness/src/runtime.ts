@@ -99,11 +99,19 @@ export async function resolveModel(config: HarnessConfig) {
   // Pi's own store on ~/.pi/agent/auth.json: it can save the refreshed token of a "Sign in with ChatGPT" login.
   const runtime = await ModelRuntime.create({modelsPath: null, allowModelNetwork: false});
   // An ID newer than Pi's bundled catalog (such as a new OpenRouter model) borrows the provider's connection settings
-  // from a catalog entry of the same vendor (the part before "/"). Its price comes from OpenRouter's public model list;
+  // and reasoning levels from the catalog entry sharing the longest ID prefix, so deepseek-v4.1-flash-1017 takes
+  // deepseek-v4.1-flash's, not the vendor's first entry's. Its price comes from OpenRouter's public model list;
   // anywhere else, or offline, it is unknown and cost estimates read zero.
   const known = runtime.getModels(config.provider);
-  const vendor = config.modelId.split('/')[0] + '/';
-  const template = known.find(m => m.id.startsWith(vendor)) ?? known[0];
+  const shared = (id: string) => {
+    let i = 0;
+    while (i < id.length && id[i] === config.modelId[i]) i++;
+    return i;
+  };
+  const template = known.reduce<(typeof known)[number] | undefined>(
+    (best, m) => (!best || shared(m.id) > shared(best.id) ? m : best),
+    undefined,
+  );
   const model =
     runtime.getModel(config.provider, config.modelId) ??
     (template && {

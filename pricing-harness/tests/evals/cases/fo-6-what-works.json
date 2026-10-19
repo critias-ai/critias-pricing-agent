@@ -1,0 +1,25 @@
+{
+  "id": "fo-6-what-works",
+  "inputDir": "../inputs/founder-clean",
+  "contextFile": "../contexts/founder.md",
+  "turns": [
+    {
+      "text": "Which ad platform is actually working for us? Judge it on the customers we won in our first year (April 2022 to March 2023), since we've watched them longest."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "payback.csv",
+      "keyColumns": [
+        "channel"
+      ],
+      "valueColumns": [
+        "cohort_customers",
+        "cac_eur",
+        "payback_month"
+      ],
+      "ask": "payback.csv with columns channel,cohort_customers,cac_eur,payback_month: one row each for meta and google, customers whose first payment from April 2022 to March 2023 carries that channel; payback_month blank if not reached"
+    }
+  ],
+  "solution": "../solutions/founder.py"
+}

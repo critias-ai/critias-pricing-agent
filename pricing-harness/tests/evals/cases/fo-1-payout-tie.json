@@ -1,0 +1,28 @@
+{
+  "id": "fo-1-payout-tie",
+  "inputDir": "../inputs/founder",
+  "contextFile": "../contexts/founder.md",
+  "turns": [
+    {
+      "text": "Does what Stripe paid out to our bank this year match what came in through payments? Month by month, please."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "payout_tie_2026.csv",
+      "keyColumns": [
+        "month"
+      ],
+      "valueColumns": [
+        "charges_gross_eur",
+        "refunds_eur",
+        "disputes_eur",
+        "processor_fees_eur",
+        "net_settled_eur",
+        "paid_out_eur"
+      ],
+      "ask": "payout_tie_2026.csv with columns month,charges_gross_eur,refunds_eur,disputes_eur,processor_fees_eur,net_settled_eur,paid_out_eur: one row per month from January to September 2026, the cash bridge from charges to net settled and the payouts sent to the bank, refunds and disputes as negative amounts, processor fees as a positive amount"
+    }
+  ],
+  "solution": "../solutions/founder.py"
+}

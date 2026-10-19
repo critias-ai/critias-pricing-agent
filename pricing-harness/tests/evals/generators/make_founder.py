@@ -383,8 +383,8 @@ def truth(customers, balance, payouts, spend, amex):
         if c["paid"]:
             new[idx[month_of(c["paid"][0]["t"])]].append(c)
         for p in c["paid"]:
-            i, until = idx[month_of(p["t"])], add_months(p["t"], p["months"]) + timedelta(hours=1)
-            while i < n and ends[i] <= until:
+            i, until = idx[month_of(p["t"])], add_months(p["t"], p["months"])
+            while i < n and ends[i] < until:  # the period covers the month end; a renewal at month end is not counted twice
                 mrr[i] += p["mrr"]
                 mrr_list[i] += p["mrr_list"]
                 paying[i].add(c["n"])

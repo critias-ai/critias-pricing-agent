@@ -10,7 +10,7 @@ First public release.
 
 - One continuing analyst session per conversation, working in DuckDB SQL over typed views of your files and in recorded Python scripts.
 - Checked replies: every substantial number must appear in the output of a query or script that ran, and tables and charts come only from frozen result files.
-- Seven pricing skills (Pricing Plugin 0.4.11): intake, margin analysis, opportunity scan, recommendations, pricing design, rollout planning and triage, with knowledge and method cards.
+- Seven pricing skills (Pricing Plugin 0.4.12): intake, margin analysis, opportunity scan, recommendations, pricing design, rollout planning and triage, with knowledge and method cards.
 - Data findings: seven code-based detectors flag suspect rows in CSV and XLSX files before the first question. Nothing is cleaned automatically.
 - Confirmed business context in `.pricing/context.md`, written only for facts you confirm.
 - Conversation history in a sidebar.

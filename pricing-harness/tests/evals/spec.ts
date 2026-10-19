@@ -53,9 +53,12 @@ export type Outcome = {
   context?: string;
   contextStart?: string;
   judgeAnswer?: string;
+  judgeMetrics?: JudgeMetrics;
   tools?: string[];
   metrics?: RunMetrics;
 };
+// One rubric judge call. costUSD is the provider's price list applied to the tokens, also under a subscription login.
+export type JudgeMetrics = {seconds: number; inputTokens: number; outputTokens: number; costUSD: number};
 export type RunMetrics = {
   seconds: number;
   costUSD: number;

@@ -1,6 +1,7 @@
 """Disk-backed raw staging. This module deliberately has no financial definitions."""
 import csv
 import hashlib
+import io
 import json
 import os
 import re
@@ -11,7 +12,7 @@ from pathlib import Path
 from typing import Literal
 import duckdb
 
-DATA_TOOL_VERSION = '0.1.1'
+DATA_TOOL_VERSION = '0.1.2'
 
 @dataclass(frozen=True)
 class ImportOptions:
@@ -54,6 +55,20 @@ def cached_source_hash(path,cache_root):
         temp.write_text(json.dumps({'identity':before,'sha256':digest}));os.replace(temp,entry)
     return digest
 
+def text_encoding(path):
+    """'utf-16' for a file that starts with a UTF-16 byte-order mark (some ad-platform exports), else 'utf-8-sig'."""
+    with open(path,'rb') as file:head=file.read(2)
+    return 'utf-16' if head in (b'\xff\xfe',b'\xfe\xff') else 'utf-8-sig'
+
+def header_row(sample,delimiter):
+    """1-based row of the header: the first row as wide as most rows in the sample. Narrower rows above it, such as a
+    report title or a date range, are skipped. The sample's last row may be cut off, so it is not counted."""
+    rows=list(csv.reader(io.StringIO(sample),delimiter=delimiter))[:-1] or list(csv.reader(io.StringIO(sample),delimiter=delimiter))
+    widths=[len(r) for r in rows if r]
+    if not widths:return 1
+    width=max(set(widths),key=widths.count)
+    return next(i for i,r in enumerate(rows,1) if len(r)==width)
+
 def quote(value):return "'"+str(value).replace("'","''")+"'"
 def identifier(value):return '"'+str(value).replace('"','""')+'"'
 
@@ -80,14 +95,19 @@ def prepare_source(source:Path,cache_root:Path,options:ImportOptions)->PreparedS
         conn=duckdb.connect(str(temp/'source.duckdb'))
         conn.execute("SET memory_limit='4GB'");conn.execute(f"SET temp_directory={quote(temp/'spill')}")
         if options.format=='csv':
-            with source.open(encoding=options.encoding,newline='') as file:
+            encoding=text_encoding(source) if options.encoding.lower() in ('utf-8','utf8','utf-8-sig') else options.encoding.lower()
+            if encoding not in ('utf-8','utf8','utf-8-sig','utf-16'):raise ValueError('CSV encoding must be UTF-8 or UTF-16; convert explicitly before import')
+            with source.open(encoding=encoding,newline='') as file:
                 sample=file.read(65536);file.seek(0)
                 delimiter=options.delimiter or csv.Sniffer().sniff(sample,delimiters=',;\t|').delimiter
                 reader=csv.reader(file,delimiter=delimiter,strict=True)
                 for _ in range(options.header_row-1):next(reader)
                 first=next(reader);names=_headers(first) if options.header_row else [f'column{i}' for i in range(1,len(first)+1)]
-            if options.encoding.lower() not in ('utf-8','utf8','utf-8-sig'):raise ValueError('CSV encoding must be UTF-8; convert explicitly before import')
-            conn.execute(f"CREATE TABLE raw AS SELECT * FROM read_csv({quote(source)}, header={str(bool(options.header_row)).lower()}, all_varchar=true, delim={quote(delimiter)}, skip={max(options.header_row-1,0)}, strict_mode=true, ignore_errors=false{'' if options.header_row else ', names=['+','.join(quote(n) for n in names)+']'})")
+            read=source
+            if encoding=='utf-16':  # DuckDB reads UTF-8 here: decode into the cache once, values unchanged
+                read=temp/'source.csv'
+                with source.open(encoding='utf-16',newline='') as file,read.open('w',encoding='utf-8',newline='') as out:shutil.copyfileobj(file,out)
+            conn.execute(f"CREATE TABLE raw AS SELECT * FROM read_csv({quote(read)}, header={str(bool(options.header_row)).lower()}, all_varchar=true, delim={quote(delimiter)}, skip={max(options.header_row-1,0)}, strict_mode=true, ignore_errors=false{'' if options.header_row else ', names=['+','.join(quote(n) for n in names)+']'})")
             actual=[row[0] for row in conn.execute('DESCRIBE raw').fetchall()]
             if actual!=names:raise ValueError('parsed headers differ from inspected headers')
         else:
@@ -106,6 +126,7 @@ def prepare_source(source:Path,cache_root:Path,options:ImportOptions)->PreparedS
                 if batch:conn.executemany(statement,batch)
             finally:book.close()
         count=conn.execute('SELECT count(*) FROM raw').fetchone()[0];conn.close();conn=None
+        (temp/'source.csv').unlink(missing_ok=True)
         if source_hash(source)!=sha:raise ValueError('source changed during preparation; retry with stable input')
         metadata={'row_count':count,'column_mapping':dict(zip(names,names)),'source_sha256':sha,'import_options':asdict(options),'data_tool_version':DATA_TOOL_VERSION,'duckdb_version':duckdb.__version__}
         (temp/'metadata.json').write_text(json.dumps(metadata,indent=2));shutil.rmtree(temp/'spill',ignore_errors=True)

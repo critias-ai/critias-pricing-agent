@@ -262,6 +262,8 @@ export function report(condition: Condition | undefined, results: CaseResult[], 
   const consistent = checked.filter(r => !r.spread.length).length;
   const metrics = results.flatMap(r => r.outcomes.map(o => o.metrics).filter(m => !!m));
   const cost = metrics.reduce((a, m) => a + m.costUSD, 0);
+  const judged = results.flatMap(r => r.outcomes.map(o => o.judgeMetrics).filter(m => !!m));
+  const judgeCost = judged.reduce((a, m) => a + m.costUSD, 0);
   const lines = [
     `# Eval report ${started}`,
     '',
@@ -271,16 +273,19 @@ export function report(condition: Condition | undefined, results: CaseResult[], 
         ? `Model \`${condition.model}\` (thinking ${condition.thinking}), commit ${condition.commit}, plugin ${condition.versions.pricing ?? '?'}, bundle ${condition.bundleFingerprint.slice(0, 12)}.`
         : 'Live run, but no turn completed, so the model and versions are unknown.',
     '',
-    `**${passed} of ${runs.length} runs passed.${checked.length ? ` ${consistent} of ${checked.length} cases gave the same figures on every repeat.` : ''}** Cost $${cost.toFixed(3)}.`,
+    `**${passed} of ${runs.length} runs passed.${checked.length ? ` ${consistent} of ${checked.length} cases gave the same figures on every repeat.` : ''}** Cost $${cost.toFixed(3)}${judged.length ? ` analyst, $${judgeCost.toFixed(3)} judge (${judged.length} calls)` : ''}.`,
     '',
-    '| Case | Runs passed | Same figures | Model calls | Tool calls | Tool errors | Invalid calls | Cards read | Cost $ | Seconds |',
-    '|---|---|---|---|---|---|---|---|---|---|',
+    '| Case | Runs passed | Same figures | Model calls | Tool calls | Tool errors | Invalid calls | Cards read | Cost $ | Seconds | Judge $ | Judge seconds |',
+    '|---|---|---|---|---|---|---|---|---|---|---|---|',
   ];
   for (const r of results) {
     const m = r.outcomes.map(o => o.metrics).filter(x => !!x);
     const avg = (f: (x: (typeof m)[number]) => number, digits = 1) => (m.length ? mean(m.map(f)).toFixed(digits) : '-');
+    const j = r.outcomes.map(o => o.judgeMetrics).filter(x => !!x);
+    const judgeAvg = (f: (x: (typeof j)[number]) => number, digits: number) =>
+      j.length ? mean(j.map(f)).toFixed(digits) : '-';
     lines.push(
-      `| ${r.id} | ${r.failures.filter(f => !f.length).length} of ${r.failures.length} | ${r.consistencyChecked ? (r.spread.length ? 'no' : 'yes') : '-'} | ${avg(x => x.modelCalls)} | ${avg(x => x.toolCalls)} | ${avg(x => x.toolErrors)} | ${avg(x => x.invalidCalls)} | ${avg(x => x.cards ?? 0)} | ${avg(x => x.costUSD, 3)} | ${avg(x => x.seconds, 0)} |`,
+      `| ${r.id} | ${r.failures.filter(f => !f.length).length} of ${r.failures.length} | ${r.consistencyChecked ? (r.spread.length ? 'no' : 'yes') : '-'} | ${avg(x => x.modelCalls)} | ${avg(x => x.toolCalls)} | ${avg(x => x.toolErrors)} | ${avg(x => x.invalidCalls)} | ${avg(x => x.cards ?? 0)} | ${avg(x => x.costUSD, 3)} | ${avg(x => x.seconds, 0)} | ${judgeAvg(x => x.costUSD, 3)} | ${judgeAvg(x => x.seconds, 0)} |`,
     );
   }
   for (const r of results) {

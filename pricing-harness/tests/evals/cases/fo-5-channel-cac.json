@@ -1,0 +1,25 @@
+{
+  "id": "fo-5-channel-cac",
+  "inputDir": "../inputs/founder-clean",
+  "contextFile": "../contexts/founder.md",
+  "turns": [
+    {
+      "text": "Is Meta or Google getting us cheaper customers? Use the last 12 months."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "channel_cac.csv",
+      "keyColumns": [
+        "channel"
+      ],
+      "valueColumns": [
+        "spend_eur",
+        "new_customers",
+        "cac_eur"
+      ],
+      "ask": "channel_cac.csv with columns channel,spend_eur,new_customers,cac_eur: one row each for meta and google, October 2025 to September 2026, counting new customers whose first payment carries that channel"
+    }
+  ],
+  "solution": "../solutions/founder.py"
+}

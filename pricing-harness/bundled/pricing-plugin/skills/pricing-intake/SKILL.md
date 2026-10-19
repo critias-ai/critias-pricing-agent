@@ -24,6 +24,7 @@ description: Use when establishing, importing, or updating reusable company pric
   - Identify candidate fields. Ask the user which field represents each relevant measure, including revenue, COGS, price level, accounting treatment, currency and units. Use [metric verification](../knowledge/metric-verification.md) for what each mapping must settle.
   - Scope each mapping to its source or schema and its analysis purpose. Several revenue or cost fields may serve different purposes.
   - Reuse applicable confirmed mappings.
+- For payment, payout, billing, ad-spend or card files, use the [export checklist](references/payment-and-spend-exports.md) to ask for the right files and columns.
 - For other gaps, consult the [optional outline](references/context-outline.md).
 - For model, metric and lifecycle guidance, use [retail economics](../knowledge/retail-economics.md) for retail, channel or order work, [recurring metrics](../knowledge/recurring-metrics.md) for recurring revenue and [hybrid offers](../knowledge/methods/hybrid-offers.md) for asset, service and usage combinations. Pick anything else from the [knowledge index](../knowledge/index.md). Use only what affects the requested facts or decision.
 - Propose specific additions or corrections, each with its scope.

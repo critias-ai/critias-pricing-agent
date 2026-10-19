@@ -259,3 +259,37 @@ Test-side, not a fix item: EC-8 run 1 judge verdict looks wrong (failed R3 altho
       per OUT run rose about 60%.
     Decision (user, 2026-10-18): cause-finding before recommending is accepted as a model limit; the lint is removed
     and the plugin stays at 0.4.11 (peer line only). The detector fix stays.
+
+23. **Founder unit-economics live run (fo-1 to fo-6, Haiku 5.5 high, Sol low judge, 1 repeat, 2026-10-19, 1 of 6,
+    `.cache/evals/live-2026-10-19T11-58-09-763Z`).** Test faults fixed after the run: the fee sign was not stated (fo-1, fo-3), and the payout amount could
+    be read as gross or net (fo-3). Analyst findings:
+    - the SQL template linked from the recurring-metrics card was never opened (0 of 6); every case read only the card
+      and the analyze skill;
+    - confirmed time zones ignored: a fixed -1 hour offset for Berlin month ends, wrong in summer (fo-2); +2 hours added
+      to a file the context says is already in Berlin time (fo-3); UTC month boundaries (fo-5);
+    - the invoice period used instead of the line-item period the context names, then MRR given up as "not computable"
+      (fo-3);
+    - payback contribution taken as charge gross less fee, VAT included and not spread over the period, against the
+      confirmed basis: Google payback month 27, expected 34 (fo-6);
+    - a charge id shared by a charge and its refund or dispute read as "70 duplicated charges with conflicting values"
+      (fo-3, fo-5);
+    - untagged customers, organic ones included, split pro rata between Meta and Google to give a CAC (fo-5).
+    - Re-run with 3 repeats (`.cache/evals/live-2026-10-19T12-22-09-322Z`, 4 of 18, $1.56 analyst, about $0.06 judge at
+      API prices): fo-4 3 of 3, fo-1 1 of 3 (a second run failed only on the judge wanting "February"; R1 loosened after
+      the run), fo-2, fo-3, fo-5, fo-6 0 of 3. Same causes as above, plus: fo-1 run 1 kept the duplicates; fo-3 never
+      states December MRR (0 of 3) or that charges include VAT; fo-5 hedges the platform ranking on a pro-rata split of
+      all untagged customers (0 of 3); fo-6 payback month 27-28 against 34, from charge gross less fee (3 of 3).
+    - DeepSeek v4.1 flash 1017 high, same cases (`.cache/evals/live-2026-10-19T12-56-23-295Z`): 11 of 18 (Haiku 4 of 18). Failures both models share, so
+      harness-side: the SQL template is never opened (0 of 36 runs); fo-5 R3 0 of 6, as the card lacks the template's
+      point that tagged-only CAC is an upper bound whose ranking survives equal tagging; fo-2 1 of 6, with month-end MRR
+      tested by date, so a renewal on the last day counts twice (both models' February 38,290.66), and the context's
+      "covers the month end" does not say it is the instant the month ends. Haiku only: fo-6 contribution basis (0 of 3
+      against 3 of 3), fo-3 explanations. Harness fix while testing: a model ID newer than Pi's catalogue now borrows
+      settings from the entry with the longest shared ID prefix (DeepSeek had taken deepseek-chat's: no reasoning).
+    - Fixed (user, 2026-10-19): SQL template deleted (never read); the card gains the month-end-instant rule and the
+      linked-only CAC rule. DeepSeek re-run of fo-1, fo-2, fo-3, fo-5 (`.cache/evals/live-2026-10-19T13-27-45-999Z`): 4 of 12 as graded, 6 of 12 after
+      re-judging with the fo-3 R1 and fo-5 R3 wording fixed to match the card. fo-2's month-end MRR is now right in all
+      3 runs (one reply left the figure out); every fo-5 reply states the upper bound and stops splitting untagged
+      customers. Left: dispute fees counted as disputes (fo-1 run 3; the context now says where they go, untested),
+      fo-3 fee total wrong in one run, and one reply each missing the linked share or the ranking condition.
+

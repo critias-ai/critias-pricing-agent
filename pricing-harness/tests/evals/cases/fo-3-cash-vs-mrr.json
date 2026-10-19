@@ -1,0 +1,23 @@
+{
+  "id": "fo-3-cash-vs-mrr",
+  "inputDir": "../inputs/founder-clean",
+  "contextFile": "../contexts/founder.md",
+  "turns": [
+    {
+      "text": "Why is the money Stripe paid us in 2025 so different from our MRR? Explain it like I'm not a finance person."
+    }
+  ],
+  "csvChecks": [
+    {
+      "file": "cash_bridge_2025.csv",
+      "keyColumns": [
+        "line"
+      ],
+      "valueColumns": [
+        "eur"
+      ],
+      "ask": "cash_bridge_2025.csv with columns line,eur: one row each for charges_gross, refunds, disputes, processor_fees, net_settled and paid_out, totals for 2025, refunds and disputes as negative amounts, processor fees as a positive amount"
+    }
+  ],
+  "solution": "../solutions/founder.py"
+}
