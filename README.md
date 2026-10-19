@@ -8,6 +8,8 @@ Built on [Pi](https://pi.dev) ([earendil-works/pi](https://github.com/earendil-w
 
 The application combines an assistant-ui chat interface (React), a Fastify server, the [Pi](https://pi.dev) agent SDK, DuckDB, seven bundled pricing skills (Pricing Plugin 0.4.12) and a visualization skill. Calculations run locally. Model requests go to OpenRouter, or directly to OpenAI.
 
+Critias is a free, personal, non-commercial project, built to learn and experiment while making something useful.
+
 **Status: experimental research preview (0.5.0).** Native macOS setup, component, Python and browser tests, and live runs of the single-analyst workflow on synthetic and public datasets have been checked. Real-business-data validation and native scale testing are still pending. See [how the harness works](pricing-harness/docs/architecture.md) and the [verification records](pricing-harness/docs/releases/).
 
 ## Features

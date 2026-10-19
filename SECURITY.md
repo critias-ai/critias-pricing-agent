@@ -11,7 +11,7 @@ Please do not open a public issue.
 - Preferred: [report it privately on GitHub](https://github.com/critias-ai/critias-pricing-agent/security/advisories/new).
 - Or email **hello@critias.ai** with "Security" in the subject.
 
-Include what you found, how to reproduce it and the impact you expect. We aim to reply within five working days and will keep you updated until it is resolved. We credit reporters who want to be named.
+Include what you found, how to reproduce it and the impact you expect. I aim to reply within five working days and will keep you updated until it is resolved. Reporters who want to be named are credited.
 
 ## Scope
 
