@@ -64,34 +64,37 @@ export async function openFileStore(paths: WorkspacePaths, options: {maxUploadBy
   return {
     listSources: () => structuredClone(sources),
     listArtifacts: () => structuredClone(artifacts),
-    saveUpload: (input: Readable, name: string) =>
-      serial(async () => {
-        const leaf = basename(name.replaceAll('\\', '/')).replace(/[\x00-\x1f]/g, '_');
-        if (!leaf || leaf === '.' || leaf === '..') throw new HarnessError('INVALID_FILE', 'Invalid filename');
-        const type = kind(leaf),
-          id = randomUUID(),
-          dir = join(paths.files, id);
-        await mkdir(dir);
-        await safePath(paths.files, id);
-        const temp = join(dir, `${leaf}.partial`),
-          final = join(dir, leaf);
-        let bytes = 0;
-        try {
-          await pipeline(
-            input,
-            new Transform({
-              transform(chunk, _encoding, callback) {
-                bytes += chunk.length;
-                callback(
-                  bytes > options.maxUploadBytes
-                    ? new HarnessError('FILE_TOO_LARGE', 'File exceeds upload limit', 413)
-                    : null,
-                  chunk,
-                );
-              },
-            }),
-            createWriteStream(temp, {flags: 'wx'}),
-          );
+    // Streaming happens outside the serial queue so a slow or stalled client cannot hold up run start or cancel;
+    // only the rename and metadata update are serialised. truncated() reports a stream the multipart limit cut short.
+    saveUpload: async (input: Readable, name: string, truncated: () => boolean = () => false) => {
+      const leaf = basename(name.replaceAll('\\', '/')).replace(/[\x00-\x1f]/g, '_');
+      if (!leaf || leaf === '.' || leaf === '..') throw new HarnessError('INVALID_FILE', 'Invalid filename');
+      const type = kind(leaf),
+        id = randomUUID(),
+        dir = join(paths.files, id);
+      await mkdir(dir);
+      await safePath(paths.files, id);
+      const temp = join(dir, `${leaf}.partial`),
+        final = join(dir, leaf);
+      let bytes = 0;
+      try {
+        await pipeline(
+          input,
+          new Transform({
+            transform(chunk, _encoding, callback) {
+              bytes += chunk.length;
+              callback(
+                bytes > options.maxUploadBytes
+                  ? new HarnessError('FILE_TOO_LARGE', 'File exceeds upload limit', 413)
+                  : null,
+                chunk,
+              );
+            },
+          }),
+          createWriteStream(temp, {flags: 'wx'}),
+        );
+        if (truncated()) throw new HarnessError('FILE_TOO_LARGE', 'File exceeds upload limit', 413);
+        return await serial(async () => {
           await rename(temp, final);
           const file: SourceFile = {
             id,
@@ -104,12 +107,13 @@ export async function openFileStore(paths: WorkspacePaths, options: {maxUploadBy
           sources.push(file);
           await persist();
           return file;
-        } catch (e) {
-          await rm(dir, {recursive: true, force: true});
-          sources = sources.filter(s => s.id !== id);
-          throw e;
-        }
-      }),
+        });
+      } catch (e) {
+        await rm(dir, {recursive: true, force: true});
+        sources = sources.filter(s => s.id !== id);
+        throw e;
+      }
+    },
     resolveSources: async (ids: string[]) => {
       const selected = ids.map(id => {
         const file = sources.find(s => s.id === id);

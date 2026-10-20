@@ -33,7 +33,7 @@ bash scripts/start-macos.sh "/absolute/path/to/Business workspace"
 bash scripts/start-macos.sh "/absolute/path/to/Business workspace" "vendor/model-id"
 ```
 
-Open http://127.0.0.1:4317. The workspace is created if needed. The optional second argument overrides the model for that launch. The launcher always sets the provider to OpenRouter. Restart after changing configuration; no rebuild is needed.
+Open the link the launcher prints, `http://127.0.0.1:4317/#token=…`. The token changes at every launch; the app's API refuses requests without it, so other programs and accounts on the computer cannot use it. The workspace is created if needed. The optional second argument overrides the model for that launch. The launcher always sets the provider to OpenRouter. Restart after changing configuration; no rebuild is needed.
 
 For a direct Node launch, another provider, or headless use:
 

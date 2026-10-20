@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import type {HarnessEvent, SessionSnapshot} from '../contracts.js';
-import {api} from './api.js';
+import {api, token} from './api.js';
 import {reduceEvent} from './state.js';
 import {stepsStore} from './steps-store.js';
 export type ActiveRun = {id: string; startedAt: string};
@@ -15,7 +15,7 @@ export function useSession() {
       synced = false,
       generation = 0,
       buffer: HarnessEvent[] = [];
-    const source = new EventSource('/api/events');
+    const source = new EventSource('/api/events?token=' + encodeURIComponent(token()));
     const apply = (event: HarnessEvent) => {
       if (!current.current) return;
       const next = reduceEvent(current.current, event);

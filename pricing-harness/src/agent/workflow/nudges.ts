@@ -1,6 +1,7 @@
 import {existsSync, readdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {basename, join, resolve, sep} from 'node:path';
 import {toShellPath as sh} from '../../runtime.js';
+import {sdkRewrittenPath} from '../../workspace.js';
 import type {ExtensionFactory} from '@earendil-works/pi-coding-agent';
 
 // Hooks that fire at the moment of behaviour. The harness states tool, SQL-dialect and safety facts only.
@@ -294,6 +295,8 @@ const HOOKS: Record<string, Hook> = {
     pi.on('tool_call', event => {
       if (event.toolName !== 'write' && event.toolName !== 'edit') return;
       const input = event.input as Record<string, any>;
+      if (typeof input.path === 'string' && sdkRewrittenPath(input.path))
+        return {block: true, reason: 'Use a plain relative or absolute path'};
       const target = typeof input.path === 'string' ? resolve(o.stageDir, input.path) : '';
       if (!o.contextPath || target !== o.contextPath || !existsSync(target)) return;
       const before = readFileSync(target, 'utf8');

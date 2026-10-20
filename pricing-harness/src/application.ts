@@ -8,6 +8,9 @@ import {EventView} from './agent/events.js';
 import {restoreExplorations} from './agent/workflow/exploration-restore.js';
 import {RunController} from './agent/runs.js';
 export async function createApplication(config: HarnessConfig = loadConfig(), options = {requireVisualization: true}) {
+  // Uploads, context, conversations and analysis output are private business data: everything this process and its
+  // children create is owner-only, whatever the workspace's parent folder allows.
+  process.umask(0o077);
   const paths = await openWorkspace(config.workspaceRoot),
     files = await openFileStore(paths, {maxUploadBytes: config.maxUploadBytes});
   const bundle = await validateBundle(config.bundledRoot, options);

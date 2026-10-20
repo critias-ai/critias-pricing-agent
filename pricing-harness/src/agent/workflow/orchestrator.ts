@@ -31,8 +31,8 @@ export class WorkflowOrchestrator {
       onCheckpoint?: () => Promise<void>;
       onInvalidate?: () => Promise<void>;
       explorationEnabled?: boolean;
-      profileSources?: (sources: SourceFile[]) => Promise<SourceProfile[]>;
-      findData?: (sources: SourceFile[]) => Promise<DataFindings | undefined>;
+      profileSources?: (sources: SourceFile[], signal?: AbortSignal) => Promise<SourceProfile[]>;
+      findData?: (sources: SourceFile[], signal?: AbortSignal) => Promise<DataFindings | undefined>;
     },
   ) {}
   async execute(run: RunRecord, question: string, sources: SourceFile[], signal: AbortSignal) {
@@ -130,18 +130,22 @@ export class WorkflowOrchestrator {
       for (const [name, sha] of Object.entries(fresh ? {} : (state.recorded ?? {}))) recorded.set(name, sha);
       const saveState = () =>
         atomicJSON(statePath, {sessionKey: key, settled: [...settled], recorded: Object.fromEntries(recorded)});
+      const contextBefore = await readFile(paths.context, 'utf8').catch(() => '');
       let prompt = followUpPrompt(question, until);
       if (fresh) {
         await rm(stageDir, {recursive: true, force: true});
         await rm(statePath, {force: true});
-        const profiles = compactProfiles((await this.options.profileSources?.(sources)) ?? []);
+        // Stop and shutdown must reach these subprocesses too, not only the first analyst turn.
+        const profiles = compactProfiles((await this.options.profileSources?.(sources, signal)) ?? []);
+        if (signal.aborted) throw new Error('cancelled');
         const profilesPath = join(paths.metadata, 'source-profiles.json');
         await writeFile(profilesPath, JSON.stringify(profiles));
         let dataFindings: CompactFindings | undefined;
         try {
-          const found = await this.options.findData?.(sources);
+          const found = await this.options.findData?.(sources, signal);
           dataFindings = found && compactFindings(found);
         } catch (error) {
+          if (signal.aborted) throw new Error('cancelled');
           await log.append({type: 'data_findings', error: String((error as Error).message).slice(0, 300)});
         }
         const context = await readFile(paths.context, 'utf8');
@@ -194,6 +198,13 @@ export class WorkflowOrchestrator {
           notice += ` The requested views could not be delivered: ${(error as Error).message}.`;
         }
       }
+      // Facts saved as confirmed context steer every later conversation, so the user always sees what was added.
+      const added = (await readFile(paths.context, 'utf8').catch(() => ''))
+        .split('\n')
+        .filter(line => /^\s*[-*+]\s/.test(line) && !contextBefore.split('\n').includes(line))
+        .map(line => line.replace(/^\s*[-*+]\s+/, '').trim());
+      if (added.length)
+        notice += ` Saved to your confirmed business context (.pricing/context.md): ${added.join('; ')}. Remove it there if it is not your rule.`;
       if (signal.aborted) throw new Error('cancelled');
       await this.options.onMessage([reply, notice.trim()].filter(Boolean).join('\n\n'), {
         runId: run.id,

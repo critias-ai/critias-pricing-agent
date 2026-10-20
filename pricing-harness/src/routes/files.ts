@@ -9,8 +9,7 @@ export async function fileRoutes(server: FastifyInstance, app: Application) {
       throw new HarnessError('BUSY', 'An analysis is busy; wait before uploading', 409);
     const file = await request.file({limits: {fileSize: app.config.maxUploadBytes, files: 1}});
     if (!file || file.fieldname !== 'file') throw new HarnessError('INVALID_FILE', 'Upload one file using field file');
-    const source = await app.files.saveUpload(file.file, file.filename);
-    if (file.file.truncated) throw new HarnessError('FILE_TOO_LARGE', 'File exceeds upload limit', 413);
+    const source = await app.files.saveUpload(file.file, file.filename, () => file.file.truncated);
     return reply.code(201).send(source);
   });
   server.get('/api/outputs', async () => ({artifacts: app.files.listArtifacts()}));

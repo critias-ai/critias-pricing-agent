@@ -37,9 +37,10 @@ export function createSourceProfiler(
   config: Pick<HarnessConfig, 'pythonPath' | 'bundledRoot' | 'workspaceRoot'>,
   cacheRoot: string,
 ) {
-  return async (sources: SourceFile[]): Promise<SourceProfile[]> => {
+  return async (sources: SourceFile[], signal?: AbortSignal): Promise<SourceProfile[]> => {
     const results: SourceProfile[] = [];
     for (const source of sources) {
+      if (signal?.aborted) throw new Error('cancelled');
       if (source.kind !== 'csv' && source.kind !== 'xlsx') continue;
       const key = `${source.sha256}:${source.kind}`,
         known = memo.get(key);
@@ -59,7 +60,7 @@ export function createSourceProfiler(
             '--format',
             source.kind,
           ],
-          {timeout: 300000, maxBuffer: 16 * 1024 * 1024, env: analysisEnvironment(process.env)},
+          {timeout: 300000, maxBuffer: 16 * 1024 * 1024, env: analysisEnvironment(process.env), signal},
         );
         const profile: SourceProfile = {
           path: source.relativePath,
@@ -70,12 +71,16 @@ export function createSourceProfiler(
         memo.set(key, profile);
         results.push(profile);
       } catch (error) {
-        results.push({
+        if (signal?.aborted) throw new Error('cancelled');
+        // A failure is a fact about this content too: remember it so a hostile or huge file costs one attempt.
+        const failed: SourceProfile = {
           path: source.relativePath,
           sha256: source.sha256,
           kind: source.kind,
           error: String((error as Error).message).slice(0, 300),
-        });
+        };
+        memo.set(key, failed);
+        results.push(failed);
       }
     }
     return results;
