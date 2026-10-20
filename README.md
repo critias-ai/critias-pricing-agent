@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://critias.ai">
+    <img alt="Critias: the open-source pricing analyst" src=".github/assets/banner.png" width="100%">
+  </a>
+</p>
+
 # Critias
 
 [![macos](https://github.com/critias-ai/critias-pricing-agent/actions/workflows/macos.yml/badge.svg)](https://github.com/critias-ai/critias-pricing-agent/actions/workflows/macos.yml) [![windows](https://github.com/critias-ai/critias-pricing-agent/actions/workflows/windows.yml/badge.svg)](https://github.com/critias-ai/critias-pricing-agent/actions/workflows/windows.yml) [![Licence: Apache-2.0](https://img.shields.io/badge/licence-Apache--2.0-blue.svg)](LICENSE)
