@@ -3,8 +3,8 @@
 ## Bundled Pricing Plugin
 
 - Source: [critias-ai/critias-pricing-plugin](https://github.com/critias-ai/critias-pricing-plugin).
-- Version: `0.4.12` (the `0.4.11` source commit below plus founder-finance changes not yet published in the plugin repository).
-- Source commit: `8703c9c016929453450eb4f81e4cf65a115f157b`.
+- Version: `0.4.12`.
+- Source commit: `aa7e818af41e78d3771169636791ed8a7751c850`.
 - Copyright: 2026 Danial Kodvavi.
 - License: MIT, reproduced without changes in [bundled/pricing-plugin/LICENSE](bundled/pricing-plugin/LICENSE).
 
