@@ -1,4 +1,4 @@
-/* Vendored from hackerman/governance/critias-design-system/tokens/critias-aegean.css on 2026-10-12.
+/* Vendored from the Critias design system token file critias-aegean.css on 2026-10-12.
    Keep in sync with that file; do not edit here. */
 /* ============================================================
    Critias — Aegean aesthetic, Stele structure
@@ -143,8 +143,8 @@
      real Regular weight — no faux-bold. Instrument has only Regular + Italic and
      no width axis, so --display-weight is pinned to 400 and --display-width is a
      no-op left at 100%. Headlines render ROMAN (uppercase); italic is reserved
-     for the dialogue/quote moments only. The shipped surfaces (teaser/deck/
-     critias-web) already follow this. */
+     for the dialogue/quote moments only. The shipped surfaces (teaser, deck
+     and website) already follow this. */
   --display-weight:    400;
   --display-style:     normal;
   --display-transform: uppercase;

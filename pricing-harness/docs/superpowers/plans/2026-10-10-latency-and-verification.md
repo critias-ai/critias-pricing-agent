@@ -12,7 +12,7 @@
 
 ## Read this first
 
-**Working directory.** Every command below runs from `pricing-harness` unless stated. The git root is the parent folder `Pricing_harness/`.
+**Working directory.** Every command below runs from `pricing-harness` unless stated. The git root is the parent folder.
 
 **Code style.** Source files use a dense style: no spaces around operators, several statements per line, two-space or one-space indentation, single quotes, very few comments. Match it. Many `old_string` anchors below are substrings of very long lines; use the Edit tool with the exact anchor text given. If an anchor is not found, `grep -n` for a distinctive fragment of it, read that line, and adapt; do not guess.
 

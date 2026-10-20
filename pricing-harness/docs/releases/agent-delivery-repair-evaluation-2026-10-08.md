@@ -6,7 +6,7 @@ The local tickets were written and executed inline. Focused checks, typecheck an
 
 ## Changes and verification
 
-[Execution plan](../superpowers/plans/2026-10-08-agent-delivery-repair.md); [ticket index](../../../.scratch/agent-delivery-repair/README.md).
+[Execution plan](../superpowers/plans/2026-10-08-agent-delivery-repair.md).
 
 - **PH-09:** Fill omitted controller-owned schemaVersion; reject unsupported versions, empty business scope and malformed optional fields.
 - **PH-10:** Use explicit filePath tool arguments; focus role guidance on supplied inventory and relevant references. Up to three claim groups share the original request budget. Each group must account for exact assigned operations, and the independent verifier must confirm which are complete or pending. Publish only checked groups; retain immutable earlier evidence after later interruption/clarification. Reject reused approved or held claim IDs. Repair stage-owned rendering to satisfy the bundled UUID/report.html contract.

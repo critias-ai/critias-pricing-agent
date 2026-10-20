@@ -84,7 +84,7 @@ Written 2026-10-16. Branch: `feat/thin-analyst`. HEAD: `27f7fa8`.
 
 ## Gotchas
 
-- **The bundled plugin is ahead of the Pricing_Plugin repo.** The repo is at 0.4.7, with the bundled copy at 0.4.9. Back-port before pushing that repo.
+- **The bundled plugin is ahead of the separate plugin repository.** The repository is at 0.4.7, with the bundled copy at 0.4.9. Back-port before pushing that repo.
 - **macOS has no `timeout` command.**
 - **In zsh, quote the `grep --include` glob:** `--include='*.ts'`.
 - **The findings "after today" check depends on the run date,** but the findings cache is keyed by content.

@@ -207,7 +207,7 @@ A change of state does one colour fade (`--dur-slow`); there is no fade under re
   - assistant-ui unstyled primitives with plain hand-written CSS.
   - No Tailwind or UI kit.
 - **Tokens:**
-  - Vendor a copy of `hackerman/governance/critias-design-system/tokens/critias-aegean.css` into `src/ui/` with a header note to keep it in sync.
+  - Vendor a copy of the Critias design system token file `critias-aegean.css` into `src/ui/` with a header note to keep it in sync.
   - Components use semantic tokens only.
 - **Themes:**
   - Light and dark, via `data-theme`.

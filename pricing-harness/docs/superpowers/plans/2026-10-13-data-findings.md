@@ -18,7 +18,7 @@ A small TypeScript adapter runs the module next to the existing source profiler 
 
 ## Context the engineer needs
 
-All paths are relative to `pricing-harness/` unless they start with `/`. The git root is the parent folder `Pricing_harness/`.
+All paths are relative to `pricing-harness/` unless they start with `/`. The git root is the parent folder.
 
 **Agreed scope.** The design is in `docs/research/messy-data-determinism-2026-10-13/ANOMALIES.md`.
 - **Build:** D1 parse, D2 shape, D3 domain, D4 uniqueness, D7 peer ratio.

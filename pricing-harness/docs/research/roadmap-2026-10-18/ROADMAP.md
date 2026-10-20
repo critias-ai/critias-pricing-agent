@@ -48,7 +48,7 @@ Revenue is secondary to real use.
 
 The local-model path stays on the roadmap, but its evaluation is deferred (see Build order).
 
-It also takes into account the **separately distributed Pricing Plugin** ([Schadenfreunde/Pricing-plugin](https://github.com/Schadenfreunde/Pricing-plugin), MIT, 0.4.11). Shared context is in [BRIEFING.md](BRIEFING.md).
+It also takes into account the **separately distributed Pricing Plugin** ([critias-ai/critias-pricing-plugin](https://github.com/critias-ai/critias-pricing-plugin), MIT, 0.4.11). Shared context is in [BRIEFING.md](BRIEFING.md).
 
 ## 1. What we concluded
 

@@ -663,7 +663,7 @@ Nothing in Part 5 makes a model call until these two are done.
 | execute | price-realization, price-change-economics, discount-governance, renewals-and-migration, experiments-and-promotions ★, recurring-scenarios ★ |
 
 - **Where:** made in `bundled/pricing-plugin/`, the same way 0.4.8 was released (3eac895). `plugin.json` and `versions.json` are both at 0.4.9.
-  - The separate Pricing_Plugin repo is still at 0.4.7, so the 0.4.8 and 0.4.9 changes need back-porting there before it is pushed.
+  - The separate plugin repository is still at 0.4.7, so the 0.4.8 and 0.4.9 changes need back-porting there before it is pushed.
   - *Built 2026-10-16, not yet committed.* The links went inline, at the step where each card applies, in the style of the triage waterfall link. Each "pick from the knowledge index" sentence now names its cards and keeps the index as the fallback.
   - The test is in `tests/unit/bundle.test.ts`. All 186 vitest tests pass, and the typecheck is clean.
 - **Test, deterministic:** a unit test that reads each `SKILL.md` and asserts every link in the map is present and resolves to a real card file. It also asserts every card is linked from at least two skills. No model calls.

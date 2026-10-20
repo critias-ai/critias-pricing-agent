@@ -1144,7 +1144,7 @@ This task makes **one real, paid model run**. Ask the user before running it. It
 
 ```bash
 npm run build
-node --env-file-if-exists=.env dist/headless.js --question "<approved question>" > ../.scratch/headless-run.jsonl
+node --env-file-if-exists=.env dist/headless.js --question "<approved question>" > /tmp/headless-run.jsonl
 ```
 
 Expected: the output ends with a `turn_end` line. While it runs, `{"type":"event","event":{"type":"step",...}}` lines appear.
@@ -1152,7 +1152,7 @@ Expected: the output ends with a `turn_end` line. While it runs, `{"type":"event
 - [ ] **Step 3: Confirm the steps file exists and looks right**
 
 ```bash
-RUN=$(node -e "const l=require('fs').readFileSync('../.scratch/headless-run.jsonl','utf8').trim().split('\n').map(JSON.parse).find(x=>x.type==='accepted');console.log(l.runId)")
+RUN=$(node -e "const l=require('fs').readFileSync('/tmp/headless-run.jsonl','utf8').trim().split('\n').map(JSON.parse).find(x=>x.type==='accepted');console.log(l.runId)")
 WS=$(node --env-file-if-exists=.env -e "console.log(process.env.PRICING_WORKSPACE)")
 wc -l "$WS/analyses/$RUN/steps.jsonl"
 grep -c '"kind":"tool"' "$WS/analyses/$RUN/steps.jsonl"
