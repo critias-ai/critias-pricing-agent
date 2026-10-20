@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://critias.ai">
-    <img alt="Critias: the open-source pricing analyst" src=".github/assets/banner.png" width="100%">
+    <img alt="Critias: your own personal pricing agent" src=".github/assets/banner.png" width="100%">
   </a>
 </p>
 
@@ -12,7 +12,7 @@ Critias is an open-source pricing analyst: a local browser application for AI-as
 
 Built on [Pi](https://pi.dev) ([earendil-works/pi](https://github.com/earendil-works/pi)), the open-source agent harness. Pi supplies the model layer, the agent loop, and tool calling; this project adds the pricing skills, the data checks, and the figure verification on top.
 
-The application combines an assistant-ui chat interface (React), a Fastify server, the [Pi](https://pi.dev) agent SDK, DuckDB, seven bundled pricing skills (Pricing Plugin 0.4.12) and a visualization skill. Calculations run locally. Model requests go to OpenRouter, or directly to OpenAI.
+The application combines an assistant-ui chat interface (React), a Fastify server, the [Pi](https://pi.dev) agent SDK, DuckDB, seven bundled pricing skills (Pricing Plugin 0.4.12) and a visualization skill. Calculations run locally. Model requests go to the provider you choose: OpenAI, OpenRouter, Google Gemini or Anthropic.
 
 **Status: experimental research preview (0.5.0).** Native macOS setup, component, Python and browser tests, and live runs of the single-analyst workflow on synthetic and public datasets have been checked. Real-business-data validation and native scale testing are still pending. See [how the harness works](pricing-harness/docs/architecture.md) and the [verification records](pricing-harness/docs/releases/).
 
