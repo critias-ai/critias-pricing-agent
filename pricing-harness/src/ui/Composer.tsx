@@ -1,7 +1,19 @@
 import {useState} from 'react';
 import {AuiIf, ComposerPrimitive} from '@assistant-ui/react';
 // F8: Enter sends, Shift+Enter adds a line, Esc never stops a run; drafting is allowed while a run is busy.
-export function Composer({uploading, upload}: {uploading: boolean; upload: (files: File[]) => void}) {
+export function Composer({
+  uploading,
+  upload,
+  levels,
+  level,
+  setLevel,
+}: {
+  uploading: boolean;
+  upload: (files: File[]) => void;
+  levels: string[];
+  level: string;
+  setLevel: (level: string) => void;
+}) {
   const [dragging, setDragging] = useState(false);
   return (
     <div
@@ -45,6 +57,18 @@ export function Composer({uploading, upload}: {uploading: boolean; upload: (file
             />
           </label>
           <span className="hint">CSV · Excel · Markdown, or drop files here</span>
+          {levels.length > 1 && (
+            <label className="thinking">
+              <span>Thinking</span>
+              <select aria-label="Thinking level" value={level} onChange={event => setLevel(event.target.value)}>
+                {levels.map(l => (
+                  <option key={l} value={l}>
+                    {l}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <AuiIf condition={s => s.thread.isRunning}>
             <ComposerPrimitive.Cancel className="stop">Stop</ComposerPrimitive.Cancel>
           </AuiIf>

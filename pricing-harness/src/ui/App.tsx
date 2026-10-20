@@ -15,6 +15,8 @@ import wordmarkInk from './critias-wordmark-ink.svg';
 import wordmarkMarble from './critias-wordmark-marble.svg';
 type Status = {
   modelId: string;
+  thinkingLevel?: string;
+  thinkingLevels?: string[];
   health: {agent: {ready: boolean; detail: string}; python: {ready: boolean; detail: string}};
 };
 const NO_MESSAGES: ChatMessage[] = [];
@@ -25,6 +27,23 @@ export function App() {
     [uploading, setUploading] = useState(false),
     [uncertain, setUncertain] = useState<SubmitRequest | null>(null),
     [sidebar, setSidebar] = useState(false);
+  const levels = status?.thinkingLevels ?? [],
+    [level, setLevelState] = useState('');
+  // The level is remembered per conversation in this browser; a new conversation starts at the server's default.
+  const levelKey = `critias.thinking.${snapshot?.sessionId ?? ''}`;
+  useEffect(() => {
+    let saved: string | null = null;
+    try {
+      saved = localStorage.getItem(levelKey);
+    } catch {}
+    setLevelState(saved && levels.includes(saved) ? saved : (status?.thinkingLevel ?? ''));
+  }, [levelKey, status]);
+  const setLevel = (next: string) => {
+    setLevelState(next);
+    try {
+      localStorage.setItem(levelKey, next);
+    } catch {}
+  };
   useEffect(() => {
     if (connected) {
       void api<Status>('/status')
@@ -49,7 +68,8 @@ export function App() {
       if (rejected) runtime.thread.composer.setText(request.text);
     }
   };
-  const ask = (text: string) => submit({requestId: crypto.randomUUID(), text, fileIds: []});
+  const ask = (text: string) =>
+    submit({requestId: crypto.randomUUID(), text, fileIds: [], thinkingLevel: level || undefined});
   const upload = async (picked: File[]) => {
     setUploading(true);
     setError('');
@@ -177,7 +197,13 @@ export function App() {
                 </div>
               )}
               <Thread activeRun={activeRun} />
-              <Composer uploading={uploading} upload={picked => void upload(picked)} />
+              <Composer
+                uploading={uploading}
+                upload={picked => void upload(picked)}
+                levels={levels}
+                level={level}
+                setLevel={setLevel}
+              />
             </main>
             <footer className="bottom-bar">
               <Sources files={files} />

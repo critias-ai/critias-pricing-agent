@@ -96,7 +96,7 @@ export type HarnessEvent = {serverInstanceId: string; sequence: number; sessionI
   | {type: 'error'; payload: {code: string; message: string; retryable: boolean}}
   | {type: 'settled'; payload: {snapshot: SessionSnapshot}}
 );
-export type SubmitRequest = {requestId: string; text: string; fileIds: string[]};
+export type SubmitRequest = {requestId: string; text: string; fileIds: string[]; thinkingLevel?: string};
 export type RunAccepted = {runId: string; sessionId: string; requestId: string};
 export class HarnessError extends Error {
   constructor(

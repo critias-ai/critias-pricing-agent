@@ -1,4 +1,6 @@
-import {DEFAULT_LIMITS, PROVIDERS, THINKING_LEVELS} from './defaults.js';
+import {DEFAULT_LIMITS, THINKING_LEVELS} from './defaults.js';
+import {chooseProvider} from './provider.js';
+import {clampThinkingLevel, getSupportedThinkingLevels} from '@earendil-works/pi-ai';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {dirname, isAbsolute, resolve} from 'node:path';
@@ -47,9 +49,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): HarnessConfig 
       throw new Error(`${name} must be a positive integer <= ${max}`);
     return value;
   };
-  const provider = required('PRICING_PROVIDER');
-  if (!(PROVIDERS as readonly string[]).includes(provider))
-    throw new Error(`PRICING_PROVIDER must be one of ${PROVIDERS.join(', ')}`);
+  const {provider, modelId} = chooseProvider(env);
   const thinkingLevel = env.PRICING_THINKING_LEVEL?.trim() || undefined;
   if (thinkingLevel && !(THINKING_LEVELS as readonly string[]).includes(thinkingLevel))
     throw new Error('PRICING_THINKING_LEVEL must be off, minimal, low, medium, high, xhigh or max');
@@ -65,7 +65,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): HarnessConfig 
     appRoot,
     bundledRoot: resolve(appRoot, 'bundled'),
     provider,
-    modelId: required('PRICING_MODEL'),
+    modelId,
     thinkingLevel: thinkingLevel as HarnessConfig['thinkingLevel'],
     pythonPath: absolute('PRICING_PYTHON'),
     port: integer('PRICING_PORT', 4317, 65535),
@@ -129,6 +129,14 @@ export async function resolveModel(config: HarnessConfig) {
   // A call that loops can otherwise stream to the model's own limit (128k tokens, about 11 minutes) before stopping.
   const capped = {...model, maxTokens: Math.min(model.maxTokens || config.maxOutputTokens, config.maxOutputTokens)};
   return {runtime, model: capped as NonNullable<CreateAgentSessionOptions['model']>};
+}
+// The levels the model accepts, and the level to start at: PRICING_THINKING_LEVEL if set, else medium or the nearest
+// level the model supports.
+export function thinkingChoices(model: NonNullable<CreateAgentSessionOptions['model']>, requested?: string) {
+  return {
+    levels: getSupportedThinkingLevels(model) as string[],
+    defaultLevel: (requested ?? clampThinkingLevel(model, 'medium')) as NonNullable<HarnessConfig['thinkingLevel']>,
+  };
 }
 export async function checkRuntime(config: HarnessConfig): Promise<Health> {
   const run = promisify(execFile);

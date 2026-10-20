@@ -14,6 +14,7 @@ First public release: an experimental research preview.
 - Data findings: seven code-based detectors flag suspect rows in CSV and XLSX files before the first question. Nothing is cleaned automatically.
 - Confirmed business context in `.pricing/context.md`, written only for facts you confirm.
 - Conversation history in a sidebar.
-- Any OpenRouter model ID, or OpenAI directly. The app never switches model by itself.
+- Anthropic, Gemini (Google AI Studio), OpenAI and OpenRouter. A key and a model in `.env` choose the provider, and the app never switches model by itself.
+- A thinking-level selector beside Send, remembered per conversation.
 - Setup and launch scripts for macOS and Windows.
 - A headless interface and a graded evaluation suite on synthetic and public data, published with its results.

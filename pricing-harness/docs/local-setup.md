@@ -12,19 +12,19 @@ Setup creates `.venv` from `requirements.txt`, installs the locked JavaScript pa
 
 ## Credentials
 
-Copy `.env.example` to `.env` and set `OPENROUTER_API_KEY`, or export it in your shell. Pi's stored credentials (`~/.pi/agent/auth.json`) also work; the harness reads them but doesn't change them. For OpenAI directly, set `OPENAI_API_KEY` and use the direct launch below with `PRICING_PROVIDER=openai`. Never paste a key into chat or commit it. The harness removes variables named like keys, tokens, secrets, passwords or credentials before starting the analyst's shell and Python processes.
+Copy `.env.example` to `.env` and set a key and a model for the provider you use in `.env`: `OPENAI_API_KEY` and `OPENAI_MODEL`, `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, `GEMINI_API_KEY` and `GEMINI_MODEL`, or `ANTHROPIC_API_KEY` and `ANTHROPIC_MODEL`. The app uses the first provider that has both, in that order. With a stored ChatGPT login (Pi's `~/.pi/agent/auth.json`), set only `OPENAI_MODEL`. The harness reads Pi's stored credentials but doesn't change them. Never paste a key into chat or commit it. The harness removes variables named like keys, tokens, secrets, passwords or credentials before starting the analyst's shell and Python processes.
 
 ## Choose a model
 
-Set `model.id` in `harness.config.json`. Any OpenRouter ID works. An ID that isn't in Pi's bundled catalogue borrows connection settings from a catalogue model of the same vendor (the part before `/`), and its price comes from OpenRouter's public model list. If that list can't be reached, cost estimates read zero. To list the catalogue without making a model request:
+Set the model for your provider in `.env` (`OPENAI_MODEL`, `OPENROUTER_MODEL`, `GEMINI_MODEL` or `ANTHROPIC_MODEL`). If several providers are configured, the first in the order OpenAI, OpenRouter, Gemini, Anthropic is used; set `PRICING_PROVIDER` to force another. An ID that isn't in Pi's bundled catalogue borrows connection settings from a catalogue model of the same vendor, and an OpenRouter model's price comes from OpenRouter's public model list. If that list can't be reached, cost estimates read zero. To list a provider's catalogue (`openai`, `openrouter`, `google` or `anthropic`) without making a model request:
 
 ```bash
-node --input-type=module -e 'import { ModelRuntime } from "@earendil-works/pi-coding-agent"; const r=await ModelRuntime.create({modelsPath:null,allowModelNetwork:false}); console.log(r.getModels("openrouter").map(m=>m.id).join("\n"));'
+npm run models -- anthropic
 ```
 
 On Windows install Node, Python 3.12 and Git for Windows (the analyst's shell commands run in Git Bash). In PowerShell run `powershell -ExecutionPolicy Bypass -File scripts\setup-windows.ps1`, then launch with `powershell -ExecutionPolicy Bypass -File scripts\start-windows.ps1 "C:\absolute\workspace" [model-id]`. For a direct launch set `PRICING_PYTHON` to `pricing-harness\.venv\Scripts\python.exe`.
 
-The harness never substitutes another model. If the configured model or reasoning level can't be selected, startup or the question fails.
+The thinking level defaults to `medium`, or the nearest level the model supports. The selector beside Send lists the levels the model supports and applies to the next question, remembered per conversation. The harness never substitutes another model. If the configured model or reasoning level can't be selected, startup or the question fails.
 
 ## Launch
 
@@ -33,14 +33,12 @@ bash scripts/start-macos.sh "/absolute/path/to/Business workspace"
 bash scripts/start-macos.sh "/absolute/path/to/Business workspace" "vendor/model-id"
 ```
 
-Open the link the launcher prints, `http://127.0.0.1:4317/#token=…`. The token changes at every launch; the app's API refuses requests without it, so other programs and accounts on the computer cannot use it. The workspace is created if needed. The optional second argument overrides the model for that launch. The launcher always sets the provider to OpenRouter. Restart after changing configuration; no rebuild is needed.
+Open the link the launcher prints, `http://127.0.0.1:4317/#token=…`. The token changes at every launch; the app's API refuses requests without it, so other programs and accounts on the computer cannot use it. The workspace is created if needed. The optional second argument overrides the model for that launch. Restart after changing configuration; no rebuild is needed.
 
-For a direct Node launch, another provider, or headless use:
+For a direct Node launch or headless use (the key and model come from `.env`; add `PRICING_PROVIDER` and `PRICING_MODEL` to force them):
 
 ```bash
 export PRICING_WORKSPACE="/absolute/path/to/workspace"
-export PRICING_PROVIDER=openrouter   # or openai
-export PRICING_MODEL="vendor/model-id"
 export PRICING_PYTHON="/absolute/path/to/pricing-harness/.venv/bin/python"
 node --env-file-if-exists=.env dist/server.js
 node --env-file-if-exists=.env dist/headless.js --question "Your question"
@@ -51,13 +49,11 @@ Without `--question` or `--status`, the headless app reads JSON lines from stand
 
 ## Settings
 
-`harness.config.json` is the one editable settings file. It is validated at launch: unknown keys, invalid numbers and malformed JSON stop startup. Environment variables override file values, so remove stale model or limit variables from `.env`. `PRICING_CONFIG_FILE` selects another file; an empty value means environment variables only.
+`harness.config.json` is the one editable settings file. It is validated at launch: unknown keys, invalid numbers and malformed JSON stop startup. The provider and model are not in this file; they come only from `.env`. Environment variables override file values, so remove stale limit variables from `.env`. `PRICING_CONFIG_FILE` selects another file; an empty value means environment variables only.
 
 | Setting                         | Environment override              | Saved value                                                                                             |
 | ------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `model.provider`                | `PRICING_PROVIDER`                | `openrouter` (`openai` also accepted)                                                                   |
-| `model.id`                      | `PRICING_MODEL`                   | `deepseek/deepseek-v4.1-flash`                                                                          |
-| `model.thinkingLevel`           | `PRICING_THINKING_LEVEL`          | `high` (`off`, `minimal`, `low`, `medium`, `xhigh` and `max` also accepted, if the model supports them) |
+| (not in the file)               | `PRICING_THINKING_LEVEL`          | `medium` start; the interface selector changes it per question                                          |
 | `runtime.port`                  | `PRICING_PORT`                    | `4317`                                                                                                  |
 | `runtime.maxUploadBytes`        | `PRICING_MAX_UPLOAD_BYTES`        | 2 GiB                                                                                                   |
 | `runtime.duckdbMemory`          | `PRICING_DUCKDB_MEMORY`           | `4GB` (a DuckDB budget, not a cap on total memory)                                                      |
