@@ -1,6 +1,6 @@
 # Contributing to Critias
 
-Thank you for helping. Critias is an open-source pricing analyst; this repository holds the application. The pricing skills it bundles live in [critias-pricing-plugin](https://github.com/critias-ai/critias-pricing-plugin).
+Thank you for helping. Critias is an open-source pricing agent; this repository holds the application. The pricing skills it bundles live in [critias-pricing-plugin](https://github.com/critias-ai/critias-pricing-plugin).
 
 ## Before you start
 

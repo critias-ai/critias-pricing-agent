@@ -14,7 +14,7 @@ const windows = process.platform === 'win32';
 const home = resolve(process.env.CRITIAS_HOME || join(homedir(), '.critias'));
 const [command, ...rest] = process.argv.slice(2);
 
-const usage = `Critias ${pkg.version}, the open-source pricing analyst
+const usage = `Critias ${pkg.version}, the open-source pricing agent
 
 Usage:
   critias [workspace-folder]   start the app (default folder: ~/CritiasWorkspace)

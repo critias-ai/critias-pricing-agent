@@ -8,7 +8,7 @@
 
 [![macos](https://github.com/critias-ai/critias-pricing-agent/actions/workflows/macos.yml/badge.svg)](https://github.com/critias-ai/critias-pricing-agent/actions/workflows/macos.yml) [![windows](https://github.com/critias-ai/critias-pricing-agent/actions/workflows/windows.yml/badge.svg)](https://github.com/critias-ai/critias-pricing-agent/actions/workflows/windows.yml) [![Licence: Apache-2.0](https://img.shields.io/badge/licence-Apache--2.0-blue.svg)](LICENSE)
 
-Critias is an open-source pricing analyst: a local browser application for AI-assisted pricing and gross margin analysis. Ask questions about CSV, Excel, text and Markdown files and get answers whose figures are checked against the code that produced them, with native tables and Plotly charts read straight from the computed results.
+Critias is an open-source pricing agent: a local browser application for AI-assisted pricing and gross margin analysis. Ask questions about CSV, Excel, text and Markdown files and get answers whose figures are checked against the code that produced them, with native tables and Plotly charts read straight from the computed results.
 
 Built on [Pi](https://pi.dev) ([earendil-works/pi](https://github.com/earendil-works/pi)), the open-source agent harness. Pi supplies the model layer, the agent loop, and tool calling; this project adds the pricing skills, the data checks, and the figure verification on top.
 
