@@ -16,5 +16,6 @@ First public release: an experimental research preview.
 - Conversation history in a sidebar.
 - Anthropic, Gemini (Google AI Studio), OpenAI and OpenRouter. A key and a model in `.env` choose the provider, and the app never switches model by itself.
 - A thinking-level selector beside Send, remembered per conversation.
+- Install with `npm install -g critias` (or `npx critias`): the first start creates the Python environment in `~/.critias`.
 - Setup and launch scripts for macOS and Windows.
 - A headless interface and a graded evaluation suite on synthetic and public data, published with its results.

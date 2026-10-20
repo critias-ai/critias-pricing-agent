@@ -4,7 +4,30 @@ A local browser application for AI-assisted pricing and gross margin analysis, b
 
 **Status: experimental.** Component, Python and browser tests pass locally, and the single-analyst workflow has been run live on synthetic and public datasets (see [the thin-analyst records](docs/releases/)). Real-business-data validation and native scale testing are still pending.
 
-## Run on macOS
+## Install with npm
+
+You need Node.js 22.19 or later and Python 3.12 (Windows also needs Git for Windows).
+
+```bash
+npm install -g critias
+```
+
+Create `~/.critias/.env` (on Windows, `%USERPROFILE%\.critias\.env`) with a key and a model for one provider. For example:
+
+```text
+ANTHROPIC_API_KEY=your-key
+ANTHROPIC_MODEL=claude-sonnet-5-5
+```
+
+The other providers are `OPENAI_*`, `OPENROUTER_*` and `GEMINI_*`; `critias models anthropic` lists model IDs. Then start the app with a folder for your business files:
+
+```bash
+critias ~/CritiasWorkspace
+```
+
+The first start creates a Python environment in `~/.critias/venv`, which takes a minute and needs a network. Open the link it prints. `npx critias` works without a global install. To update, run `npm install -g critias` again.
+
+## Run on macOS from a clone
 
 Install Node.js 22.19 or later and Python 3.12. From this application directory:
 
