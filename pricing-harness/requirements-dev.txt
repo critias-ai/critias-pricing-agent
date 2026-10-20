@@ -22,7 +22,7 @@ packaging==26.3
     #   pytest
 pandas==2.3.3
     # via -r requirements.in
-plotly==6.9.0
+plotly==7.1.0
     # via -r requirements.in
 pluggy==1.6.0
     # via pytest
