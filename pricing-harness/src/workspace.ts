@@ -62,6 +62,12 @@ export async function readJSON<T>(path: string, fallback: T): Promise<T> {
     throw e;
   }
 }
+// The SDK's write and edit tools rewrite a path before opening it ('@' prefix, '~', file:// URLs, unicode spaces,
+// Git Bash drive paths on Windows). A guard that checks the raw argument would judge a different file, so such
+// paths are refused rather than re-implementing the SDK's rules.
+export const sdkRewrittenPath = (path: string) =>
+  /^[@~]|^file:|[\u00a0\u2000-\u200a\u202f\u205f\u3000]/i.test(path) ||
+  (process.platform === 'win32' && /^\/[a-z](\/|$)/i.test(path));
 export async function safePath(root: string, path: string): Promise<string> {
   const target = resolve(root, path),
     rel = relative(resolve(root), target);

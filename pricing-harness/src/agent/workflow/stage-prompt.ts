@@ -4,7 +4,7 @@ import type {HarnessConfig} from '../../runtime.js';
 import type {WorkspacePaths} from '../../workspace.js';
 import type {SourceFile} from '../../contracts.js';
 import type {CompactFindings} from './data-findings.js';
-import {harnessNote} from './role-prompts.js';
+import {defang, harnessNote} from './role-prompts.js';
 import {toShellPath as sh} from '../../runtime.js';
 export type StagePromptInput = {
   question: string;
@@ -45,9 +45,9 @@ Working directory: ${sh(p.stageDir)}
 Python: ${sh(p.config.pythonPath)} (duckdb and pandas installed)
 Deadline: ${deadline(p.until)}.
 Confirmed business context (${sh(join(p.paths.root, '.pricing/context.md'))}):
-${p.context}
+${defang(p.context)}
 Sources (relative to ${sh(p.paths.root)}):
-${p.sources.map(s => s.relativePath).join('\n')}
+${defang(p.sources.map(s => s.relativePath).join('\n'))}
 
 Scripts: read files the query tool saved (\`save\`); do filtering, grouping and sums of source rows in SQL first.
 
@@ -59,7 +59,7 @@ ${
   p.dataFindings
     ? `
 Data findings: code-detected anomalies in the CSV and XLSX sources, largest value at stake first. "gaps" lists sources the checks could not read and checks that could not run; where your answer depends on one, check that risk yourself. They are facts, not decisions. Check whether a finding touches the rows your answer depends on and bound its effect as the shared rules describe: if it cannot change the conclusion, deliver and name the finding ids and the amount; if it could, show both results and ask. Never drop or rewrite rows on your own judgement. Full list: ${sh(p.dataFindings.findingsDir)}/findings.json
-${JSON.stringify(p.dataFindings)}`
+${defang(JSON.stringify(p.dataFindings))}`
     : ''
 }`;
 }

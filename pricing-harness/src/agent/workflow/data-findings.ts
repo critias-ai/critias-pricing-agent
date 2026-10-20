@@ -32,7 +32,7 @@ export function createFindingDetector(
   config: Pick<HarnessConfig, 'pythonPath' | 'bundledRoot' | 'workspaceRoot'>,
   cacheRoot: string,
 ) {
-  return async (sources: SourceFile[]): Promise<DataFindings | undefined> => {
+  return async (sources: SourceFile[], signal?: AbortSignal): Promise<DataFindings | undefined> => {
     const tables = sources.filter(s => s.kind === 'csv' || s.kind === 'xlsx');
     if (!tables.length) return undefined;
     const script = join(config.bundledRoot, 'harness-tools/data_findings.py');
@@ -44,6 +44,7 @@ export function createFindingDetector(
         timeout: 600000,
         maxBuffer: 64 * 1024 * 1024,
         env: analysisEnvironment(process.env),
+        signal,
       },
     ).catch((e: Error & {stderr?: string}) => {
       throw new Error(e.stderr?.trim().split('\n').pop() || e.message);

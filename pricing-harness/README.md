@@ -19,7 +19,7 @@ Set `OPENROUTER_API_KEY` in `.env`, or use Pi's stored credentials. Never commit
 bash scripts/start-macos.sh "$HOME/PricingHarnessWorkspace"
 ```
 
-Open [the local application](http://127.0.0.1:4317). An optional second launcher argument overrides the model for that launch. Restart after changing `harness.config.json` or `.env`; stop with Ctrl+C. Model requests can incur provider charges. The macOS launcher always uses OpenRouter. To use OpenAI directly, launch Node yourself as described in [local setup](docs/local-setup.md), which also covers headless use.
+Open the link the launcher prints (`http://127.0.0.1:4317/#token=…`). The token is new at each launch and stops other programs and accounts on the computer from using the app; a plain `http://127.0.0.1:4317` page cannot load your data. An optional second launcher argument overrides the model for that launch. Restart after changing `harness.config.json` or `.env`; stop with Ctrl+C. Model requests can incur provider charges. The macOS launcher always uses OpenRouter. To use OpenAI directly, launch Node yourself as described in [local setup](docs/local-setup.md), which also covers headless use.
 
 ## How an answer is checked
 

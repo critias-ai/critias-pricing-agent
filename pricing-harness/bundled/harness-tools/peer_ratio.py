@@ -9,6 +9,7 @@ Out of scope for now: figures computed in Python scripts are not checked, only S
 import json
 import re
 
+from data_workspace import identifier
 from same_rows import CLAUSES, _aggregates, _ast, _expression, _select_nodes, _sql
 
 RATIO, SHARE = 5, 0.005
@@ -43,10 +44,11 @@ class PeerRatio:
                 continue
             column, key, table = p['column'], p['key'], f'_peer_{n}'
             try:
-                conn.execute(f'''CREATE OR REPLACE TEMP TABLE {table} AS SELECT "{key}" AS g,
-                    median(TRY_CAST("{column}" AS DOUBLE)) / {RATIO} AS lo, median(TRY_CAST("{column}" AS DOUBLE)) * {RATIO} AS hi
-                    FROM "{view}" WHERE isfinite(TRY_CAST("{column}" AS DOUBLE)) GROUP BY 1
-                    HAVING count("{column}") >= 3 AND median(TRY_CAST("{column}" AS DOUBLE)) > 0''')
+                k, c, v = identifier(key), identifier(column), identifier(view)  # header text comes from the file
+                conn.execute(f'''CREATE OR REPLACE TEMP TABLE {table} AS SELECT {k} AS g,
+                    median(TRY_CAST({c} AS DOUBLE)) / {RATIO} AS lo, median(TRY_CAST({c} AS DOUBLE)) * {RATIO} AS hi
+                    FROM {v} WHERE isfinite(TRY_CAST({c} AS DOUBLE)) GROUP BY 1
+                    HAVING count({c}) >= 3 AND median(TRY_CAST({c} AS DOUBLE)) > 0''')
                 self.peers.append({'view': view, 'column': column, 'key': key, 'table': table})
             except Exception:  # a column the typed view does not have, or cannot cast, is skipped
                 pass
@@ -105,7 +107,7 @@ class PeerRatio:
                 for item in items:
                     if item.get('class') == 'STAR':
                         for alias, p in {a: p for a, p in peers}.items():
-                            for column, kind in conn.execute(f'SELECT column_name, data_type FROM (DESCRIBE "{p["view"]}")').fetchall():
+                            for column, kind in conn.execute(f'SELECT column_name, data_type FROM (DESCRIBE {identifier(p["view"])})').fetchall():
                                 if any(t in kind for t in ('INT', 'DECIMAL', 'DOUBLE', 'FLOAT', 'NUMERIC')):
                                     measures.append((column, dict(ref, column_names=[alias, column]), None, 'held', column.lower()))
                     else:

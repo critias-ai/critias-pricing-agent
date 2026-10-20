@@ -72,6 +72,8 @@ def header_row(sample,delimiter):
 def quote(value):return "'"+str(value).replace("'","''")+"'"
 def identifier(value):return '"'+str(value).replace('"','""')+'"'
 
+MAX_XLSX_CELLS=20_000_000  # rows x header width; blank gap rows count, since openpyxl yields them
+
 def _headers(values):
     if not values or any(v is None or not str(v).strip() for v in values):raise ValueError('missing column header')
     names=[str(v) for v in values]
@@ -116,14 +118,20 @@ def prepare_source(source:Path,cache_root:Path,options:ImportOptions)->PreparedS
             try:
                 if options.sheet is None:raise ValueError(f'explicit sheet required; available sheets: {book.sheetnames}')
                 if options.sheet not in book.sheetnames:raise ValueError('selected sheet does not exist')
-                rows=book[options.sheet].iter_rows(min_row=options.header_row,values_only=True)
-                names=_headers(next(rows));conn.execute('CREATE TABLE raw ('+', '.join(identifier(n)+' VARCHAR' for n in names)+')')
-                statement='INSERT INTO raw VALUES ('+','.join('?' for _ in names)+')';batch=[]
-                for row in rows:
-                    if len(row)!=len(names):raise ValueError('Excel row/header width mismatch')
+                sheet=book[options.sheet];sheet.reset_dimensions()  # the file's declared size is untrusted: rows pad to the header only
+                names=_headers(next(sheet.iter_rows(min_row=options.header_row,max_row=options.header_row,values_only=True),()))
+                conn.execute('CREATE TABLE raw ('+', '.join(identifier(n)+' VARCHAR' for n in names)+')')
+                import pandas
+                batch=[];cells=0
+                def flush(rows):  # a DataFrame insert is ~100x faster than executemany with one parameter per cell
+                    conn.register('batch',pandas.DataFrame(rows,columns=range(len(names)),dtype=object));conn.execute('INSERT INTO raw SELECT * FROM batch');conn.unregister('batch')
+                for row in sheet.iter_rows(min_row=options.header_row+1,values_only=True):
+                    if len(row)>len(names) and any(v is not None for v in row[len(names):]):raise ValueError('Excel row/header width mismatch')
+                    row=(tuple(row)+(None,)*len(names))[:len(names)];cells+=len(names)
+                    if cells>MAX_XLSX_CELLS:raise ValueError(f'Excel sheet is over {MAX_XLSX_CELLS:,} cells; export it to CSV')
                     batch.append(tuple(None if value is None else str(value) for value in row))
-                    if len(batch)>=50000:conn.executemany(statement,batch);batch=[]
-                if batch:conn.executemany(statement,batch)
+                    if len(batch)*len(names)>=1_000_000:flush(batch);batch=[]
+                if batch:flush(batch)
             finally:book.close()
         count=conn.execute('SELECT count(*) FROM raw').fetchone()[0];conn.close();conn=None
         (temp/'source.csv').unlink(missing_ok=True)

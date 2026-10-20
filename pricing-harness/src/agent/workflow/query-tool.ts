@@ -8,6 +8,7 @@ import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {hashFile} from '../../workspace.js';
 import type {Execution, FileRef} from './contracts.js';
 import {hookOff} from './nudges.js';
+import {defang} from './role-prompts.js';
 
 type Table = {name: string; rows: number; typed: boolean; columns: string[]};
 type Reply = {
@@ -26,13 +27,13 @@ type Reply = {
   batch?: (Omit<Reply, 'id' | 'batch'> & {sql: string})[]; // several statements in one call, each with its own outcome
 };
 
-const cell = (v: unknown) => (v === null ? 'NULL' : String(v).replace(/\|/g, '\\|').replace(/\n/g, ' '));
+const cell = (v: unknown) => (v === null ? 'NULL' : defang(String(v)).replace(/\|/g, '\\|').replace(/\n/g, ' '));
 
 // What the model sees, and what the reply-figure check later reads from the recorded output.
 export function formatResult(r: Pick<Reply, 'columns' | 'rows' | 'more' | 'changed'>): string {
   const lines: string[] = [];
   if (r.columns.length && r.rows.length) {
-    lines.push(`| ${r.columns.join(' | ')} |`, `|${r.columns.map(() => '---').join('|')}|`);
+    lines.push(`| ${r.columns.map(cell).join(' | ')} |`, `|${r.columns.map(() => '---').join('|')}|`);
     for (const row of r.rows) lines.push(`| ${row.map(cell).join(' | ')} |`);
     lines.push(
       r.more

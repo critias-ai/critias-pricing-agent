@@ -6,7 +6,7 @@ import {randomUUID} from 'node:crypto';
 import {createBashToolDefinition, type ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {createPricingSession, analysisEnvironment} from '../session.js';
 import {resolveModel, toShellPath} from '../../runtime.js';
-import {hashFile, safePath} from '../../workspace.js';
+import {hashFile, safePath, sdkRewrittenPath} from '../../workspace.js';
 import type {StageRequest, StageResult, Execution} from './contracts.js';
 import {createStageBashOperations} from './supervised-shell.js';
 import {retryTransient, runawayPrompt} from './transient-error.js';
@@ -60,6 +60,7 @@ async function execute(request: StageRequest) {
   // The analyst may write in its stage directory (.pricing/workflow/<conversation>/analyst) and to .pricing/context.md.
   const contextPath = resolve(stageDir, '../../../context.md');
   const writablePath = async (path: string) => {
+    if (sdkRewrittenPath(path)) throw new Error('Use a plain relative or absolute path');
     const target = resolve(stageDir, path);
     if (target === contextPath) return;
     const rel = relative(stageDir, target);
