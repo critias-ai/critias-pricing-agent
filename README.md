@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://critias.ai">
-    <img alt="Critias: the open-source pricing analyst" src=".github/assets/banner.png" width="100%">
+    <img alt="Critias: your own personal pricing agent" src=".github/assets/banner.png" width="100%">
   </a>
 </p>
 
