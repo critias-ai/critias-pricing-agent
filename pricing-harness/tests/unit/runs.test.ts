@@ -15,6 +15,7 @@ it('deduplicates before hashing, holds busy through early agent_end, cancels onc
     files = await openFileStore(paths, {maxUploadBytes: 1000});
   let finish!: () => void,
     called = 0;
+  const levels: unknown[] = [];
   const listeners = new Set<(event: unknown) => void>();
   const session = {
     sessionId: randomUUID(),
@@ -62,10 +63,12 @@ it('deduplicates before hashing, holds busy through early agent_end, cancels onc
     view,
     health,
     createSession: async () => handle,
+    thinkingLevels: ['low', 'medium'],
     workflowRunner: {
       activeCount: 0,
       execute: async (_request, _budget, signal) => {
         called++;
+        levels.push(_request.config.thinkingLevel);
         await new Promise<void>(resolve => {
           finish = resolve;
           signal.addEventListener('abort', () => resolve(), {once: true});
@@ -76,10 +79,15 @@ it('deduplicates before hashing, holds busy through early agent_end, cancels onc
   });
   await expect(controller.submit({requestId: randomUUID(), text: 'q', fileIds: ['missing']})).rejects.toThrow(/source/);
   expect(controller.snapshot().busy).toBe(false);
-  const request = {requestId: randomUUID(), text: 'question', fileIds: []};
+  for (const thinkingLevel of ['xhigh', 7 as unknown as string])
+    await expect(
+      controller.submit({requestId: randomUUID(), text: 'q', fileIds: [], thinkingLevel}),
+    ).rejects.toMatchObject({code: 'INVALID_REQUEST'});
+  const request = {requestId: randomUUID(), text: 'question', fileIds: [], thinkingLevel: 'low'};
   const [a, b] = await Promise.all([controller.submit(request), controller.submit(request)]);
   expect(a).toEqual(b);
   await vi.waitFor(() => expect(called).toBe(1), {timeout: 5000, interval: 10});
+  expect(levels).toEqual(['low']);
   expect(controller.snapshot().busy).toBe(true);
   expect(controller.snapshot().messages.find(m => m.role === 'user')).toMatchObject({text: 'question', runId: a.runId});
   await expect(controller.submit({...request, requestId: randomUUID()})).rejects.toThrow(/busy/i);

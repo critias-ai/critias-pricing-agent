@@ -24,6 +24,10 @@ jobs:
       - name: Setup script
         run: powershell -ExecutionPolicy Bypass -File scripts\setup-windows.ps1
       - name: Launcher starts the app
+        env:
+          # The launcher no longer picks a provider; .env does. A placeholder key is enough to start (health reports it).
+          OPENROUTER_API_KEY: ci-placeholder
+          OPENROUTER_MODEL: openai/gpt-6-luna
         run: |
           $server = Start-Process powershell -PassThru -NoNewWindow -ArgumentList '-ExecutionPolicy','Bypass','-File','scripts\start-windows.ps1',"$env:RUNNER_TEMP\workspace"
           for ($i = 0; $i -lt 30; $i++) {

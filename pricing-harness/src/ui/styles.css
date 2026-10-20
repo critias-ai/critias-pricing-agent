@@ -97,6 +97,8 @@ button[aria-pressed=true]{background:var(--color-primary);color:var(--color-prim
 .upload-button{position:relative;cursor:pointer;font-family:var(--font-mono);font-size:var(--text-sm);color:var(--color-link)}
 .upload-button input{position:absolute;inset:0;opacity:0;cursor:pointer}
 .upload-button:has(input:focus-visible){border-radius:var(--radius-sm);box-shadow:var(--focus-ring)}
+.thinking{display:flex;align-items:center;gap:var(--space-2);font-family:var(--font-mono);font-size:var(--text-sm)}
+.thinking select{font:inherit;color:inherit;background:transparent;border:1px solid currentColor;border-radius:var(--radius-sm);padding:2px var(--space-2)}
 .hint{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--color-muted)}
 .primary{margin-left:auto;background:var(--color-primary);color:var(--color-primary-contrast);border-color:var(--color-primary)}
 .stop{margin-left:auto;color:var(--color-danger-text);border-color:var(--color-danger-border)}

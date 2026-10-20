@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import {loadConfig} from '../../src/runtime.js';
-import {checkRuntime, resolveModel, type HarnessConfig} from '../../src/runtime.js';
+import {checkRuntime, resolveModel, thinkingChoices, type HarnessConfig} from '../../src/runtime.js';
 import {resolve} from 'node:path';
 import {venvPython} from '../fixtures/venv-python.js';
 const env = {
@@ -26,8 +26,8 @@ describe('configuration', () => {
     for (const value of ['0', '-1', '1.5', 'invalid'])
       expect(() => loadConfig({...env, PRICING_ANALYSIS_SECONDS: value})).toThrow(/PRICING_ANALYSIS_SECONDS/);
   });
-  it('requires an explicit model and interpreter', () => {
-    expect(() => loadConfig({...env, PRICING_MODEL: ''})).toThrow(/PRICING_MODEL/);
+  it('requires a model for the chosen provider and an absolute interpreter', () => {
+    expect(() => loadConfig({...env, PRICING_MODEL: ''})).toThrow(/PRICING_MODEL or OPENROUTER_MODEL/);
     expect(() => loadConfig({...env, PRICING_PYTHON: 'python'})).toThrow(/absolute/);
   });
   it('uses bounded local defaults and an installation-relative bundle', () => {
@@ -36,7 +36,13 @@ describe('configuration', () => {
     expect(config.duckdbMemoryLimit).toBe('4GB');
     expect(config.bundledRoot).toMatch(/pricing-harness[\\/]bundled$/);
     expect(() => loadConfig({...env, PRICING_PORT: '-3'})).toThrow(/PRICING_PORT/);
-    expect(() => loadConfig({...env, PRICING_PROVIDER: 'other'})).toThrow(/openrouter, openai/);
+    expect(() => loadConfig({...env, PRICING_PROVIDER: 'other'})).toThrow(/openai, openrouter, google, anthropic/);
+  });
+  it('picks the provider from per-provider keys and models', () => {
+    const {PRICING_PROVIDER, PRICING_MODEL, ...rest} = env;
+    const config = loadConfig({...rest, ANTHROPIC_API_KEY: 'k', ANTHROPIC_MODEL: 'claude-sonnet-5-5'});
+    expect(config.provider).toBe('anthropic');
+    expect(config.modelId).toBe('claude-sonnet-5-5');
   });
   it('accepts an explicit reasoning level and rejects unknown values', () => {
     expect(loadConfig({...env, PRICING_THINKING_LEVEL: 'high'}).thinkingLevel).toBe('high');
@@ -87,5 +93,23 @@ describe('a model newer than Pi’s catalogue', () => {
     });
     const {model} = await resolveModel(config);
     expect(model.cost).toEqual({input: 0, output: 0, cacheRead: 0, cacheWrite: 0});
+  });
+});
+
+describe('thinking levels', () => {
+  const choices = async (provider: string, modelId: string, requested?: string) => {
+    const {model} = await resolveModel({provider, modelId, maxOutputTokens: 8000} as HarnessConfig);
+    return thinkingChoices(model, requested);
+  };
+  it('lists the levels each model supports and defaults to medium', async () => {
+    const gemini = await choices('google', 'gemini-flash-latest');
+    expect(gemini.levels).toEqual(['minimal', 'low', 'medium', 'high']);
+    expect(gemini.defaultLevel).toBe('medium');
+    const claude = await choices('anthropic', 'claude-sonnet-5-5');
+    expect(claude.levels).not.toContain('off');
+    expect(claude.defaultLevel).toBe('medium');
+  });
+  it('keeps an explicit level', async () => {
+    expect((await choices('google', 'gemini-flash-latest', 'high')).defaultLevel).toBe('high');
   });
 });

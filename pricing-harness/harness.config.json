@@ -1,10 +1,5 @@
 {
   "schemaVersion": 1,
-  "model": {
-    "provider": "openrouter",
-    "id": "deepseek/deepseek-v4.1-flash",
-    "thinkingLevel": "high"
-  },
   "runtime": {
     "port": 4317,
     "maxUploadBytes": 2147483648,

@@ -17,6 +17,7 @@ export async function chatRoutes(server: FastifyInstance, app: Application) {
     workspace: app.paths.root,
     modelId: app.config.modelId,
     thinkingLevel: app.config.thinkingLevel,
+    thinkingLevels: app.thinkingLevels,
     provider: app.config.provider,
     versions: {pricing: app.bundle.pricingVersion, visualization: app.bundle.visualizationVersion, piSdk: '1.0.4'},
     skills: app.bundle.skillNames,

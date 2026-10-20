@@ -38,6 +38,7 @@ const createSession = async () =>
     manager: {getBranch: () => []},
     bundle,
   }) as unknown as AgentHandle;
+const thinkingLevels = ['low', 'medium', 'high'];
 const runner = createChatFixtureRunner(),
   handle = await createSession(),
   view = new EventView(handle, {runs: [], artifacts: []});
@@ -51,8 +52,18 @@ const controller = new RunController({
   view,
   createSession,
   workflowRunner: runner,
+  thinkingLevels,
 });
-const app = {config, paths, files, bundle, health, view, controller};
+const app = {
+  config: {...config, thinkingLevel: 'medium' as const},
+  paths,
+  files,
+  bundle,
+  health,
+  view,
+  controller,
+  thinkingLevels,
+};
 const server = await buildServer(app);
 const streams = new Set<import('node:http').ServerResponse>();
 server.addHook('onRequest', async (request, reply) => {
@@ -88,6 +99,7 @@ server.post('/test/restart', async () => {
     view: app.view,
     createSession,
     workflowRunner: runner,
+    thinkingLevels,
   });
   return {restarted: true};
 });

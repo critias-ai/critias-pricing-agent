@@ -13,13 +13,13 @@ bash scripts/setup-macos.sh
 cp .env.example .env
 ```
 
-Set `OPENROUTER_API_KEY` in `.env`, or use Pi's stored credentials. Never commit credentials. Set the model ID, reasoning level and limits in `harness.config.json`. Any OpenRouter model ID works, including ones newer than Pi's catalogue. Then launch with a workspace folder outside this repository:
+Set a key and a model for the provider you use in `.env`: `OPENAI_API_KEY` and `OPENAI_MODEL`, `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, `GEMINI_API_KEY` and `GEMINI_MODEL`, or `ANTHROPIC_API_KEY` and `ANTHROPIC_MODEL`. The app uses the first provider that has both, in that order. With a stored ChatGPT login (Pi's `~/.pi/agent/auth.json`), set only `OPENAI_MODEL`. Never commit credentials. Limits live in `harness.config.json`. Any model ID works, including ones newer than Pi's catalogue. The thinking level is chosen in the interface, beside Send. Then launch with a workspace folder outside this repository:
 
 ```bash
 bash scripts/start-macos.sh "$HOME/PricingHarnessWorkspace"
 ```
 
-Open the link the launcher prints (`http://127.0.0.1:4317/#token=…`). The token is new at each launch and stops other programs and accounts on the computer from using the app; a plain `http://127.0.0.1:4317` page cannot load your data. An optional second launcher argument overrides the model for that launch. Restart after changing `harness.config.json` or `.env`; stop with Ctrl+C. Model requests can incur provider charges. The macOS launcher always uses OpenRouter. To use OpenAI directly, launch Node yourself as described in [local setup](docs/local-setup.md), which also covers headless use.
+Open the link the launcher prints (`http://127.0.0.1:4317/#token=…`). The token is new at each launch and stops other programs and accounts on the computer from using the app; a plain `http://127.0.0.1:4317` page cannot load your data. An optional second launcher argument overrides the model for that launch. Restart after changing `harness.config.json` or `.env`; stop with Ctrl+C. Model requests can incur provider charges. For a direct Node launch or headless use, see [local setup](docs/local-setup.md).
 
 ## How an answer is checked
 

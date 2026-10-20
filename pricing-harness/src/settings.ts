@@ -3,7 +3,6 @@ import {existsSync, readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 export type HarnessSettings = {
   schemaVersion: 1;
-  model?: {provider?: string; id?: string; thinkingLevel?: string};
   runtime?: {port?: number; maxUploadBytes?: number; duckdbMemory?: string; duckdbThreads?: number};
   workflow?: {limits?: {seconds?: number; modelAttempts?: number; toolCalls?: number}};
   evaluation?: {
@@ -33,7 +32,7 @@ export function readHarnessSettings(path: string): HarnessSettings {
   } catch {
     throw Error(`Cannot read valid config JSON: ${path}`);
   }
-  const s = object(raw, 'config', ['schemaVersion', 'model', 'runtime', 'workflow', 'evaluation']);
+  const s = object(raw, 'config', ['schemaVersion', 'runtime', 'workflow', 'evaluation']);
   if (s.schemaVersion !== 1) throw Error('Invalid config.schemaVersion');
   const model = (m: unknown, path: string) => {
     const o = object(m, path, ['provider', 'id', 'thinkingLevel']);
@@ -43,7 +42,6 @@ export function readHarnessSettings(path: string): HarnessSettings {
     if (o.thinkingLevel !== undefined && !(THINKING_LEVELS as readonly string[]).includes(o.thinkingLevel))
       throw Error(`Invalid settings ${path}.thinkingLevel`);
   };
-  if (s.model !== undefined) model(s.model, 'model');
   if (s.runtime !== undefined) {
     const r = object(s.runtime, 'runtime', ['port', 'maxUploadBytes', 'duckdbMemory', 'duckdbThreads']);
     for (const [k, v] of Object.entries(r)) k === 'duckdbMemory' ? text(v, `runtime.${k}`) : number(v, `runtime.${k}`);
@@ -84,8 +82,6 @@ export function settingsForRuntime(env: NodeJS.ProcessEnv, appRoot: string) {
   const put = (key: string, value: unknown) => {
     if (value !== undefined) values[key] = String(value);
   };
-  for (const [key, value] of Object.entries(settings?.model ?? {}))
-    put({provider: 'PRICING_PROVIDER', id: 'PRICING_MODEL', thinkingLevel: 'PRICING_THINKING_LEVEL'}[key]!, value);
   for (const [key, value] of Object.entries(settings?.runtime ?? {}))
     put(
       {

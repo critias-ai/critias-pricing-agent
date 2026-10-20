@@ -63,3 +63,17 @@ test('blocks requests to other origins, such as an image in a reply', async ({pa
   );
   expect(blocked).toBe('https://example.com/x.png');
 });
+
+test('the thinking level is chosen beside Send and travels with the question', async ({page}) => {
+  await page.goto('/');
+  await expect(page.getByText('Connected', {exact: true})).toBeVisible();
+  const select = page.getByLabel('Thinking level');
+  await expect(select).toBeVisible();
+  await expect(select).toHaveValue('medium');
+  expect(await select.locator('option').allTextContents()).toEqual(['low', 'medium', 'high']);
+  await select.selectOption('low');
+  const sent = page.waitForRequest(r => r.url().endsWith('/api/messages') && r.method() === 'POST');
+  await page.getByLabel('Your question').fill('Explore synthetic');
+  await page.getByRole('button', {name: 'Send'}).click();
+  expect((await sent).postDataJSON().thinkingLevel).toBe('low');
+});

@@ -27,7 +27,7 @@ The application combines an assistant-ui chat interface (React), a Fastify serve
 - Per-question limits on time, model calls and tool calls, cancellation, and connection recovery.
 - A headless interface for scripted questions and a graded evaluation loop.
 
-Skills and dependencies are pinned. The model is set explicitly in `pricing-harness/harness.config.json`; the app never switches models or updates its bundled skills by itself.
+Skills and dependencies are pinned. The provider and model are set in `pricing-harness/.env`; the app never switches models or updates its bundled skills by itself.
 
 ## Requirements
 
@@ -46,13 +46,13 @@ bash scripts/setup-macos.sh
 cp .env.example .env
 ```
 
-Set `OPENROUTER_API_KEY` in `pricing-harness/.env` and keep the file out of Git. If you use Pi's stored credentials, leave it unset. Set `model.id` in `pricing-harness/harness.config.json`, then launch with a separate business workspace. An optional second argument overrides the model for one launch:
+Set a key and a model for the provider you use in `.env`: `OPENAI_API_KEY` and `OPENAI_MODEL`, `OPENROUTER_API_KEY` and `OPENROUTER_MODEL`, `GEMINI_API_KEY` and `GEMINI_MODEL`, or `ANTHROPIC_API_KEY` and `ANTHROPIC_MODEL`. The app uses the first provider that has both, in that order. With a stored ChatGPT login (Pi's `~/.pi/agent/auth.json`), set only `OPENAI_MODEL`. Keep the file out of Git. Then launch with a separate business workspace. An optional second argument overrides the model for one launch:
 
 ```bash
 bash scripts/start-macos.sh "$HOME/PricingHarnessWorkspace"
 ```
 
-Open [the local application](http://127.0.0.1:4317). The launcher creates the workspace if needed. Restart after changing `harness.config.json` or `.env`; stop with Ctrl+C. Model requests use your credentials and can incur provider charges.
+Open [the local application](http://127.0.0.1:4317). The launcher creates the workspace if needed. Restart after changing `harness.config.json` or `.env`; the thinking level is chosen in the interface, beside Send; stop with Ctrl+C. Model requests use your credentials and can incur provider charges.
 
 Add a file and ask, for example: “Which products contributed most to the change in gross margin between these years?” Confirm column meanings, currency, calendar, cost treatment and comparison scope when asked. See [local setup](pricing-harness/docs/local-setup.md) for model selection, direct Node and OpenAI launches, headless use and every setting.
 
@@ -66,7 +66,7 @@ powershell -ExecutionPolicy Bypass -File scripts\setup-windows.ps1
 copy .env.example .env
 ```
 
-Set `OPENROUTER_API_KEY` in `pricing-harness\.env` and `model.id` in `harness.config.json` as above, then launch:
+Set the key and model in `pricing-harness\.env` as above, then launch:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\start-windows.ps1 "$HOME\PricingHarnessWorkspace"
@@ -74,19 +74,20 @@ powershell -ExecutionPolicy Bypass -File scripts\start-windows.ps1 "$HOME\Pricin
 
 ## Configuration
 
-`pricing-harness/harness.config.json` is the one editable settings file: model and reasoning level, port, upload cap, DuckDB memory and threads, per-question limits (`seconds`, `modelAttempts`, `toolCalls`), and settings for the evaluation runner. Unknown keys and invalid values stop startup. Environment variables override the file:
+`pricing-harness/harness.config.json` holds the port, upload cap, DuckDB memory and threads, per-question limits (`seconds`, `modelAttempts`, `toolCalls`), and settings for the evaluation runner; the provider and model come only from `.env`. Unknown keys and invalid values stop startup. Environment variables override the file:
 
 | Variable                   | Purpose                                    | Saved value                    |
 | -------------------------- | ------------------------------------------ | ------------------------------ |
-| `PRICING_MODEL`            | Model ID                                   | `deepseek/deepseek-v4.1-flash` |
-| `PRICING_THINKING_LEVEL`   | Reasoning level supported by the model     | `high`                         |
+| `PRICING_PROVIDER`         | Force one provider (`openai`, `openrouter`, `google`, `anthropic`) | first with a key and model |
+| `PRICING_MODEL`            | Override the model of the chosen provider  | from `.env`                    |
+| `PRICING_THINKING_LEVEL`   | Starting thinking level; the interface changes it per question | `medium`   |
 | `PRICING_PORT`             | Local HTTP port                            | `4317`                         |
 | `PRICING_MAX_UPLOAD_BYTES` | Maximum size per uploaded file             | `2147483648` (2 GiB)           |
 | `PRICING_DUCKDB_MEMORY`    | DuckDB memory budget (not a total RAM cap) | `4GB`                          |
 | `PRICING_DUCKDB_THREADS`   | DuckDB threads                             | `4`                            |
 | `PRICING_ANALYSIS_SECONDS` | Time limit per question                    | `900`                          |
 
-The macOS launcher sets the workspace, provider (OpenRouter) and Python path. For direct Node or headless launches, set `PRICING_WORKSPACE`, `PRICING_PROVIDER`, `PRICING_MODEL` and an absolute `PRICING_PYTHON` as described in [local setup](pricing-harness/docs/local-setup.md).
+The launchers set the workspace and Python path. For direct Node or headless launches, set `PRICING_WORKSPACE` and an absolute `PRICING_PYTHON`, with the key and model in `.env` as described in [local setup](pricing-harness/docs/local-setup.md).
 
 ## Data and local access
 

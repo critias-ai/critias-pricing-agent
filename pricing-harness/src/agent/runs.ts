@@ -33,6 +33,7 @@ export class RunController {
       health: Health;
       createSession: (fresh: boolean) => Promise<AgentHandle>;
       explorationEnabled?: boolean;
+      thinkingLevels?: readonly string[];
     },
   ) {
     this.handle = options.handle;
@@ -51,9 +52,16 @@ export class RunController {
       !input.text.trim() ||
       input.text.length > 100000 ||
       !Array.isArray(input.fileIds) ||
-      input.fileIds.some(id => typeof id !== 'string')
+      input.fileIds.some(id => typeof id !== 'string') ||
+      (input.thinkingLevel !== undefined &&
+        (typeof input.thinkingLevel !== 'string' || !(this.options.thinkingLevels ?? []).includes(input.thinkingLevel)))
     )
-      return Promise.reject(new HarnessError('INVALID_REQUEST', 'Provide requestId, a question, and fileIds'));
+      return Promise.reject(
+        new HarnessError(
+          'INVALID_REQUEST',
+          'Provide requestId, a question, fileIds and, optionally, a supported thinking level',
+        ),
+      );
     const previous = this.pending.get(input.requestId);
     if (previous) return previous;
     if (this.busy) return Promise.reject(new HarnessError('BUSY', 'An analysis is busy', 409, true));
@@ -74,6 +82,9 @@ export class RunController {
   }
   private async start(input: SubmitRequest, submittedAt: number): Promise<RunAccepted> {
     const {files, paths, config, view} = this.options;
+    const runConfig = input.thinkingLevel
+      ? {...config, thinkingLevel: input.thinkingLevel as NonNullable<typeof config.thinkingLevel>}
+      : config;
     await files.resolveSources(input.fileIds);
     const sources = await files.snapshotSources();
     const id = randomUUID(),
@@ -109,7 +120,7 @@ export class RunController {
       let resolveDone!: (run: RunRecord) => void;
       this.completions.set(id, new Promise(r => (resolveDone = r)));
       const workflow = new WorkflowOrchestrator({
-        config,
+        config: runConfig,
         paths,
         bundle: this.handle.bundle,
         profileSources: createSourceProfiler(config, paths.cache),
