@@ -14,7 +14,6 @@ Recorded 2026-10-14 after the OpenRouter and OpenAI six-turn runs (`.cache/thin-
 
 - Context diet: execute stdout is capped at 48k characters; a lower cap (about 8k, full output kept in the file) would slow context growth. Reasoning items are about 75 % of stored context.
 - Pre-flight check that compaction keeps user-stated scenario assumptions (not in `context.md`); the default summary format was not inspected.
-- Push plugin 0.4.2 (`Pricing_Plugin`, branch `v2`, local only; `origin` is at 0.4.0).
 - `tests/evals/cases/*.json` and `scripts/eval-focused-workflow.mjs` still describe claims and handoffs; they are not run by `npm test` and were not updated.
 - Run the six turns, cold and warm, on the final stack and compare with `.cache/.../oa2-*`.
 - **Peer-ratio check covers SQL only (2026-10-15).** `peer_ratio.py` notes rows at least 5× or at most a fifth of their key's median when they carry ≥ 0.5 % of what a SQL statement sums or a created population holds. Figures computed in Python scripts (`execute_analysis`, `python3` in `bash`) are not checked yet; decide how to cover them (for example, check the CSV a script reads against the source rows it came from).

@@ -578,7 +578,7 @@ git commit -m "fix: give tool steps run-unique IDs and show Verify as not needed
 - [ ] **Step 1: Vendor the token file**
 
 ```bash
-{ printf '/* Vendored from hackerman/governance/critias-design-system/tokens/critias-aegean.css on 2026-10-12.\n   Keep in sync with that file; do not edit here. */\n'; cat ../../governance/critias-design-system/tokens/critias-aegean.css; } > src/ui/critias-aegean.css
+{ printf '/* Vendored from the Critias design system token file critias-aegean.css on 2026-10-12.\n   Keep in sync with that file; do not edit here. */\n'; cat <path to critias-aegean.css>; } > src/ui/critias-aegean.css
 grep -c "data-theme=\"dark\"" src/ui/critias-aegean.css
 ```
 

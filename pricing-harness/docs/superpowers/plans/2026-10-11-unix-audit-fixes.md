@@ -12,7 +12,7 @@
 
 ## Read this first
 
-- **Working directory.** Run every command from `pricing-harness/`. The Git repository root is its parent (`Pricing_harness/`). `git add` with paths relative to `pricing-harness/` works from there.
+- **Working directory.** Run every command from `pricing-harness/`. The Git repository root is its parent. `git add` with paths relative to `pricing-harness/` works from there.
 - **No paid model calls.** Never run `npm run eval`, `npm run eval:configured` without `--dry-run`, or anything that contacts OpenRouter. All tests here are offline.
 - **Do not change** `bundled/pricing-plugin/**`, Python files, `docs/releases/**`, or `.env`.
 - **Code style after Task 1** is Prettier output. Every code block below is written in that style. Find code by its content, not by line number, because line numbers shift as tasks land.

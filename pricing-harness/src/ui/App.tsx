@@ -10,7 +10,7 @@ import {Sources} from './Sources.js';
 import {Announcer} from './Announcer.js';
 import {Conversations} from './Conversations.js';
 import {appendText, firstAssistantIdByRun, toThreadMessage} from './thread-messages.js';
-// Vendored from governance/critias-design-system/logo-exploration; keep in sync, do not edit here.
+// Vendored from the Critias design system logo files; keep in sync, do not edit here.
 import wordmarkInk from './critias-wordmark-ink.svg';
 import wordmarkMarble from './critias-wordmark-marble.svg';
 type Status = {
