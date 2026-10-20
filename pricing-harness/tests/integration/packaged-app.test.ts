@@ -31,6 +31,8 @@ test('packs eight complete skills, the knowledge cards and helpers without test 
   expect(names.filter((name: string) => name.endsWith('SKILL.md'))).toHaveLength(8);
   expect(names).toContain('bundled/pricing-plugin/LICENSE');
   expect(names).toContain('scripts/start-macos.sh');
+  expect(names).toContain('bin/critias.mjs');
+  expect(names).toContain('scripts/start-windows.ps1');
   expect(names).toContain('npm-shrinkwrap.json');
   expect(names.some((name: string) => /tests\/|__pycache__|\.pyc$|^workspace\/|^\.env$/.test(name))).toBe(false);
   await run('tar', ['-xzf', join(root, '.cache/packages', packed.filename), '-C', directory]);
