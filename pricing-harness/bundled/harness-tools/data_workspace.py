@@ -164,7 +164,7 @@ def fetch_small_result(conn,sql:str,max_rows=100000):
     if not isinstance(max_rows,int) or max_rows<1:raise ValueError('result bound must be positive')
     result=conn.execute(f'SELECT * FROM ({sql.rstrip().rstrip(";")}) AS bounded_result LIMIT {max_rows+1}').fetchdf()
     if len(result)>max_rows:raise ValueError(f'result exceeds bound of {max_rows}; export complete results using DuckDB COPY and prepare a labelled chart overview')
-    return result
+    return result.astype(object).where(result.notna(),None)  # SQL NULL stays None (pandas 3 would give NaN in text columns)
 
 PROFILE_VERSION='1'
 _INTEGER=r'^[+-]?[0-9]+$'
