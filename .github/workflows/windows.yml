@@ -27,9 +27,11 @@ jobs:
         run: |
           $server = Start-Process powershell -PassThru -NoNewWindow -ArgumentList '-ExecutionPolicy','Bypass','-File','scripts\start-windows.ps1',"$env:RUNNER_TEMP\workspace"
           for ($i = 0; $i -lt 30; $i++) {
-            try { Invoke-RestMethod http://127.0.0.1:4317/api/status | ConvertTo-Json -Depth 5; break } catch { Start-Sleep 2 }
+            # Up and locked: the API refuses a request without the per-launch token.
+            try { $code = (Invoke-WebRequest http://127.0.0.1:4317/api/status -SkipHttpErrorCheck).StatusCode; if ($code -eq 401) { break } } catch {}
+            Start-Sleep 2
           }
-          if ($i -eq 30) { throw 'The app did not answer on port 4317.' }
+          if ($i -eq 30) { throw 'The app did not answer on port 4317 with 401 for a request without its token.' }
           taskkill /pid $server.Id /T /F
       - run: npm run typecheck
       # eval-cases needs downloaded datasets that are not in the repository.
