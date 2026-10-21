@@ -6,3 +6,10 @@ pricing-harness/THIRD_PARTY_NOTICES.md for their notices and licences.
 
 The bundled pricing skills in pricing-harness/bundled/pricing-plugin/ are
 distributed under the MIT License; see the LICENSE file in that directory.
+
+Some evaluation cases in pricing-harness/tests/evals/ are derived from
+Online Retail II by Daqing Chen (UCI Machine Learning Repository, CC BY 4.0,
+https://doi.org/10.24432/C5CG6D), the AdventureWorks sample database
+(Copyright (c) Microsoft Corporation, MIT License) and the Olist e-commerce
+dataset (Copyright (c) 2019 @olist, MIT License), with changes. See
+pricing-harness/THIRD_PARTY_NOTICES.md.

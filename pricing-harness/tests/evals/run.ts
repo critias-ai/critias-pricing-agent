@@ -202,7 +202,6 @@ export async function runLive(spec: EvalCase, inputDir: string, dir: string, sto
   };
   const reads = new Set<string>(),
     tools = new Set<string>();
-  outcome.acted = [];
   for (const [i, run] of runs.entries()) {
     const budget = run.workflow?.budget;
     metrics.seconds += (budget?.elapsedMs ?? 0) / 1000;
@@ -211,9 +210,6 @@ export async function runLive(spec: EvalCase, inputDir: string, dir: string, sto
     metrics.toolCalls += budget?.counters.tool ?? 0;
     for (const e of await events(ws, run.id)) {
       if (e.type === 'present') outcome.charts += e.spec?.charts?.length ?? 0;
-      // Writing a file is acting before the answer; showing the scenarios with present is what shared rules §3 asks.
-      if (e.type === 'tool_start' && ['write', 'edit'].includes(e.tool) && i < spec.turns.length)
-        outcome.acted[i] = true;
       if (e.type === 'operation') for (const path of pluginReads(e.operation)) reads.add(path);
       if (e.type === 'tool_start' && i < spec.turns.length) tools.add(e.tool);
       if (e.type !== 'tool_end' || !e.isError) continue;

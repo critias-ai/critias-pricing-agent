@@ -11,6 +11,7 @@ Last updated: 2026-10-01
 - unit_costs.csv gives each product's unit cost from its effective_from date until the next one; cost a line at the cost in force on its invoice date. Cost of goods = quantity × unit cost on the lines counted in net revenue. Gross profit = net revenue − cost of goods; margin = gross profit ÷ net revenue. [confirmed 2026-10-01; finance]
 - Years are calendar years. The data runs from 2009-12-01 to 2011-12-09. A blank Customer ID is a guest order. [confirmed 2026-10-01; finance]
 - Picking and shipping costs us £8.00 per ordinary invoice that has product lines. [confirmed 2026-10-01; operations]
+- A customer's contribution = gross profit on products + carriage charged to them (POST and DOT lines) − £8.00 per ordinary invoice with product lines. [confirmed 2026-10-01; finance]
 - Like-for-like price change compares January to November 2011 with January to November 2010, on products sold in both: each product's average selling price (revenue ÷ quantity over its product lines on ordinary invoices with a positive quantity and a price above zero), weighted by its 2011 quantity. [confirmed 2026-10-01; finance]
 
 ## Change log

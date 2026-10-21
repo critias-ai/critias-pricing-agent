@@ -292,3 +292,45 @@ Test-side, not a fix item: EC-8 run 1 judge verdict looks wrong (failed R3 altho
       customers. Left: dispute fees counted as disputes (fo-1 run 3; the context now says where they go, untested),
       fo-3 fee total wrong in one run, and one reply each missing the linked share or the ranking condition.
 
+24. **A provider error reaches the report only as "Provider did not complete stage" (2026-10-20).** With
+    `anthropic/claude-haiku-5.5:batch` on OpenRouter, the run failed in 2 seconds; the trace's outcome was
+    `no-verified-answer` and `stderr.txt` was empty. OpenRouter's own message, that `:batch` models cannot use
+    chat/completions, was only found by calling the API directly. The report should carry the provider's error text.
+25. **Final suite baseline, 0-of-3 cases traced (2026-10-21; Haiku 5.5 high, Sol low judge, 219/333,
+    `.cache/evals/live-2026-10-20T19-08-53-241Z`).** Test faults, correct or defensible answers graded as fails:
+    olist-2 (all 3 runs exact once English category names map back to `product_category_name`; key matches on the
+    Portuguese name), uci-5 (the graded count of 104 needs carriage income in contribution, which `uci.md` never says;
+    only the closing save ask does), fo-3 (reply figures need ±1 but a plain-language reply rounds to €30.8k and €312.1k;
+    run 1 fails on that alone), ec-18 R1 (net price stated and used with `list_price`/`net_price` columns; the rubric
+    still demands both). Judge doubtful: aw-4 R2/R3 fail on quotes that meet the item (mix checked, no change
+    recommended). Patterns: SQL NULL left where the key expects 0 (aw-3, ec-4, messy rebates); pricing-intake not read
+    on a bare or foreign context (uci-1, ladder-l5). Rest look model-side: ec-2 and s3-5 causes not tested, fo-6
+    payback basis ignores the context definition, out-2 peer median wrong, uci-7 matching unstable.
+26. **Sol low re-run of the 19 cases (2026-10-21, DeepSeek v4.1 flash judge, `.cache/evals/live-2026-10-21T05-55-09-993Z`).**
+    15 of 48 before the ChatGPT usage limit; s3-5 refused, uci-1/5/7 not run. Fixed test faults pass 3 of 3 (ec-18,
+    fo-3, olist-2); aw-4 3 of 3 (Sol-low judge on the baseline too harsh). Both models fail: aw-3 and ec-4 (SQL NULL
+    where 0 is expected, identical on both, so a harness rule or a key that accepts blank-as-zero), ladder-l5
+    (Brightwater saved to context unconfirmed), ec-2 R2 (old-list cause never tested), retail-storage-advice (the
+    £14,559 storage gross-profit fall is never stated). messy-conversation: Sol delivers provisional figures and ends with
+    the right rebate question, failing only `expectQuestion` (no present/write before asking); decide whether that
+    rule fits. out-1/out-2 rubric fails quote text that seems to meet R1 (out-1 run 3 names all three causes): the
+    DeepSeek judge with thinking off looks unreliable there.
+27. **Final benchmark, Haiku 5.5 high vs DeepSeek v4.1 flash 1017 high (2026-10-21, Sol low judge, current rules).**
+    Haiku 234/333 (`live-2026-10-20T19-08-53-241Z` re-graded, plus `live-2026-10-21T12-48-50-337Z` for olist-2 and
+    uci-5); DeepSeek 213/333 (`live-2026-10-21T11-35-03-963Z` and `live-2026-10-21T12-53-48-661Z`, $15.06 analyst +
+    $0.92 judge). Row keys now match whatever the case (aw-1: DeepSeek's "Internet" was exact). Harness issue to fix:
+    the context file and intake (ladder-l5 saves the sister company unconfirmed; uci-1 never reads pricing-intake on a
+    bare context), failed alike by both models. Infra: one OpenRouter error (uci-8), one judge overload (fo-2). Owner's
+    call: every other difference is a model limitation. Table: `docs/eval-comparison-2026-10-21.md`.
+28. **Intake gate (2026-10-21, `nudges.ts` skill-read hook).** When `.pricing/context.md` is missing or defines nothing
+    (no formula, backticked field or source column), or a source starts with `# Pricing context`, the first calculation
+    waits for `pricing-intake/SKILL.md`; the reason leads the block message, and the hold lasts six blocks, not two.
+    Haiku and DeepSeek now read intake in 9 of 9 and 6 of 6 runs. uci-1: Haiku 3/3, DeepSeek 3/3 (both 0/3 before).
+    ladder-l5: Haiku 2/3, DeepSeek 2/3 (both 0/3); the misses are the model's (Haiku heads our facts "Brightwater
+    Supplies"; DeepSeek applies the attachment's returns rule in turn 1 while calling it unconfirmed). Test changes:
+    context mustNot ignores lines saying something does not apply; ladder-l5 bans "Brightwater Supplies", not the file
+    name. ec-18 and aw-7 re-run with the gate: 3/3 on both models, intake read every run, no new questions. Totals with
+    the four re-run cases: Haiku 239/333, DeepSeek 218/333. Not yet re-run with the gate: ladder-l0, ladder-l1,
+    rt-intake-setup, messy-conversation (these already read intake in most baseline runs). The 17:30-18:08 run folders
+    were deleted by a disk cleanup; their results survive only here.
+    Possible wording fix: the block message calls the file "from another project or company", which the code cannot know.

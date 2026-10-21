@@ -169,6 +169,13 @@ it('ties a key figure to its label and sign', () => {
   expect(hasFigure('Sales were 14,559.29 and margin was steady; profit is in the appendix.', figure)).toBe(false);
   expect(hasFigure('It rose 14,559.29.', {value: 14559.29, tolerance: 1})).toBe(true);
 });
+it('reads a rounded k or m figure to its stated precision', () => {
+  expect(hasFigure('Stripe paid out €312.1k in 2025.', {value: 312143.47, tolerance: 1})).toBe(true);
+  expect(hasFigure('December MRR was €30.8k.', {value: 30792.19, tolerance: 1})).toBe(true);
+  expect(hasFigure('December MRR was €31.2k.', {value: 30792.19, tolerance: 1})).toBe(false);
+  expect(hasFigure('Sales were £1.2m.', {value: 1234567, tolerance: 1})).toBe(true);
+  expect(hasFigure('We kept 12 months of data.', {value: 12000000, tolerance: 1})).toBe(false);
+});
 it('counts only questions that wait on the user', () => {
   expect(blockingQuestion('Here are the totals. Want a chart?')).toBe(false);
   expect(blockingQuestion('Before I compute margin: are the December rows in both files the same sales?')).toBe(true);
@@ -209,7 +216,7 @@ it('fails NaN cells, listed hard negatives, unread or forbidden cards and unconf
     scoreOutcome(
       check,
       key,
-      run({reads: ['skills/knowledge/methods/price-waterfall.md'], context: 'Freight is 4%', acted: [true]}),
+      run({reads: ['skills/knowledge/methods/price-waterfall.md'], context: 'Freight is 4%', replies: ['Done.']}),
     ),
   ).toEqual([
     'Turn 1: expected a question',
@@ -310,4 +317,41 @@ it('counts a "Should I" question that names alternatives as a real question, not
   );
   expect(blockingQuestion('Should I run the item-level bridge next?')).toBe(false);
   expect(blockingQuestion('Want a chart or a table?')).toBe(false);
+});
+it('reads a blank cell as zero, and only as zero', () => {
+  const expected = [
+    {sku: 'K08', sales: '0.00', pct: '-100.0000'},
+    {sku: 'G09', sales: '0.00', pct: '5'},
+  ];
+  const got = [
+    {sku: 'K08', sales: '', pct: ''},
+    {sku: 'G09', sales: '', pct: '5'},
+  ];
+  expect(compareRows(got, expected, ['sku'], ['sales', 'pct'], '1')).toEqual([
+    'Mismatch pct: K08 (expected -100.0000, got )',
+  ]);
+});
+it('accepts a question that follows provisional figures', () => {
+  const ask = {...spec, turns: [{text: 'What happened?', expectQuestion: true}], expectChart: false};
+  const figures = 'Margin fell 1.11 points. **Are the rebates already in the net price?**';
+  expect(scoreOutcome(ask, key, {...outcome('-5'), replies: [figures]})).toEqual([]);
+});
+it('matches row keys whatever their case', () => {
+  const expected = [{channel: 'internet', amount: '10'}];
+  expect(compareRows([{channel: 'Internet', amount: '10'}], expected, ['channel'], ['amount'], '1')).toEqual([]);
+});
+it('does not count a context line that says something does not apply', () => {
+  const base = {
+    id: 'x',
+    inputDir: '.',
+    turns: [{text: 'q'}],
+    csvChecks: [],
+    expectContext: {mustNot: ['Brightwater Supplies']},
+  };
+  const run = (context: string): Outcome => ({files: {}, replies: ['ok'], charts: 0, context});
+  const key = {moneyTolerance: '1', files: {}};
+  expect(scoreOutcome(base as any, key, run('- The Brightwater Supplies file does not apply here.'))).toEqual([]);
+  expect(scoreOutcome(base as any, key, run('## Confirmed by user (Brightwater Supplies, this project)'))).toEqual([
+    'context.md saved unconfirmed Brightwater Supplies',
+  ]);
 });

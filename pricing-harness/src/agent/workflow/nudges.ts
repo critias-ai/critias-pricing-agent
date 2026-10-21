@@ -190,14 +190,41 @@ export function skillList(skillsRoot: string, preloaded: string[] = []) {
     .filter(d => existsSync(join(skillsRoot, d, 'SKILL.md')) && !preloaded.includes(`${d}/SKILL.md`))
     .map(d => describe(join(skillsRoot, d)));
 }
+// Why the intake skill must be read before the first calculation, if it must: the routing skill's rule for a project
+// with no definitions to work from, or with another project's context file among its sources. A context defines
+// something when it has a formula or a backticked field, or names a source column.
+export function intakeReason(contextPath: string, sources: string[]) {
+  const root = resolve(contextPath, '../..');
+  const head = (p: string) => {
+    try {
+      return readFileSync(resolve(root, p), 'utf8').slice(0, 4000);
+    } catch {
+      return '';
+    }
+  };
+  const imported = sources.filter(p => /\.(md|txt)$/i.test(p) && /^\s*# Pricing context/i.test(head(p)));
+  if (imported.length)
+    return `${imported.map(p => basename(p)).join(', ')} is a pricing context file from another project or company: its facts are unconfirmed here until the user says they apply.`;
+  const text = (existsSync(contextPath) ? readFileSync(contextPath, 'utf8') : '').split(/\n## Change log/)[0]!;
+  if (!text.trim()) return '.pricing/context.md is missing, so nothing about this business is confirmed yet.';
+  const columns = sources
+    .filter(p => /\.csv$/i.test(p))
+    .flatMap(p => (head(p).split(/\r?\n/)[0] ?? '').split(','))
+    .map(c => c.trim().replace(/^"|"$/g, '').replace(/^﻿/, ''))
+    .filter(Boolean);
+  const named = (c: string) => new RegExp(`(?<![\\w])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\w])`, 'i');
+  if (/[=÷×`]/.test(text) || columns.some(c => named(c).test(text))) return undefined;
+  return '.pricing/context.md defines no fields or measures yet.';
+}
 const describe = (dir: string) =>
   `${basename(dir)}: ${(/^description:\s*(.+)$/m.exec(readFileSync(join(dir, 'SKILL.md'), 'utf8'))?.[1] ?? '').trim()}`;
 const PYTHON_RUN = /(^|[\s;&|(/])python(3(\.\d+)?)?\b/;
 
 const HOOKS: Record<string, Hook> = {
   // The first calculation waits until the analyst has opened a task skill and a knowledge card beyond what is
-  // preloaded. The harness does not pick them: the routing skill in context does. What was read is kept in the
-  // stage folder, so follow-up turns are not stopped again.
+  // preloaded. The harness does not pick them: the routing skill in context does. Where the routing skill also asks
+  // for intake (see intakeReason), the intake skill must be among them. What was read is kept in the stage folder, so
+  // follow-up turns are not stopped again.
   'skill-read'(pi, o) {
     if (!o.skillsRoot) return;
     const root = resolve(o.skillsRoot);
@@ -212,8 +239,11 @@ const HOOKS: Record<string, Hook> = {
       seen.add(rel);
       writeFileSync(marker, JSON.stringify([...seen]));
     };
-    const ready = () =>
+    const intake = o.contextPath ? intakeReason(o.contextPath, o.sources ?? []) : undefined;
+    const method = () =>
       [...seen].some(f => /^[^/]+\/SKILL\.md$/.test(f)) && [...seen].some(f => f.startsWith('knowledge/'));
+    const intakeRead = () => !intake || seen.has('pricing-intake/SKILL.md');
+    const ready = () => method() && intakeRead();
     pi.on('tool_result', event => {
       if (event.isError) return;
       const input = event.input as Record<string, any>;
@@ -225,12 +255,20 @@ const HOOKS: Record<string, Hook> = {
       const input = event.input as Record<string, any>;
       const calculates =
         analysisTool(event.toolName) || (event.toolName === 'bash' && PYTHON_RUN.test(String(input.command ?? '')));
-      if (!calculates || ready() || blocks >= 2) return;
+      // The intake condition holds longer than the method one: the routing skill's rule is easy to talk past.
+      if (!calculates || ready() || blocks >= (intakeRead() ? 2 : 6)) return;
       blocks++;
+      const readIntake = intakeRead()
+        ? ''
+        : `${intake} As the routing skill says, read the intake skill (${sh(join(root, 'pricing-intake/SKILL.md'))}) too, then continue the request and ask about what it leaves open.`;
+      if (method()) return {block: true, reason: `Not run yet: ${readIntake}`};
       return {
         block: true,
         reason:
-          `Not run yet: before calculating, read the skill for this task and the knowledge card its steps point to for your question (the routing skill in your context helps you choose). Skills in ${sh(root)}; knowledge cards in ${sh(join(root, 'knowledge'))}:\n` +
+          (readIntake
+            ? `Not run yet: ${readIntake}\nAlso, before calculating, read the skill`
+            : `Not run yet: before calculating, read the skill`) +
+          ` for this task and the knowledge card its steps point to for your question (the routing skill in your context helps you choose). Skills in ${sh(root)}; knowledge cards in ${sh(join(root, 'knowledge'))}:\n` +
           [
             ...skillList(root, o.preloaded),
             ...(o.moreSkills ?? []).map(d => `${describe(d)} (${sh(join(d, 'SKILL.md'))})`),

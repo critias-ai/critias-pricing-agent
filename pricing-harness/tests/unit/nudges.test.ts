@@ -1,4 +1,4 @@
-import {mkdtempSync, writeFileSync} from 'node:fs';
+import {mkdirSync, mkdtempSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {expect, it} from 'vitest';
@@ -7,6 +7,7 @@ import {
   contextAppendOnly,
   copiedShare,
   editErrorHint,
+  intakeReason,
   lintHints,
   loadLints,
   pacing,
@@ -219,4 +220,39 @@ it('holds a Python run that names a source file once per turn', () => {
   expect(next.call('tool_call', {toolName: 'bash', input: {command: `cd ${dir} && python3 bridge.py`}})?.block).toBe(
     true,
   );
+});
+
+it('asks for intake when the project has no definitions or brings another context file', () => {
+  const root = mkdtempSync(join(tmpdir(), 'intake-'));
+  mkdirSync(join(root, '.pricing'));
+  mkdirSync(join(root, 'files'));
+  const ctx = join(root, '.pricing/context.md');
+  writeFileSync(join(root, 'files/sales.csv'), 'sku,net_price,unit_cost\nA,1,0.5\n');
+  const sources = ['files/sales.csv'];
+  expect(intakeReason(ctx, sources)).toContain('missing');
+  writeFileSync(ctx, '# Pricing context\n## Data\n- These are our sales exports. [confirmed 2026-10-01; finance]\n');
+  expect(intakeReason(ctx, sources)).toContain('defines no fields');
+  writeFileSync(ctx, '- Margin uses net_price. [confirmed 2026-10-01; finance]\n');
+  expect(intakeReason(ctx, sources)).toBeUndefined();
+  writeFileSync(ctx, 'Net sales = quantity x price.\n');
+  expect(intakeReason(ctx, sources)).toBeUndefined();
+  writeFileSync(join(root, 'files/other.md'), '# Pricing context: Brightwater\n- All amounts are in USD.\n');
+  expect(intakeReason(ctx, [...sources, 'files/other.md'])).toContain('other.md is a pricing context file');
+  // The gate then waits for the intake skill as well as a task skill and a card.
+  const dir = join(root, '.pricing/workflow/c/analyst');
+  mkdirSync(dir, {recursive: true});
+  const skillsRoot = join(process.cwd(), 'bundled/pricing-plugin/skills');
+  const f = fakePi();
+  analystNudges({stageDir: dir, skillsRoot, contextPath: ctx, sources: [...sources, 'files/other.md']})(f.pi as any);
+  const read = (path: string) => f.result({toolName: 'read', input: {path}, content: [{type: 'text', text: 'x'}]});
+  const query = {toolName: 'query', input: {sql: 'SELECT 1'}};
+  read(join(skillsRoot, 'pricing-analyze/SKILL.md'));
+  read(join(skillsRoot, 'knowledge/margin-drivers.md'));
+  const held = f.call('tool_call', query);
+  expect(held?.block).toBe(true);
+  expect(held.reason).toMatch(/^Not run yet: other\.md is a pricing context file/);
+  // It keeps holding past the usual two blocks until intake is read.
+  for (let i = 0; i < 3; i++) expect(f.call('tool_call', query)?.block).toBe(true);
+  read(join(skillsRoot, 'pricing-intake/SKILL.md'));
+  expect(f.call('tool_call', query)).toBeUndefined();
 });

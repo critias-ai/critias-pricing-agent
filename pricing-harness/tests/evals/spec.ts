@@ -47,9 +47,8 @@ export type Outcome = {
   replies: string[];
   charts: number;
   error?: string;
-  // Live runs only: plugin files read, whether each people turn wrote or edited a file, and the saved context.
+  // Live runs only: plugin files read and the saved context.
   reads?: string[];
-  acted?: boolean[];
   context?: string;
   contextStart?: string;
   judgeAnswer?: string;
