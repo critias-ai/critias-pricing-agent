@@ -304,7 +304,7 @@ it('recognises a provider usage limit, not an ordinary failure', () => {
     'Insufficient credits',
   ])
     expect(USAGE_LIMIT.test(text), text).toBe(true);
-  for (const text of ['Provider did not complete stage', 'socket hang up', 'Invalid tool arguments'])
+  for (const text of ['Provider error: the model stopped before finishing', 'socket hang up', 'Invalid tool arguments'])
     expect(USAGE_LIMIT.test(text), text).toBe(false);
 });
 it('reads past a "Question:" label before deciding whether a question is an offer', () => {

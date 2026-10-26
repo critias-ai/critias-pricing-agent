@@ -19,7 +19,7 @@ description: Use when calculating or explaining pricing and margin performance, 
 - Run the data-consistency and eligibility checks on the actual data.
 - **Required checks before any line-level calculation.** Run each as a query. Report each one's line count and value, even when it is zero:
   - **Missing values:** lines with no usable price or cost after matching, such as a blank, unmatched or other-currency record. SQL aggregates skip blanks, so a sum or average over them counts that revenue with no cost. Before calculating a measure, define its population once as a view that keeps only the lines where every value the measure needs is present (for example `WHERE unit_cost IS NOT NULL`). Calculate the measure, both parts of a rate included, from that view only. Calculate the left-out lines' count and value from the remaining lines and show them next to the figure (shared rules, section 6).
-  - **Implausible values:** lines whose unit price or unit cost is at least ten times, or at most a tenth of, the median for the same item in the data you are using.
+  - **Implausible values:** lines whose unit price or unit cost is at least five times, or at most a fifth of, the median for the same item in the data you are using.
   - **Unconfirmed definitions:** each choice the result depends on that `.pricing/context.md` does not confirm and the user has not settled, such as which of several price fields is the price, or whether returns count. Calculate the result under each candidate, whatever the column names suggest, and report both.
 - If any of these moves the result, it is an unresolved basis (shared rules, section 3): ask the user about it.
 - End each requested measure in one of three states:

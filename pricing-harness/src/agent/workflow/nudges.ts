@@ -204,7 +204,7 @@ export function intakeReason(contextPath: string, sources: string[]) {
   };
   const imported = sources.filter(p => /\.(md|txt)$/i.test(p) && /^\s*# Pricing context/i.test(head(p)));
   if (imported.length)
-    return `${imported.map(p => basename(p)).join(', ')} is a pricing context file from another project or company: its facts are unconfirmed here until the user says they apply.`;
+    return `${imported.map(p => basename(p)).join(', ')} is an uploaded pricing context file, not this workspace's confirmed context: its facts are unconfirmed until the user says they apply here.`;
   const text = (existsSync(contextPath) ? readFileSync(contextPath, 'utf8') : '').split(/\n## Change log/)[0]!;
   if (!text.trim()) return '.pricing/context.md is missing, so nothing about this business is confirmed yet.';
   const columns = sources

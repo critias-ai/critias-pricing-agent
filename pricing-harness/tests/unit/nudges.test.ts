@@ -237,7 +237,7 @@ it('asks for intake when the project has no definitions or brings another contex
   writeFileSync(ctx, 'Net sales = quantity x price.\n');
   expect(intakeReason(ctx, sources)).toBeUndefined();
   writeFileSync(join(root, 'files/other.md'), '# Pricing context: Brightwater\n- All amounts are in USD.\n');
-  expect(intakeReason(ctx, [...sources, 'files/other.md'])).toContain('other.md is a pricing context file');
+  expect(intakeReason(ctx, [...sources, 'files/other.md'])).toContain('other.md is an uploaded pricing context file');
   // The gate then waits for the intake skill as well as a task skill and a card.
   const dir = join(root, '.pricing/workflow/c/analyst');
   mkdirSync(dir, {recursive: true});
@@ -250,7 +250,7 @@ it('asks for intake when the project has no definitions or brings another contex
   read(join(skillsRoot, 'knowledge/margin-drivers.md'));
   const held = f.call('tool_call', query);
   expect(held?.block).toBe(true);
-  expect(held.reason).toMatch(/^Not run yet: other\.md is a pricing context file/);
+  expect(held.reason).toMatch(/^Not run yet: other\.md is an uploaded pricing context file/);
   // It keeps holding past the usual two blocks until intake is read.
   for (let i = 0; i < 3; i++) expect(f.call('tool_call', query)?.block).toBe(true);
   read(join(skillsRoot, 'pricing-intake/SKILL.md'));

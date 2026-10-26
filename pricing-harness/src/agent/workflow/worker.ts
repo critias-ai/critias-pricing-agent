@@ -399,7 +399,9 @@ async function execute(request: StageRequest) {
         last = await retryTransient(active, gate);
       }
       if (!last || last.role !== 'assistant' || last.stopReason === 'error' || last.stopReason === 'aborted')
-        throw new Error('Provider did not complete stage');
+        throw new Error(
+          `Provider error: ${(last?.role === 'assistant' && last.errorMessage) || 'the model stopped before finishing'}`,
+        );
       return last.content
         .filter(c => c.type === 'text')
         .map(c => c.text)
