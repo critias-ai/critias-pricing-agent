@@ -9,11 +9,11 @@ import type {JudgeMetrics, RubricItem} from './spec.js';
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '../..');
 export type Verdict = {id: string; pass: boolean; quote: string};
 // Quotes are compared as plain words: Markdown marks and list bullets are dropped, and a quote shortened with "..."
-// must match each of its parts, in order.
+// must match each of its parts, in order. Bullets are dropped mid-line too, as judges quote list items run together.
 const flat = (text: string) =>
   text
-    .replace(/^\s*(?:[-*+]|\d+\.)\s+/gm, '')
     .replace(/[*_`#>]/g, '')
+    .replace(/(^|\s)(?:[-+]|\d{1,2}\.)(?=\s|$)/g, '$1')
     .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase();

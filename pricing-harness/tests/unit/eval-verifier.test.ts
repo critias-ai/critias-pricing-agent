@@ -288,6 +288,19 @@ it('matches judge quotes across Markdown and "..." shortening', () => {
   expect(pass('profit over cost ... Margin')).toEqual(['Rubric R1 failed: "profit over cost ... Margin"']);
   expect(pass('...')).toEqual(['Rubric R1 failed: "..."']);
 });
+it('matches a judge quote that runs list items onto one line', () => {
+  const rubric = [{id: 'R1', kind: 'must' as const, text: 'sizes each gap'}];
+  const replies = [
+    'Gaps:\n\n- **K07:** gap **£63,618**.\n- **K01:** gap **£31,058**.\n2. Notice ahead.\n3. **Reps:** tell them.\n\nAs in 2025. Then 4. Later.',
+  ];
+  const pass = (quote: string) => grade(JSON.stringify([{id: 'R1', pass: true, quote}]), replies, rubric);
+  expect(pass('Gaps: - **K07:** gap **£63,618**. - **K01:** gap **£31,058**.')).toEqual([]);
+  expect(pass('Notice ahead. 3. **Reps:** tell them.')).toEqual([]);
+  expect(pass('As in 2025.')).toEqual([]);
+  expect(pass('Then 4.')).toEqual([]);
+  expect(pass('Notice ahead. 3. Reps: tell them. As in 2025.')).toEqual([]);
+  expect(pass('gap £31,058. 2. Notice')).toEqual([]);
+});
 it('fails a turn that asks a question it did not need', () => {
   const spec = {id: 'x', inputDir: '.', turns: [{text: 'q', expectQuestion: false}], csvChecks: []} satisfies EvalCase;
   const run = (reply: string): Outcome => ({files: {}, replies: [reply], charts: 0});
