@@ -150,6 +150,10 @@ different, so read these figures as indicative, not as a like-for-like compariso
 - `ec-2`, `out-1`, `out-2`, `retail-outliers-portfolio` and `s3-5` also fail in every Sol run. These are five of the
   six cases both small models always fail (see [where a person needs to check](#where-a-person-needs-to-check-the-answer)).
   Sol did not run the sixth, `uci-7`, which is level 3.
+- GPT-6.1 Terra, thinking xhigh, ran the 13 level-5 cases three times each on commit `6360a8f` with plugin 0.4.13,
+  graded by DeepSeek V4.1 Flash (thinking high). It passed 18 of 39 (46%), level with Sol. Read by hand, one of the
+  judge's fails (`s3-4-better-seats`) meets the rubric, which would make it 19 of 39. Terra also fails `out-1`,
+  `out-2` and `retail-outliers-portfolio` in every run.
 
 ## Where a person needs to check the answer
 
@@ -217,7 +221,7 @@ which were not re-run with it; they already read intake in most benchmark runs.
 - The judge is one model on low thinking. In at least one case (`aw-4`) it failed replies that, read by hand, meet the rubric.
   Both analysts were graded by the same judge, so the comparison is fair, but rubric pass rates may be understated.
 - The answer keys are public. A model that has seen this repository could score higher for that reason alone.
-- The GPT-6.1 Sol figures cover only levels 4 and 5 and use a different judge, so they are indicative. An earlier
+- The GPT-6.1 Sol and Terra figures cover only levels 4 and 5 and use different judges, so they are indicative. An earlier
   partial Sol run on 15 cases, under earlier grading rules, is not included.
 - Some data sets are small and synthetic, so results on real company data may differ.
 
