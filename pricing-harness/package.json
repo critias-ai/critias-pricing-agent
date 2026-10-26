@@ -1,6 +1,6 @@
 {
   "name": "critias",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Local AI-assisted pricing and gross margin analysis with DuckDB and verified in-chat exploration.",
   "homepage": "https://critias.ai",
   "repository": {
