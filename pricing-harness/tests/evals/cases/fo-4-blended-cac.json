@@ -1,5 +1,6 @@
 {
   "id": "fo-4-blended-cac",
+  "difficulty": 3,
   "inputDir": "../inputs/founder-clean",
   "contextFile": "../contexts/founder.md",
   "turns": [

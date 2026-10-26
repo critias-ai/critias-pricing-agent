@@ -1,5 +1,6 @@
 {
   "id": "ladder-l0-none",
+  "difficulty": 2,
   "inputDir": "../inputs/retail-ladder-neutral",
   "turns": [
     {

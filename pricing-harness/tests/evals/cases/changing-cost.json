@@ -1,5 +1,6 @@
 {
   "id": "changing-cost",
+  "difficulty": 4,
   "inputDir": "../inputs/changing-cost",
   "contextFile": "../contexts/changing-cost.md",
   "turns": [

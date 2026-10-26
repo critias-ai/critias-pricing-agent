@@ -1,5 +1,6 @@
 {
   "id": "ec-19-price-endings",
+  "difficulty": 3,
   "inputDir": "../../../datasets/adventureworks/case/files",
   "contextFile": "../contexts/adventureworks.md",
   "turns": [

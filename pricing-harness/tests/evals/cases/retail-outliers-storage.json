@@ -1,5 +1,6 @@
 {
   "id": "retail-outliers-storage",
+  "difficulty": 3,
   "inputDir": "../inputs/retail-outliers",
   "contextFile": "../contexts/retail-outliers.md",
   "solution": "../solutions/outliers.py",

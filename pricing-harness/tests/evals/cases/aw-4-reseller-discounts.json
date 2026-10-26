@@ -1,5 +1,6 @@
 {
   "id": "aw-4-reseller-discounts",
+  "difficulty": 5,
   "inputDir": "../../../datasets/adventureworks/case/files",
   "contextFile": "../contexts/adventureworks.md",
   "turns": [

@@ -1,5 +1,6 @@
 {
   "id": "numeric-format",
+  "difficulty": 2,
   "inputDir": "../inputs/numeric-format",
   "contextFile": "../contexts/numeric-format.md",
   "turns": [

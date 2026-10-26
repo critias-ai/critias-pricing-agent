@@ -1,5 +1,6 @@
 {
   "id": "po-5-product-margin",
+  "difficulty": 3,
   "inputDir": "../../../datasets/uci/case-po5/files",
   "contextFile": "../contexts/uci-po5.md",
   "turns": [

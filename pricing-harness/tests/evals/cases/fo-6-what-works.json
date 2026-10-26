@@ -1,5 +1,6 @@
 {
   "id": "fo-6-what-works",
+  "difficulty": 4,
   "inputDir": "../inputs/founder-clean",
   "contextFile": "../contexts/founder.md",
   "turns": [

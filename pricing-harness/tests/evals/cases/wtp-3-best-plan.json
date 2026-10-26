@@ -1,5 +1,6 @@
 {
   "id": "wtp-3-best-plan",
+  "difficulty": 5,
   "inputDir": "../inputs/saas-clean",
   "contextFile": "../contexts/saas.md",
   "turns": [

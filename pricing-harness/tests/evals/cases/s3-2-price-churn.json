@@ -1,5 +1,6 @@
 {
   "id": "s3-2-price-churn",
+  "difficulty": 4,
   "inputDir": "../inputs/saas-clean",
   "contextFile": "../contexts/saas.md",
   "turns": [

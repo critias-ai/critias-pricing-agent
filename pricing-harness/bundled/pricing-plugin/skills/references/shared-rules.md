@@ -28,7 +28,7 @@ An unresolved basis exists when the arithmetic itself depends on a choice:
 - the comparison basis, such as currency, units, grain, pack size, population or period
 - which of two valid policy or recipe versions applies
 - records that cannot be used as recorded (missing, unmatched, or on another currency or unit) when treating them one way or another moves the result
-- records whose values are implausible next to the same item's other records, such as a unit price ten times its usual level, when including or excluding them moves the result
+- records whose values are implausible next to the same item's other records, such as a unit price five times its usual level, when including or excluding them moves the result
 
 Do not stop when only the interpretation is open and the arithmetic is the same either way, such as whether a recorded cost field includes freight. Calculate on the field as recorded, name it that way (for example "net price less `unit_cost_eur` as supplied"), and caveat the open interpretation under section 2.
 

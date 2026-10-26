@@ -1,5 +1,6 @@
 {
   "id": "duplicates",
+  "difficulty": 2,
   "inputDir": "../inputs/duplicates",
   "contextFile": "../contexts/duplicates.md",
   "turns": [

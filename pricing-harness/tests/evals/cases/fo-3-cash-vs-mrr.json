@@ -1,5 +1,6 @@
 {
   "id": "fo-3-cash-vs-mrr",
+  "difficulty": 4,
   "inputDir": "../inputs/founder-clean",
   "contextFile": "../contexts/founder.md",
   "turns": [

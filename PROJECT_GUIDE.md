@@ -2,7 +2,7 @@
 
 ## Summary
 
-Critias is an experimental, local-first pricing agent: an application for pricing and gross-margin analysis. A React and assistant-ui chat interface on a Fastify server drives one continuing analyst session per conversation, built on the Pi agent SDK. The analyst works on uploaded CSV and XLSX files through DuckDB SQL and recorded Python scripts, follows seven bundled pricing skills (Pricing Plugin 0.4.12) and a visualization skill, and answers in chat with checked figures, tables and charts. It runs on macOS and Windows. Setup and usage are in the [README](README.md); the workflow is in [architecture](pricing-harness/docs/architecture.md).
+Critias is an experimental, local-first pricing agent: an application for pricing and gross-margin analysis. A React and assistant-ui chat interface on a Fastify server drives one continuing analyst session per conversation, built on the Pi agent SDK. The analyst works on uploaded CSV and XLSX files through DuckDB SQL and recorded Python scripts, follows seven bundled pricing skills (Pricing Plugin 0.4.13) and a visualization skill, and answers in chat with checked figures, tables and charts. It runs on macOS and Windows. Setup and usage are in the [README](README.md); the workflow is in [architecture](pricing-harness/docs/architecture.md).
 
 ## Key Decisions & Patterns
 

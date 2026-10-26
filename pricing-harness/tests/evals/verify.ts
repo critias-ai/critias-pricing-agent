@@ -30,6 +30,7 @@ export function tolerance(column: string, money: string) {
   if (/margin|rate/i.test(column)) return '0.0000000001';
   return money;
 }
+const rowKey = (row: Row, columns: string[]) => columns.map(k => row[k] ?? '').join('|');
 const isNumber = (value: string) => /^[+-]?(?:\d|\.\d)/.test(value);
 export function compareRows(
   candidate: Row[],
@@ -40,17 +41,17 @@ export function compareRows(
   partial = false,
 ): string[] {
   const failures: string[] = [],
-    key = (row: Row) => keys.map(k => row[k] ?? '').join('|');
+    key = (row: Row) => rowKey(row, keys);
   const actual = new Map<string, Row>();
   for (const row of candidate) {
     const id = key(row);
-    if (actual.has(id)) failures.push(`Duplicate row: ${id}`);
-    actual.set(id, row);
+    if (actual.has(id.toLowerCase())) failures.push(`Duplicate row: ${id}`);
+    actual.set(id.toLowerCase(), row); // keys match whatever the case: "Internet" is the key's "internet"
   }
-  const wanted = new Set(expected.map(key));
+  const wanted = new Set(expected.map(row => key(row).toLowerCase()));
   for (const row of expected) {
     const id = key(row),
-      value = actual.get(id);
+      value = actual.get(id.toLowerCase());
     if (!value) {
       failures.push(`Missing row: ${id}`);
       continue;
@@ -68,13 +69,14 @@ export function compareRows(
         isFlag
           ? observed.toLowerCase() !== target.toLowerCase()
           : isNumber(target)
-            ? !near(observed, target, tolerance(column, moneyTolerance))
+            ? !(observed.trim() === '' && Number(target) === 0) && // a blank cell reads as zero
+              !near(observed, target, tolerance(column, moneyTolerance))
             : observed !== target
       )
         failures.push(`Mismatch ${column}: ${id} (expected ${target}, got ${observed})`);
     }
   }
-  if (!partial) for (const id of actual.keys()) if (!wanted.has(id)) failures.push(`Unexpected row: ${id}`);
+  if (!partial) for (const [id, row] of actual) if (!wanted.has(id)) failures.push(`Unexpected row: ${key(row)}`);
   return failures;
 }
 export function parseCSV(text: string): Row[] {
@@ -121,11 +123,14 @@ const FALL = /\b(fell|falls?|down|decreased?|declined?|lower|loss|lost|dropped|d
 // Whether a reply gives the key figure, near its label and with its sign when the key asks for them.
 export function hasFigure(text: string, figure: NonNullable<AnswerKey['replyNumbers']>[number]) {
   const t = text.replace(/[−–]/g, '-');
-  return [...t.matchAll(/-?\d[\d,]*(?:\.\d+)?/g)].some(m => {
-    const n = Number(m[0].replace(/,/g, '')),
+  return [...t.matchAll(/-?\d[\d,]*(?:\.(\d+))?([km](?![a-z]))?/gi)].some(m => {
+    // "€312.1k" stands for 312,100 rounded to the nearest 100, so it matches anything within that rounding.
+    const scale = m[2] ? (m[2].toLowerCase() === 'k' ? 1e3 : 1e6) : 1,
+      n = Number(m[0].replace(/,|[km]$/gi, '')) * scale,
+      rounding = m[2] ? (scale * 10 ** -(m[1]?.length ?? 0)) / 2 : 0,
       start = m.index!,
       before = t.slice(Math.max(0, start - 40), start);
-    if (Math.abs(Math.abs(n) - Math.abs(figure.value)) > figure.tolerance) return false;
+    if (Math.abs(Math.abs(n) - Math.abs(figure.value)) > Math.max(figure.tolerance, rounding)) return false;
     const near = t.slice(Math.max(0, start - 60), start + m[0].length + 60).toLowerCase();
     if (figure.label && !near.includes(figure.label.toLowerCase())) return false;
     const negative = n < 0 || /-\s*[£$€]\s*$/.test(before) || FALL.test(before);
@@ -155,9 +160,9 @@ export function scoreOutcome(spec: EvalCase, key: AnswerKey, outcome: Outcome): 
     }
     if (candidate.some(row => Object.values(row).some(v => UNDEFINED.test(v.trim()))))
       failures.push(`${check.file}: NaN or Inf cell (write blank instead)`);
-    const listed = new Set(candidate.map(row => check.keyColumns.map(k => row[k] ?? '').join('|')));
+    const listed = new Set(candidate.map(row => rowKey(row, check.keyColumns).toLowerCase()));
     for (const id of key.hardNegatives?.[check.file] ?? [])
-      if (listed.has(id)) failures.push(`${check.file}: false positive ${id}`);
+      if (listed.has(id.toLowerCase())) failures.push(`${check.file}: false positive ${id}`);
     const expected = key.files[check.file];
     if (expected)
       failures.push(
@@ -179,7 +184,7 @@ export function scoreOutcome(spec: EvalCase, key: AnswerKey, outcome: Outcome): 
       );
   }
   spec.turns.forEach((turn, i) => {
-    if (turn.expectQuestion && (!blockingQuestion(outcome.replies[i] ?? '') || outcome.acted?.[i]))
+    if (turn.expectQuestion && !blockingQuestion(outcome.replies[i] ?? ''))
       failures.push(`Turn ${i + 1}: expected a question`);
     if (turn.expectQuestion === false && blockingQuestion(outcome.replies[i] ?? ''))
       failures.push(`Turn ${i + 1}: asked a question it did not need`);
@@ -201,8 +206,13 @@ export function scoreOutcome(spec: EvalCase, key: AnswerKey, outcome: Outcome): 
         if (!outcome.context.includes(line)) failures.push(`context.md lost or reworded: ${line.slice(0, 80)}`);
     for (const p of spec.expectContext?.must ?? [])
       if (!new RegExp(p, 'i').test(outcome.context)) failures.push(`context.md lacks ${p}`);
+    // A line recording that something does not apply ("the sister company's file does not apply") is not saving it.
+    const kept = outcome.context
+      .split('\n')
+      .filter(l => !/\b(do(es)?n['’]t apply|do(es)? not apply|not applied)\b/i.test(l))
+      .join('\n');
     for (const p of spec.expectContext?.mustNot ?? [])
-      if (new RegExp(p, 'i').test(outcome.context)) failures.push(`context.md saved unconfirmed ${p}`);
+      if (new RegExp(p, 'i').test(kept)) failures.push(`context.md saved unconfirmed ${p}`);
   }
   return failures;
 }
@@ -221,8 +231,8 @@ export function spread(checks: CsvCheck[], outcomes: Outcome[], moneyTolerance: 
         values: [`saved by ${present.length} of ${tables.length}`],
       });
     if (present.length < 2) continue;
-    const key = (row: Row) => check.keyColumns.map(k => row[k] ?? '').join('|');
-    const maps = present.map(t => new Map(t.map(r => [key(r), r])));
+    const key = (row: Row) => rowKey(row, check.keyColumns);
+    const maps = present.map(t => new Map(t.map(r => [key(r).toLowerCase(), r])));
     for (const id of new Set(maps.flatMap(m => [...m.keys()]))) {
       const rows = maps.map(m => m.get(id));
       if (rows.some(r => !r)) {

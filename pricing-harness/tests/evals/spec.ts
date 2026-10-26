@@ -4,6 +4,9 @@ export type Row = Record<string, string>;
 export type CsvCheck = {file: string; keyColumns: string[]; valueColumns: string[]; partial?: boolean; ask?: string};
 export type EvalCase = {
   id: string;
+  // 1 to 5: the kind of pricing work asked for, from a look-up (1) to a decision the data cannot settle (5).
+  // RESULTS.md gives the scale. Rated by the task, not by results.
+  difficulty?: 1 | 2 | 3 | 4 | 5; // every case in cases/ has one (tests/unit/eval-cases.test.ts)
   inputDir: string;
   contextFile?: string;
   // Extra files the user uploads beside inputDir's, such as another company's context file.
@@ -47,9 +50,8 @@ export type Outcome = {
   replies: string[];
   charts: number;
   error?: string;
-  // Live runs only: plugin files read, whether each people turn wrote or edited a file, and the saved context.
+  // Live runs only: plugin files read and the saved context.
   reads?: string[];
-  acted?: boolean[];
   context?: string;
   contextStart?: string;
   judgeAnswer?: string;

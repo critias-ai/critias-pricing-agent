@@ -1,5 +1,6 @@
 {
   "id": "ladder-l6-buried",
+  "difficulty": 3,
   "inputDir": "../inputs/retail-ladder",
   "contextFile": "../contexts/ladder-l6.md",
   "turns": [

@@ -1,5 +1,6 @@
 {
   "id": "ladder-l2-no-returns",
+  "difficulty": 2,
   "inputDir": "../inputs/retail-ladder-neutral",
   "contextFile": "../contexts/ladder-l2.md",
   "turns": [

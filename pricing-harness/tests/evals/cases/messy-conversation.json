@@ -1,5 +1,6 @@
 {
   "id": "messy-conversation",
+  "difficulty": 4,
   "inputDir": "../inputs/messy",
   "contextFile": "../contexts/messy.md",
   "turns": [

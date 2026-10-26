@@ -1,5 +1,6 @@
 {
   "id": "out-2-customers",
+  "difficulty": 5,
   "inputDir": "../../../datasets/uci/case-out2/files",
   "contextFile": "../contexts/uci-out.md",
   "turns": [

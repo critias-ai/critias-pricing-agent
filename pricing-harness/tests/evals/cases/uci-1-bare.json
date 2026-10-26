@@ -1,5 +1,6 @@
 {
   "id": "uci-1-bare",
+  "difficulty": 2,
   "inputDir": "../../../datasets/uci/case-bare/files",
   "contextFile": "../contexts/uci-bare.md",
   "turns": [

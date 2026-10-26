@@ -12,9 +12,9 @@ Critias is an open-source pricing agent: a local browser application for AI-assi
 
 Built on [Pi](https://pi.dev) ([earendil-works/pi](https://github.com/earendil-works/pi)), the open-source agent harness. Pi supplies the model layer, the agent loop, and tool calling; this project adds the pricing skills, the data checks, and the figure verification on top.
 
-The application combines an assistant-ui chat interface (React), a Fastify server, the [Pi](https://pi.dev) agent SDK, DuckDB, seven bundled pricing skills (Pricing Plugin 0.4.12) and a visualization skill. Calculations run locally. Model requests go to the provider you choose: OpenAI, OpenRouter, Google Gemini or Anthropic.
+The application combines an assistant-ui chat interface (React), a Fastify server, the [Pi](https://pi.dev) agent SDK, DuckDB, seven bundled pricing skills (Pricing Plugin 0.4.13) and a visualization skill. Calculations run locally. Model requests go to the provider you choose: OpenAI, OpenRouter, Google Gemini or Anthropic.
 
-**Status: experimental research preview (0.5.0).** Native macOS setup, component, Python and browser tests, and live runs of the single-analyst workflow on synthetic and public datasets have been checked. Real-business-data validation and native scale testing are still pending. See [how the harness works](pricing-harness/docs/architecture.md) and the [verification records](pricing-harness/docs/releases/).
+**Status: experimental research preview (0.5.1).** Native macOS setup, component, Python and browser tests, and live runs of the single-analyst workflow on synthetic and public datasets have been checked. Real-business-data validation and native scale testing are still pending. See [how the harness works](pricing-harness/docs/architecture.md) and the [verification records](pricing-harness/docs/releases/).
 
 ## Features
 
@@ -175,3 +175,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Ask questions in [Discussions](https://g
 ## License and attribution
 
 Critias is licensed under the [Apache License 2.0](LICENSE). The bundled Pricing Plugin keeps its [original MIT license](pricing-harness/bundled/pricing-plugin/LICENSE) and source provenance. See [third-party notices](pricing-harness/THIRD_PARTY_NOTICES.md) and [bundle versions](pricing-harness/bundled/versions.json).
+
+### Evaluation data
+
+Most eval cases run on synthetic data we generated. Twenty-four run on three public datasets, which are downloaded at test time and not committed. The cases, contexts, solution scripts and answer keys derived from them are in this repository:
+
+- **Online Retail II** by Daqing Chen, from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/502/online+retail+ii), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Cite as: Chen, D. (2012). Online Retail II [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5CG6D.
+- **AdventureWorks OLTP** sample database from [microsoft/sql-server-samples](https://github.com/microsoft/sql-server-samples/tree/e5d7bb90ca0b695ac14f61458047bfb5a498459e/samples/databases/adventure-works), Copyright (c) Microsoft Corporation, licensed under the [MIT License](https://github.com/microsoft/sql-server-samples/blob/e5d7bb90ca0b695ac14f61458047bfb5a498459e/license.txt).
+- **Brazilian e-commerce public dataset by Olist** from [olist/work-at-olist-data](https://github.com/olist/work-at-olist-data/tree/d9e49802f3e92d09ee94ab9ccc5e457f207a8959), Copyright (c) 2019 @olist, licensed under the [MIT License](https://github.com/olist/work-at-olist-data/blob/d9e49802f3e92d09ee94ab9ccc5e457f207a8959/LICENSE). The Kaggle copy carries a different licence and is not used.
+
+We changed all three. Between them, we converted files to CSV and added unit costs, a competitor price list, a pricing policy, planted customers and planted data faults. Those additions are ours, not the sources', and so are any results built on them. The creators and publishers of these datasets do not endorse Critias. The full licence texts are in the [third-party notices](pricing-harness/THIRD_PARTY_NOTICES.md), and the [evals README](pricing-harness/tests/evals/README.md#third-party-data-and-licences) lists what was changed in each source.

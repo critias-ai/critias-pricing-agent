@@ -1,5 +1,6 @@
 {
   "id": "rt-design",
+  "difficulty": 1,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail-l3.md",
   "turns": [

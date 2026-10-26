@@ -1,5 +1,6 @@
 {
   "id": "out-1-customers",
+  "difficulty": 5,
   "inputDir": "../inputs/b2b",
   "contextFile": "../contexts/b2b-out.md",
   "turns": [

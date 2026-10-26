@@ -1,5 +1,6 @@
 {
   "id": "aw-7-raw-files",
+  "difficulty": 2,
   "inputDir": "../../../datasets/adventureworks/case-raw/files",
   "contextFile": "../contexts/adventureworks-raw.md",
   "turns": [

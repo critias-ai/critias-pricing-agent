@@ -1,5 +1,6 @@
 {
   "id": "weighted",
+  "difficulty": 3,
   "inputDir": "../inputs/weighted",
   "contextFile": "../contexts/weighted.md",
   "turns": [

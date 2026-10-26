@@ -1,5 +1,6 @@
 {
   "id": "visualization",
+  "difficulty": 2,
   "inputDir": "../inputs/visualization",
   "contextFile": "../contexts/visualization.md",
   "turns": [

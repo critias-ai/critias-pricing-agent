@@ -1,5 +1,6 @@
 {
   "id": "fo-1-payout-tie",
+  "difficulty": 4,
   "inputDir": "../inputs/founder",
   "contextFile": "../contexts/founder.md",
   "turns": [

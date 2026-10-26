@@ -1,5 +1,6 @@
 {
   "id": "rt-intake-remember",
+  "difficulty": 2,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail-l3.md",
   "turns": [

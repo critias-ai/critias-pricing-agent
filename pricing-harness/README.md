@@ -81,4 +81,4 @@ These tests make no paid model requests. Browser tests use a labelled offline fi
 
 ## License
 
-Apache License 2.0; see [LICENSE](LICENSE). The bundled Pricing Plugin keeps its [original MIT license](bundled/pricing-plugin/LICENSE). See [third-party notices](THIRD_PARTY_NOTICES.md) and [bundle provenance](bundled/versions.json).
+Apache License 2.0; see [LICENSE](LICENSE). The bundled Pricing Plugin keeps its [original MIT license](bundled/pricing-plugin/LICENSE). See [third-party notices](THIRD_PARTY_NOTICES.md) and [bundle provenance](bundled/versions.json). Some eval cases are derived from public datasets under CC BY 4.0 and MIT; their attribution is in the [third-party notices](THIRD_PARTY_NOTICES.md#evaluation-data).

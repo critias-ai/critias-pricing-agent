@@ -1,5 +1,6 @@
 {
   "id": "ec-4-zero-base",
+  "difficulty": 2,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail.md",
   "turns": [

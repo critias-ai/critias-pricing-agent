@@ -1,5 +1,6 @@
 {
   "id": "ec-5-fiscal-ytd",
+  "difficulty": 2,
   "inputDir": "../inputs/retail-fy",
   "contextFile": "../contexts/retail-fy.md",
   "turns": [

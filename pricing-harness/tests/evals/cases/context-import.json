@@ -1,5 +1,6 @@
 {
   "id": "context-import",
+  "difficulty": 2,
   "inputDir": "../inputs/context-import",
   "contextFile": "../contexts/context-import.md",
   "turns": [

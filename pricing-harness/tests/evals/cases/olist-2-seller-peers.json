@@ -1,5 +1,6 @@
 {
   "id": "olist-2-seller-peers",
+  "difficulty": 3,
   "inputDir": "../../../datasets/olist/case/files",
   "contextFile": "../contexts/olist.md",
   "turns": [
@@ -20,7 +21,7 @@
         "peer_median_brl",
         "index"
       ],
-      "ask": "sellers_above_peers.csv with columns seller_id,category,items,avg_price_brl,peer_median_brl,index: every seller and product_category_name pair charging well above its peers as the context defines it (products with no category left out)"
+      "ask": "sellers_above_peers.csv with columns seller_id,category,items,avg_price_brl,peer_median_brl,index: every seller and product_category_name pair (category as the untranslated Portuguese product_category_name) charging well above its peers as the context defines it (products with no category left out)"
     }
   ],
   "solution": "../solutions/olist.py"

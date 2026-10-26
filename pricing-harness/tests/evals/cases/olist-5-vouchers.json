@@ -1,5 +1,6 @@
 {
   "id": "olist-5-vouchers",
+  "difficulty": 2,
   "inputDir": "../../../datasets/olist/case/files",
   "contextFile": "../contexts/olist.md",
   "turns": [

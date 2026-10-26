@@ -1,5 +1,6 @@
 {
   "id": "ec-10-unit-of-measure",
+  "difficulty": 2,
   "inputDir": "../inputs/b2b-uom",
   "contextFile": "../contexts/b2b-uom.md",
   "turns": [

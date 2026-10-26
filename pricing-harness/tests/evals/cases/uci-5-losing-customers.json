@@ -1,5 +1,6 @@
 {
   "id": "uci-5-losing-customers",
+  "difficulty": 3,
   "inputDir": "../../../datasets/uci/case-csv/files",
   "contextFile": "../contexts/uci.md",
   "turns": [

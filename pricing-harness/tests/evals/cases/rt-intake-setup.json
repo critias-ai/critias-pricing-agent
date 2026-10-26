@@ -1,5 +1,6 @@
 {
   "id": "rt-intake-setup",
+  "difficulty": 2,
   "inputDir": "../inputs/retail",
   "turns": [
     {

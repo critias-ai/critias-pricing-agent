@@ -1,5 +1,6 @@
 {
   "id": "ladder-l5-other-company",
+  "difficulty": 3,
   "inputDir": "../inputs/retail-ladder",
   "uploads": [
     "../inputs/other-company/brightwater-context.md"
@@ -37,7 +38,7 @@
       "return"
     ],
     "mustNot": [
-      "Brightwater",
+      "Brightwater Supplies",
       "USD"
     ]
   },

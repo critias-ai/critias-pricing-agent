@@ -1,5 +1,6 @@
 {
   "id": "small-answer",
+  "difficulty": 1,
   "inputDir": "../inputs/small-answer",
   "contextFile": "../contexts/small-answer.md",
   "turns": [

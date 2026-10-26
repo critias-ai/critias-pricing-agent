@@ -1,5 +1,6 @@
 {
   "id": "wtp-1-quotes",
+  "difficulty": 5,
   "inputDir": "../inputs/b2b-clean",
   "contextFile": "../contexts/b2b.md",
   "turns": [

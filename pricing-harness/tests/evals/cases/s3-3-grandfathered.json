@@ -1,5 +1,6 @@
 {
   "id": "s3-3-grandfathered",
+  "difficulty": 5,
   "inputDir": "../inputs/saas-clean",
   "contextFile": "../contexts/saas.md",
   "turns": [

@@ -1,5 +1,6 @@
 {
   "id": "uci-4-country-gp",
+  "difficulty": 4,
   "inputDir": "../../../datasets/uci/case-csv/files",
   "contextFile": "../contexts/uci.md",
   "turns": [

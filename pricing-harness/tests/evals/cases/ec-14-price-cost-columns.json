@@ -1,5 +1,6 @@
 {
   "id": "ec-14-price-cost-columns",
+  "difficulty": 2,
   "inputDir": "../inputs/b2b-columns",
   "contextFile": "../contexts/b2b-columns.md",
   "turns": [

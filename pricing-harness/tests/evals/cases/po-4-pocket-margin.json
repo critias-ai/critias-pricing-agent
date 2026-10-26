@@ -1,5 +1,6 @@
 {
   "id": "po-4-pocket-margin",
+  "difficulty": 3,
   "inputDir": "../inputs/b2b-po",
   "contextFile": "../contexts/b2b-po.md",
   "turns": [

@@ -1,5 +1,6 @@
 {
   "id": "uci-7-competitor",
+  "difficulty": 3,
   "inputDir": "../../../datasets/uci/case-competitor/files",
   "contextFile": "../contexts/uci-competitor.md",
   "turns": [
