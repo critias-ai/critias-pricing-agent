@@ -509,7 +509,7 @@ Run `grep -n "OPENROUTER\|PRICING_PROVIDER\|PRICING_MODEL\|harness.config.json\|
 
 - [ ] **Step 3: Update the site install page**
 
-In `/Users/danialkodvavi/Documents/hackerman/critias.ai/content/pages/install.md` make the same change to the "Choose a model" step, keeping its Windows variant, then run `npm test` there.
+In the site repository's `content/pages/install.md`, make the same change to the "Choose a model" step, keeping its Windows variant, then run `npm test` there.
 
 - [ ] **Step 4: Full check**
 
