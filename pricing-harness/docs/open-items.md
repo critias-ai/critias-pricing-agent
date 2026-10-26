@@ -54,8 +54,6 @@ and `docs/eval-comparison-2026-10-21.md`.
 14. **Rubric items that may be too strict:** fo-5 R3 fails replies that say the ranking holds with similar tagging but
     omit "upper bound"; s3-5 R2 fails replies that flag partner Enterprise (2 customers) because the key's example is
     the 9-customer second-half partner cohort.
-15. **SQL NULL where the key expects 0** (aw-3, ec-4, messy rebates), identical on Haiku, DeepSeek and Sol: a harness
-    rule or a key that accepts blank as zero.
-16. **messy-conversation `expectQuestion`:** Sol delivers provisional figures and ends with the right rebate question,
+15. **messy-conversation `expectQuestion`:** Sol delivers provisional figures and ends with the right rebate question,
     failing only because nothing was presented or written before asking. Decide whether the rule fits.
-17. **Not re-run with the intake gate:** ladder-l0, ladder-l1, rt-intake-setup, messy-conversation.
+16. **Not re-run with the intake gate:** ladder-l0, ladder-l1, rt-intake-setup, messy-conversation.
