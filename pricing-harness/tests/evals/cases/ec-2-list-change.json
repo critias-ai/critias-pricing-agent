@@ -1,5 +1,6 @@
 {
   "id": "ec-2-list-change",
+  "difficulty": 4,
   "inputDir": "../inputs/b2b-list-change",
   "contextFile": "../contexts/b2b-list-change.md",
   "turns": [

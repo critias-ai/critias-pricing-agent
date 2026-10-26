@@ -1,5 +1,6 @@
 {
   "id": "ladder-l4-conflict",
+  "difficulty": 3,
   "inputDir": "../inputs/retail-ladder",
   "contextFile": "../contexts/ladder-l4.md",
   "turns": [

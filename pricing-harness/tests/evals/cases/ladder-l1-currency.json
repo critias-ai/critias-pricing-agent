@@ -1,5 +1,6 @@
 {
   "id": "ladder-l1-currency",
+  "difficulty": 2,
   "inputDir": "../inputs/retail-ladder-neutral",
   "contextFile": "../contexts/ladder-l1.md",
   "turns": [

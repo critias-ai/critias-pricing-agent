@@ -1,5 +1,6 @@
 {
   "id": "ec-13-mix-only",
+  "difficulty": 3,
   "inputDir": "../inputs/retail-mix",
   "contextFile": "../contexts/retail.md",
   "turns": [

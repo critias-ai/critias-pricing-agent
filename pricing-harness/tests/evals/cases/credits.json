@@ -1,5 +1,6 @@
 {
   "id": "credits",
+  "difficulty": 3,
   "inputDir": "../inputs/credits",
   "contextFile": "../contexts/credits.md",
   "turns": [

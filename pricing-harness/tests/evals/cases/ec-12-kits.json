@@ -1,5 +1,6 @@
 {
   "id": "ec-12-kits",
+  "difficulty": 3,
   "inputDir": "../inputs/b2b-kits",
   "contextFile": "../contexts/b2b-kits.md",
   "turns": [

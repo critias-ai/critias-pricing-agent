@@ -1,5 +1,6 @@
 {
   "id": "olist-3-freight-region",
+  "difficulty": 3,
   "inputDir": "../../../datasets/olist/case/files",
   "contextFile": "../contexts/olist.md",
   "turns": [

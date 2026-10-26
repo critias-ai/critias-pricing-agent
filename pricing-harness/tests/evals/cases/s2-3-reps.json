@@ -1,5 +1,6 @@
 {
   "id": "s2-3-reps",
+  "difficulty": 3,
   "inputDir": "../inputs/b2b-clean",
   "contextFile": "../contexts/b2b.md",
   "turns": [

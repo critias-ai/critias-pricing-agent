@@ -1,5 +1,6 @@
 {
   "id": "retail-storage-advice",
+  "difficulty": 5,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail.md",
   "turns": [

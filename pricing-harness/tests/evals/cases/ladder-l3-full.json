@@ -1,5 +1,6 @@
 {
   "id": "ladder-l3-full",
+  "difficulty": 2,
   "inputDir": "../inputs/retail-ladder",
   "contextFile": "../contexts/ladder-l3.md",
   "turns": [

@@ -1,5 +1,6 @@
 {
   "id": "ec-16-seasonal",
+  "difficulty": 4,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail.md",
   "turns": [

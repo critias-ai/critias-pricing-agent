@@ -1,5 +1,6 @@
 {
   "id": "uci-8-wholesale",
+  "difficulty": 2,
   "inputDir": "../../../datasets/uci/case-csv/files",
   "contextFile": "../contexts/uci.md",
   "turns": [

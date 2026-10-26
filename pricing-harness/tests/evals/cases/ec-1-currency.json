@@ -1,5 +1,6 @@
 {
   "id": "ec-1-currency",
+  "difficulty": 2,
   "inputDir": "../inputs/b2b-currency",
   "contextFile": "../contexts/b2b-currency.md",
   "turns": [

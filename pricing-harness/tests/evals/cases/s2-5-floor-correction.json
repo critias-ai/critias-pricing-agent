@@ -1,5 +1,6 @@
 {
   "id": "s2-5-floor-correction",
+  "difficulty": 3,
   "inputDir": "../inputs/b2b-clean",
   "contextFile": "../contexts/b2b.md",
   "turns": [

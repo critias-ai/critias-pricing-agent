@@ -1,5 +1,6 @@
 {
   "id": "aw-6-reseller-rise",
+  "difficulty": 5,
   "inputDir": "../../../datasets/adventureworks/case/files",
   "contextFile": "../contexts/adventureworks.md",
   "turns": [

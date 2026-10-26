@@ -1,5 +1,6 @@
 {
   "id": "s2-2-policy",
+  "difficulty": 3,
   "inputDir": "../inputs/b2b-clean",
   "contextFile": "../contexts/b2b.md",
   "turns": [

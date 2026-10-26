@@ -1,5 +1,6 @@
 {
   "id": "olist-1-seller-revenue",
+  "difficulty": 2,
   "inputDir": "../../../datasets/olist/case/files",
   "contextFile": "../contexts/olist.md",
   "turns": [

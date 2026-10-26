@@ -1,5 +1,6 @@
 {
   "id": "aw-5-bike-prices",
+  "difficulty": 2,
   "inputDir": "../../../datasets/adventureworks/case/files",
   "contextFile": "../contexts/adventureworks.md",
   "turns": [

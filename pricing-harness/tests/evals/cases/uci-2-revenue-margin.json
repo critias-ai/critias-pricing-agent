@@ -1,5 +1,6 @@
 {
   "id": "uci-2-revenue-margin",
+  "difficulty": 2,
   "inputDir": "../../../datasets/uci/case-xlsx/files",
   "contextFile": "../contexts/uci.md",
   "turns": [

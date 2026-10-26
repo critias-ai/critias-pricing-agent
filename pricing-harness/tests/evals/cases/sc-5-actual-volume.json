@@ -1,5 +1,6 @@
 {
   "id": "sc-5-actual-volume",
+  "difficulty": 5,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail-scenarios.md",
   "turns": [

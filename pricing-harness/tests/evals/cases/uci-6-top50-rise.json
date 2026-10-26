@@ -1,5 +1,6 @@
 {
   "id": "uci-6-top50-rise",
+  "difficulty": 3,
   "inputDir": "../../../datasets/uci/case-csv/files",
   "contextFile": "../contexts/uci.md",
   "turns": [

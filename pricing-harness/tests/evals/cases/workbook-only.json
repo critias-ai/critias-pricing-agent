@@ -1,5 +1,6 @@
 {
   "id": "workbook-only",
+  "difficulty": 2,
   "inputDir": "../inputs/retail-workbook",
   "contextFile": "../contexts/workbook-only.md",
   "turns": [

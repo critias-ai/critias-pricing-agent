@@ -1,5 +1,6 @@
 {
   "id": "ec-17-forecast",
+  "difficulty": 5,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail.md",
   "turns": [

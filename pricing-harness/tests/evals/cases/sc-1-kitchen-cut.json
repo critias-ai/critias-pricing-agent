@@ -1,5 +1,6 @@
 {
   "id": "sc-1-kitchen-cut",
+  "difficulty": 3,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail-scenarios.md",
   "turns": [

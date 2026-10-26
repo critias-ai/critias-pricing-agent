@@ -1,5 +1,6 @@
 {
   "id": "ec-6-thin-peers",
+  "difficulty": 3,
   "inputDir": "../inputs/b2b-peers",
   "contextFile": "../contexts/b2b-peers.md",
   "turns": [

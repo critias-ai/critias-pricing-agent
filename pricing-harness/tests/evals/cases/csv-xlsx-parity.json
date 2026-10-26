@@ -1,5 +1,6 @@
 {
   "id": "csv-xlsx-parity",
+  "difficulty": 3,
   "inputDir": "../inputs/csv-xlsx-parity",
   "contextFile": "../contexts/csv-xlsx-parity.md",
   "turns": [

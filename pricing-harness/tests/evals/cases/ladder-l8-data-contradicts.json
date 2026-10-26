@@ -1,5 +1,6 @@
 {
   "id": "ladder-l8-data-contradicts",
+  "difficulty": 3,
   "inputDir": "../inputs/retail-ladder",
   "contextFile": "../contexts/ladder-l8.md",
   "turns": [

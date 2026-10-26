@@ -1,5 +1,6 @@
 {
   "id": "olist-2-seller-peers",
+  "difficulty": 3,
   "inputDir": "../../../datasets/olist/case/files",
   "contextFile": "../contexts/olist.md",
   "turns": [

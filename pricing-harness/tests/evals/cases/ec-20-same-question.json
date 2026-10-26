@@ -1,5 +1,6 @@
 {
   "id": "ec-20-same-question",
+  "difficulty": 2,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail.md",
   "turns": [

@@ -1,5 +1,6 @@
 {
   "id": "retail-bridge-conversation",
+  "difficulty": 3,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail.md",
   "turns": [

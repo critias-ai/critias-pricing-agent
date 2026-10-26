@@ -1,5 +1,6 @@
 {
   "id": "ec-8-pushback",
+  "difficulty": 2,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail.md",
   "turns": [

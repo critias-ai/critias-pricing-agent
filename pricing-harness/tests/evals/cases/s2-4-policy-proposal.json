@@ -1,5 +1,6 @@
 {
   "id": "s2-4-policy-proposal",
+  "difficulty": 5,
   "inputDir": "../inputs/b2b-clean",
   "contextFile": "../contexts/b2b.md",
   "turns": [

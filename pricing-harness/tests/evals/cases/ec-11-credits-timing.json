@@ -1,5 +1,6 @@
 {
   "id": "ec-11-credits-timing",
+  "difficulty": 2,
   "inputDir": "../inputs/b2b-credits",
   "contextFile": "../contexts/b2b-credits.md",
   "turns": [

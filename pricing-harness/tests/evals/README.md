@@ -36,7 +36,7 @@ consistency rather than one figure.
 
 | Path                                         | What it holds                                                                                                        | Seen by the analyst |
 | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| `cases/<id>.json`                            | The manager's turns, which files to save, and the behaviour checks                                                   | The turn text only  |
+| `cases/<id>.json`                            | The manager's turns, which files to save, the behaviour checks, and the case's difficulty (1 to 5, see [RESULTS.md](RESULTS.md#by-difficulty)) | The turn text only  |
 | `keys/<id>.json`                             | The answer key: expected rows, reply figures, outlier tiers, rubric                                                  | No                  |
 | `inputs/<set>/`                              | The files a case uploads into the run's workspace                                                                    | Yes                 |
 | `contexts/<name>.md`                         | What the company has already confirmed, copied to `.pricing/context.md`. A case with no context starts from nothing. | Yes                 |
@@ -49,6 +49,8 @@ consistency rather than one figure.
 The runner copies only `inputs/<set>/` into a fresh workspace outside this folder, so the analyst cannot read keys or
 solutions. The keys are public: treat a pass as evidence about this harness, not as a clean benchmark score for a model
 that may have seen this repository.
+
+[RESULTS.md](RESULTS.md) reports the October 2026 benchmark: method, scores by area, and where answers need a person to check them.
 
 ## Run it
 

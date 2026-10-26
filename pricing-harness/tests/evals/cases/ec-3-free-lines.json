@@ -1,5 +1,6 @@
 {
   "id": "ec-3-free-lines",
+  "difficulty": 2,
   "inputDir": "../../../datasets/uci/case-csv/files",
   "contextFile": "../contexts/uci.md",
   "turns": [

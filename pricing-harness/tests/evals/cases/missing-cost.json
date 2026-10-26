@@ -1,5 +1,6 @@
 {
   "id": "missing-cost",
+  "difficulty": 2,
   "inputDir": "../inputs/missing-cost",
   "contextFile": "../contexts/missing-cost.md",
   "turns": [

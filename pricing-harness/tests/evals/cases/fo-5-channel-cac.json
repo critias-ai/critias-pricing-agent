@@ -1,5 +1,6 @@
 {
   "id": "fo-5-channel-cac",
+  "difficulty": 4,
   "inputDir": "../inputs/founder-clean",
   "contextFile": "../contexts/founder.md",
   "turns": [

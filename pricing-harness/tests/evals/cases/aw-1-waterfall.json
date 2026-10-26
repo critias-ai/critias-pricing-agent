@@ -1,5 +1,6 @@
 {
   "id": "aw-1-waterfall",
+  "difficulty": 3,
   "inputDir": "../../../datasets/adventureworks/case/files",
   "contextFile": "../contexts/adventureworks.md",
   "turns": [

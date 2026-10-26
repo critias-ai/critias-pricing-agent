@@ -1,5 +1,6 @@
 {
   "id": "context-confirmation",
+  "difficulty": 2,
   "inputDir": "../inputs/context-confirmation",
   "contextFile": "../contexts/context-confirmation.md",
   "turns": [

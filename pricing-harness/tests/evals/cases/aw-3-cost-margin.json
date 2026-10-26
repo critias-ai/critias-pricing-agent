@@ -1,5 +1,6 @@
 {
   "id": "aw-3-cost-margin",
+  "difficulty": 3,
   "inputDir": "../../../datasets/adventureworks/case/files",
   "contextFile": "../contexts/adventureworks.md",
   "turns": [

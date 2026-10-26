@@ -1,5 +1,6 @@
 {
   "id": "fo-2-mrr",
+  "difficulty": 3,
   "inputDir": "../inputs/founder-clean",
   "contextFile": "../contexts/founder.md",
   "turns": [

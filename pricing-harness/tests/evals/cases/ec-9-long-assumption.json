@@ -1,5 +1,6 @@
 {
   "id": "ec-9-long-assumption",
+  "difficulty": 3,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail.md",
   "turns": [

@@ -1,5 +1,6 @@
 {
   "id": "missing-years",
+  "difficulty": 2,
   "inputDir": "../inputs/missing-years",
   "contextFile": "../contexts/missing-years.md",
   "turns": [

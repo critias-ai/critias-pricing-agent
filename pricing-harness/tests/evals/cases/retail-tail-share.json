@@ -1,5 +1,6 @@
 {
   "id": "retail-tail-share",
+  "difficulty": 1,
   "inputDir": "../inputs/retail",
   "contextFile": "../contexts/retail.md",
   "turns": [

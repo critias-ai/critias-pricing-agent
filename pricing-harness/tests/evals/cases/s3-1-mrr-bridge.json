@@ -1,5 +1,6 @@
 {
   "id": "s3-1-mrr-bridge",
+  "difficulty": 3,
   "inputDir": "../inputs/saas-clean",
   "contextFile": "../contexts/saas.md",
   "turns": [
